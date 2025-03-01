@@ -30,7 +30,7 @@ export default defineConfig(({ mode }) => {
           manualChunks: {
             'react-vendor': ['react', 'react-dom', 'react-router-dom'],
             'ui-vendor': ['@headlessui/react', '@heroicons/react'],
-            'utils-vendor': ['axios', 'react-hot-toast', 'html2canvas', 'react-dropzone']
+            'utils-vendor': ['axios']
           }
         }
       }
