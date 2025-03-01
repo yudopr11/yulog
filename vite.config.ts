@@ -8,9 +8,10 @@ export default defineConfig(({ mode }) => {
     '.railway.app'
   ];
 
-  // Add custom host from env if exists
+  // Add custom hosts from env if exists (comma-separated list)
   if (env.VITE_ALLOWED_HOST) {
-    allowedHosts.push(env.VITE_ALLOWED_HOST);
+    const customHosts = env.VITE_ALLOWED_HOST.split(',').map(host => host.trim());
+    allowedHosts.push(...customHosts);
   }
 
   return {
