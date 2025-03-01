@@ -31,7 +31,7 @@ A modern, responsive personal blog and portfolio site built with React, TypeScri
 
 ### Prerequisites
 
-- Node.js (v14 or newer)
+- Node.js (v18 or newer)
 - npm or yarn
 
 ### Installation
@@ -45,18 +45,14 @@ cd yulog
 2. Install dependencies
 ```bash
 npm install
-# or
-yarn install
 ```
 
 3. Start the development server
 ```bash
 npm run dev
-# or
-yarn dev
 ```
 
-4. Open your browser and visit `http://localhost:3000`
+4. Open your browser and visit `http://localhost:300`
 
 ## Project Structure
 
@@ -100,11 +96,25 @@ To build the app for production, run:
 
 ```bash
 npm run build
-# or
-yarn build
 ```
 
 The built files will be in the `dist` directory, ready to be deployed.
+
+## Deployment
+
+### Railway
+
+This project is configured for easy deployment with [Railway](https://railway.app):
+
+1. Create a new project on Railway
+2. Connect your GitHub repository
+3. Railway will automatically detect the Vite configuration
+4. Set the following environment variables if needed:
+   - `NODE_ENV=production`
+   - `PORT=3000` (optional)
+5. Railway will build and deploy your application automatically on each push
+
+The `preview` script in package.json is configured to work with Railway's deployment system.
 
 ## Customization
 
@@ -125,5 +135,5 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## Acknowledgments
 - Created by [yudopr](https://github.com/yudopr11)
-- Built with [Vite](https://vitejs.dev/), [React](https://reactjs.org/), [TypeScript](https://www.typescriptlang.org/), and [Tailwind CSS](https://tailwindcss.com/) 
+- Built with [Vite](https://vitejs.dev/), [React](https://reactjs.org/), [TypeScript](https://www.typescriptlang.org/), and [Tailwind CSS](https://tailwindcss.com/)
 - Deploy with [Railway](https://railway.app)

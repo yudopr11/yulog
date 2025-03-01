@@ -2,7 +2,26 @@
   "name": "yulog",
   "private": true,
   "version": "0.1.0",
+  "description": "A modern, responsive personal blog and portfolio site built with React, TypeScript and Tailwind CSS",
   "type": "module",
+  "author": {
+    "name": "yudopr",
+    "url": "https://github.com/yudopr11"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yudopr11/yulog"
+  },
+  "homepage": "https://yulog.yudopr.dev",
+  "license": "MIT",
+  "keywords": [
+    "blog",
+    "portfolio",
+    "react",
+    "typescript",
+    "tailwindcss",
+    "markdown"
+  ],
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
@@ -12,6 +31,7 @@
   "dependencies": {
     "@headlessui/react": "^1.7.18",
     "@heroicons/react": "^2.1.1",
+    "axios": "^1.8.1",
     "katex": "^0.16.21",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
