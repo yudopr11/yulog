@@ -1,150 +1,129 @@
-# Ngakak - Bill Splitting Made Easy
+# Yulog
 
-Ngakak (Ngebagi, Gampang, Asyik, Kompak, Aman, Keren) is a modern bill splitting application that helps you split bills with friends easily and accurately.
+A modern, responsive personal blog and portfolio site built with React, TypeScript and Tailwind CSS.
+
+<!-- Note: Add a screenshot of your site here -->
+<!-- ![Yulog Screenshot](public/screenshot.png) -->
 
 ## Features
 
-- 📸 Upload bill images for automatic analysis
-- 🤖 AI-powered item and price detection
-- 💰 Automatic bill splitting calculation
-- 📊 Clear breakdown of individual shares
-- 💾 Save analysis results as images
-- 🔒 Secure user authentication with encrypted token storage
-- 📱 Responsive design for all devices
+- 🔍 **Search functionality** - Find blog posts easily
+- 📱 **Fully responsive design** - Looks great on all devices
+- 🎨 **Dark theme** - Easy on the eyes
+- 📝 **Rich Markdown support** - Write content with formatting, code blocks, and more
+- 📑 **Table of Contents** - Auto-generated for blog posts
+- 🔗 **SEO optimized** - Dynamic page titles and descriptions
+- 💻 **Code syntax highlighting** - With copy-to-clipboard functionality
+- ⚡ **Fast loading** - Optimized for performance
+- 🔙 **Back to top button** - Easy navigation for long posts
+- 🔄 **Load more pagination** - Smooth infinite scroll-like experience
 
 ## Tech Stack
 
-- **Frontend Framework**: React 18 with TypeScript
+- **Frontend**: React, TypeScript
 - **Styling**: Tailwind CSS
+- **Routing**: React Router
+- **Markdown**: React Markdown with remark/rehype plugins
 - **Build Tool**: Vite
-- **UI Components**: 
-  - Headless UI for accessible components
-  - Heroicons for beautiful icons
-- **Image Processing**: html2canvas for analysis export
-- **State Management**: React Hooks
-- **Routing**: React Router v7
-- **HTTP Client**: Axios
-- **Security**:
-  - CryptoJS for token encryption
-  - Secure token storage with AES encryption
-- **Development Tools**:
-  - ESLint for code quality
-  - TypeScript for type safety
-  - PostCSS for CSS processing
+- **Package Manager**: npm
 
 ## Getting Started
 
+### Prerequisites
+
+- Node.js (v14 or newer)
+- npm or yarn
+
+### Installation
+
 1. Clone the repository
 ```bash
-git clone https://github.com/yourusername/ngakak.git
-cd ngakak
+git clone https://github.com/yourusername/yulog.git
+cd yulog
 ```
 
 2. Install dependencies
 ```bash
 npm install
+# or
+yarn install
 ```
 
-3. Set up environment variables
-```bash
-cp .env.example .env
-```
-Edit `.env` with your configuration:
-- `VITE_API_BASE_URL`: Your backend API URL (e.g., http://localhost:8000)
-- `VITE_ALLOWED_HOST`: Your domain (e.g., http://localhost:3000)
-- `VITE_ENCRYPTION_KEY`: A strong encryption key for token storage
-
-### Generating a Secure Encryption Key
-
-For production deployment, generate a strong encryption key. You can use Node.js crypto module:
-
-```bash
-node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
-```
-
-Copy the generated key to your `.env` file as `VITE_ENCRYPTION_KEY`.
-
-4. Start development server
+3. Start the development server
 ```bash
 npm run dev
+# or
+yarn dev
 ```
 
-## Building for Production
-
-```bash
-npm run build
-```
-
-The build output will be in the `dist` directory.
-
-## Security Considerations
-
-1. **Environment Variables**
-   - Never commit `.env` file to version control
-   - Use different encryption keys for development and production
-   - Keep your production encryption key secure
-
-2. **Token Storage**
-   - JWT tokens are encrypted using AES before storage
-   - Tokens are automatically decrypted when making API requests
-   - Failed encryption/decryption is logged with fallback behavior
+4. Open your browser and visit `http://localhost:3000`
 
 ## Project Structure
 
 ```
-ngakak/
-├── public/                # Static assets
-│   └── favicon.svg       # Application favicon
-├── src/                  # Source code
-│   ├── components/       # React components
-│   │   ├── BillAnalysis.tsx    # Bill analysis display
-│   │   ├── BillSplitter.tsx    # Main bill splitting component
-│   │   ├── CurrencyDisplay.tsx # Currency formatting component
-│   │   ├── ImageUploader.tsx   # Image upload component
-│   │   ├── Login.tsx          # Authentication component
-│   │   └── Navbar.tsx         # Navigation component
-│   ├── services/         # API and services
-│   │   ├── api.ts           # API integration
-│   │   ├── auth.ts          # Authentication logic
-│   │   ├── encryption.ts    # Token encryption/decryption
-│   │   └── axiosConfig.ts   # Axios configuration
-│   ├── App.tsx          # Main application component
-│   ├── env.d.ts         # Environment type definitions
-│   ├── index.css        # Global styles
-│   └── main.tsx         # Application entry point
-├── .env.example         # Example environment variables
-├── .gitattributes       # Git attributes configuration
-├── .gitignore           # Git ignore configuration
-├── index.html           # HTML entry point
-├── package.json         # Project dependencies and scripts
-├── postcss.config.js    # PostCSS configuration
-├── railway.json         # Railway deployment configuration
-├── README.md           # Project documentation
-├── tailwind.config.js   # Tailwind CSS configuration
-├── tsconfig.json        # TypeScript configuration
-└── vite.config.ts       # Vite configuration
+yulog/
+├── public/             # Static assets
+├── src/
+│   ├── components/     # React components
+│   │   ├── blog/       # Blog-specific components
+│   │   ├── common/     # Reusable components
+│   │   └── ...
+│   ├── services/       # API and other services
+│   ├── App.tsx         # Main application component
+│   ├── main.tsx        # Entry point
+│   └── ...
+├── package.json        # Dependencies and scripts
+├── tailwind.config.js  # Tailwind CSS configuration
+├── tsconfig.json       # TypeScript configuration
+└── vite.config.ts      # Vite configuration
 ```
 
-## Deployment
+## Key Components
 
-The application is configured for deployment on Railway:
+### Blog Components
 
-1. Create a new project on Railway
-2. Connect your repository
-3. Add required environment variables:
-   - `VITE_API_BASE_URL`
-   - `VITE_ALLOWED_HOST`
-   - `VITE_ENCRYPTION_KEY` (use a secure, randomly generated key)
-4. Railway will automatically deploy your application
+- **Blog**: Main blog listing page with search functionality
+- **PostDetail**: Blog post detail page with table of contents
+- **TableOfContents**: Auto-generated navigation from post headings
+- **MarkdownRenderers**: Custom renderers for Markdown content
+
+### Common Components
+
+- **PageTitle**: SEO-friendly dynamic page titles
+- **ProjectCard**: Showcases projects with links
+- **SocialLink**: Displays social media links
+- **LoadingSpinner**: Loading indicator
+
+## Building for Production
+
+To build the app for production, run:
+
+```bash
+npm run build
+# or
+yarn build
+```
+
+The built files will be in the `dist` directory, ready to be deployed.
+
+## Customization
+
+### Styling
+
+The project uses Tailwind CSS for styling. You can customize the theme in `tailwind.config.js`.
+
+### Content
+
+Update the content in the appropriate components:
+
+- Home page content: `src/components/Home.tsx`
+- Blog posts: Managed through the API service
 
 ## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
 
 ## Acknowledgments
-
-- [React](https://reactjs.org/)
-- [Tailwind CSS](https://tailwindcss.com/)
-- [Vite](https://vitejs.dev/)
-- [Railway](https://railway.app)
-- [CryptoJS](https://github.com/brix/crypto-js)
+- Created by [yudopr](https://github.com/yudopr11)
+- Built with [Vite](https://vitejs.dev/), [React](https://reactjs.org/), [TypeScript](https://www.typescriptlang.org/), and [Tailwind CSS](https://tailwindcss.com/) 
+- Deploy with [Railway](https://railway.app)
