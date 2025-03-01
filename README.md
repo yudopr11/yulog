@@ -100,21 +100,29 @@ npm run build
 
 The built files will be in the `dist` directory, ready to be deployed.
 
-## Deployment
+## Deployment to Railway
 
-### Railway
+1. **Railway Setup**
 
-This project is configured for easy deployment with [Railway](https://railway.app):
+- Create an account on [Railway](https://railway.app)
+- Install Railway CLI:
+```bash
+npm i -g @railway/cli
+```
 
-1. Create a new project on Railway
-2. Connect your GitHub repository
-3. Railway will automatically detect the Vite configuration
-4. Set the following environment variables if needed:
-   - `NODE_ENV=production`
-   - `PORT=3000` (optional)
-5. Railway will build and deploy your application automatically on each push
+2. **Login to Railway**
+```bash
+railway login
+```
 
-The `preview` script in package.json is configured to work with Railway's deployment system.
+3. **Initialize Railway Project**
+```bash
+railway init
+```
+
+4. **Configure Environment Variables**
+- Go to Railway Dashboard
+- Add all environment variables from `.env`
 
 ## Customization
 
