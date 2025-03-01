@@ -44,14 +44,10 @@ export default function Home() {
                   </h1>
                   
                   <p className="text-gray-300 mb-4 text-lg leading-relaxed">
-                    I'm a data engineer with six years of experience, specializing in project management, data
-                    analysis, and data engineering. I excel at understanding complex business requirements
-                    and creating detailed data models.
-                  </p>
-                  
-                  <p className="text-gray-300 text-lg leading-relaxed">
-                    My past project was to increase financial visibility and
-                    efficiency through meticulous data pipeline development. 🚀 💻 💡
+                  I'm a data engineer with 7 years of experience 🚀, specializing in project management, data analysis, and data engineering. 
+                  I excel at understanding complex business requirements and creating detailed data models 🤓. 
+                  In my most recent project, I increased financial visibility and efficiency through meticulous data pipeline development 📈. 
+                  Additionally, I've recently begun exploring LLM applications, such as Retrieval-Augmented Generation (RAG) and function calling 🤖, to drive innovative, data-driven solutions.
                   </p>
                 </div>
               </div>
