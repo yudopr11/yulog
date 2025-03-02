@@ -18,9 +18,10 @@ export default function PostContent({ content }: PostContentProps) {
 
   useEffect(() => {
     // Deferred execution untuk memastikan browser sudah selesai dengan rendering awal
+    // Dalam production, perlu waktu lebih lama
     const timer = setTimeout(() => {
       setIsMounted(true);
-    }, 50);
+    }, 150); // Meningkatkan delay dari 50ms menjadi 150ms
 
     return () => clearTimeout(timer);
   }, []);

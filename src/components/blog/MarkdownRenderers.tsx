@@ -15,8 +15,16 @@ function CodeBlock({ language, code }: { language: string, code: string }) {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
-    return () => setMounted(false);
+    // Add a delay to ensure SyntaxHighlighter is fully initialized
+    // Longer delay for production environment
+    const timer = setTimeout(() => {
+      setMounted(true);
+    }, 100); // Increased from immediate to 100ms
+    
+    return () => {
+      clearTimeout(timer);
+      setMounted(false);
+    };
   }, []);
 
   return (
