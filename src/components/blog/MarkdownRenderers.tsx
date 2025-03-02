@@ -71,7 +71,7 @@ const CodeBlock = ({ language, code, showLineNumbers = true }: { language: strin
   }, []);
 
   return (
-    <div id={`code-${renderKey}`}>
+    <div id={`code-${renderKey}`} className="overflow-x-auto w-full">
       <SyntaxHighlighter
         key={renderKey}
         style={vscDarkPlus}
@@ -84,6 +84,8 @@ const CodeBlock = ({ language, code, showLineNumbers = true }: { language: strin
           padding: '1.5rem',
           fontSize: '0.9rem',
           backgroundColor: 'transparent',
+          minWidth: '100%',
+          width: 'fit-content',
         }}
       >
         {code}
@@ -111,10 +113,12 @@ export const MarkdownRenderers = {
             </span>
             <CopyButton code={codeString} />
           </div>
-          <CodeBlock 
-            language={match[1]} 
-            code={codeString} 
-          />
+          <div className="overflow-x-auto">
+            <CodeBlock 
+              language={match[1]} 
+              code={codeString} 
+            />
+          </div>
         </div>
       );
     }
