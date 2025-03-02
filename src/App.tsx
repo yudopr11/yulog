@@ -5,6 +5,7 @@ import Navbar from './components/Navbar';
 import Home from './components/Home';
 import Blog from './components/Blog';
 import PostDetail from './components/blog/PostDetail';
+import NotFound from './components/NotFound';
 
 export default function App() {
   return (
@@ -17,6 +18,8 @@ export default function App() {
             <Route path="/" element={<Home />} />
             <Route path="/blog" element={<Blog />} />
             <Route path="/blog/:slug" element={<PostDetail />} />
+            {/* Catch all route for 404 pages */}
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </div>
       </Router>
