@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
@@ -13,6 +14,17 @@ interface PostContentProps {
 }
 
 export default function PostContent({ content }: PostContentProps) {
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    // Deferred execution untuk memastikan browser sudah selesai dengan rendering awal
+    const timer = setTimeout(() => {
+      setIsMounted(true);
+    }, 50);
+
+    return () => clearTimeout(timer);
+  }, []);
+
   if (!content) {
     return null;
   }
@@ -25,6 +37,7 @@ export default function PostContent({ content }: PostContentProps) {
       {/* Main Content */}
       <div className="prose prose-invert prose-lg max-w-none prose-img:rounded-lg prose-img:shadow-xl prose-a:text-primary-400 hover:prose-a:text-primary-300 prose-headings:text-white prose-p:text-gray-300">
         <ReactMarkdown
+          key={isMounted ? 'mounted' : 'initial'} // Force re-render on mount
           remarkPlugins={[
             remarkGfm, 
             remarkMath,

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
@@ -10,6 +10,48 @@ const createHeadingId = (text: string, level: number): string => {
   return `heading-${level}-${cleanedText}`;
 };
 
+// CodeBlock component with proper initialization
+function CodeBlock({ language, code }: { language: string, code: string }) {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+    return () => setMounted(false);
+  }, []);
+
+  return (
+    <div className="my-6 overflow-hidden rounded-lg bg-gray-950 shadow-xl">
+      <div className="flex items-center justify-between bg-gray-900 px-4 py-2">
+        <span className="text-xs font-semibold text-gray-400">
+          {language.toUpperCase()}
+        </span>
+        <CopyButton code={code} />
+      </div>
+      {mounted ? (
+        <SyntaxHighlighter
+          style={vscDarkPlus}
+          language={language}
+          PreTag="div"
+          showLineNumbers={true}
+          customStyle={{
+            margin: 0,
+            borderRadius: 0,
+            padding: '1.5rem',
+            fontSize: '0.9rem',
+            backgroundColor: 'transparent',
+          }}
+        >
+          {code}
+        </SyntaxHighlighter>
+      ) : (
+        <pre className="p-6 bg-gray-950 text-gray-300 overflow-x-auto">
+          <code>{code}</code>
+        </pre>
+      )}
+    </div>
+  );
+}
+
 export const MarkdownRenderers = {
   code({node, inline, className, children, ...props}: any) {
     const match = /language-(\w+)/.exec(className || '');
@@ -20,33 +62,8 @@ export const MarkdownRenderers = {
       // This removes the final newline and trims any extra whitespace
       const codeString = String(children).replace(/\n$/, '').trim();
       
-      // Custom component for code block with copy button
-      return (
-        <div className="my-6 overflow-hidden rounded-lg bg-gray-950 shadow-xl">
-          <div className="flex items-center justify-between bg-gray-900 px-4 py-2">
-            <span className="text-xs font-semibold text-gray-400">
-              {match[1].toUpperCase()}
-            </span>
-            <CopyButton code={codeString} />
-          </div>
-          <SyntaxHighlighter
-            style={vscDarkPlus}
-            language={match[1]}
-            PreTag="div"
-            showLineNumbers={true}
-            customStyle={{
-              margin: 0,
-              borderRadius: 0,
-              padding: '1.5rem',
-              fontSize: '0.9rem',
-              backgroundColor: 'transparent',
-            }}
-            {...props}
-          >
-            {codeString}
-          </SyntaxHighlighter>
-        </div>
-      );
+      // Use the new CodeBlock component
+      return <CodeBlock language={match[1]} code={codeString} />;
     }
     
     // Regular inline code
