@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import PageTitle from '../common/PageTitle';
 import { fetchBlogPostBySlug, type PostDetail } from '../../services/api';
-import ScrollToTop from 'react-scroll-to-top';
+import CustomScrollToTop from '../common/CustomScrollToTop';
 
 // Import the extracted components
 import PostHeader from './PostHeader';
@@ -90,22 +90,8 @@ export default function PostDetail() {
               <PostContent content={post.content} />
               <PostFooter post={post} />
               
-              {/* Scroll to top button */}
-              <ScrollToTop 
-                smooth 
-                className="flex items-center justify-center bg-primary-700 hover:bg-primary-600 transition-colors"
-                style={{
-                  borderRadius: '50%',
-                  width: '40px',
-                  height: '40px',
-                  bottom: '20px',
-                }}
-                component={
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-white" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clipRule="evenodd" />
-                  </svg>
-                }
-              />
+              {/* Custom Scroll to Top button */}
+              <CustomScrollToTop scrollThreshold={300} smooth={true} />
             </>
           ) : null}
         </div>
