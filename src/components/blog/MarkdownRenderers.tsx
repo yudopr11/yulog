@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
@@ -10,8 +10,58 @@ const createHeadingId = (text: string, level: number): string => {
   return `heading-${level}-${cleanedText}`;
 };
 
-// Preload syntax highlighter styles
-const preloadedStyle = vscDarkPlus;
+// CodeBlock component with visibility detection
+function CodeBlock({ language, code }: { language: string, code: string }) {
+  const [key, setKey] = useState(Date.now());
+  const isInitialMount = useRef(true);
+  
+  useEffect(() => {
+    // Skip on first render
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      return;
+    }
+    
+    // Handler for visibility change
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        // Force re-render when tab becomes visible
+        setKey(Date.now());
+      }
+    };
+    
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    
+    // Also force re-render after a short delay
+    const timer = setTimeout(() => {
+      setKey(Date.now());
+    }, 100);
+    
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      clearTimeout(timer);
+    };
+  }, []);
+  
+  return (
+    <SyntaxHighlighter
+      key={key}
+      style={vscDarkPlus}
+      language={language}
+      PreTag="div"
+      showLineNumbers={true}
+      customStyle={{
+        margin: 0,
+        borderRadius: 0,
+        padding: '1.5rem',
+        fontSize: '0.9rem',
+        backgroundColor: 'transparent',
+      }}
+    >
+      {code}
+    </SyntaxHighlighter>
+  );
+}
 
 export const MarkdownRenderers = {
   code({node, inline, className, children, ...props}: any) {
@@ -32,12 +82,7 @@ export const MarkdownRenderers = {
             </span>
             <CopyButton code={codeString} />
           </div>
-          <SyntaxHighlighterWithFallback
-            style={preloadedStyle}
-            language={match[1]}
-            codeString={codeString}
-            {...props}
-          />
+          <CodeBlock language={match[1]} code={codeString} />
         </div>
       );
     }
@@ -309,58 +354,5 @@ function CheckIcon({ className = "w-5 h-5" }: { className?: string }) {
         d="M5 13l4 4L19 7" 
       />
     </svg>
-  );
-}
-
-// Component that handles syntax highlighting with fallback
-function SyntaxHighlighterWithFallback({ style, language, codeString, ...props }: any) {
-  const [highlighterReady, setHighlighterReady] = useState(false);
-  
-  useEffect(() => {
-    // Use a small delay to ensure styles are fully loaded
-    // This is more reliable than just checking on mount
-    const timer = setTimeout(() => {
-      setHighlighterReady(true);
-    }, 100);
-    
-    return () => clearTimeout(timer);
-  }, []);
-  
-  // Always render both, but hide the one that's not active
-  return (
-    <>
-      {/* Fallback that's always rendered but hidden when highlighter is ready */}
-      <pre 
-        className="p-6 text-gray-300 overflow-x-auto text-sm bg-gray-900 whitespace-pre"
-        style={{ 
-          maxHeight: '400px',
-          display: highlighterReady ? 'none' : 'block'
-        }}
-      >
-        <code>{codeString}</code>
-      </pre>
-      
-      {/* Actual syntax highlighter that's hidden until ready */}
-      <div style={{ display: highlighterReady ? 'block' : 'none' }}>
-        <SyntaxHighlighter
-          style={style}
-          language={language}
-          PreTag="div"
-          showLineNumbers={true}
-          customStyle={{
-            margin: 0,
-            borderRadius: 0,
-            padding: '1.5rem',
-            fontSize: '0.9rem',
-            backgroundColor: 'transparent',
-            overflow: 'auto',
-            maxHeight: '400px',
-          }}
-          {...props}
-        >
-          {codeString}
-        </SyntaxHighlighter>
-      </div>
-    </>
   );
 } 

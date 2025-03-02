@@ -18,6 +18,7 @@ export default function PostDetail() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [notFound, setNotFound] = useState(false);
+  const [renderKey, setRenderKey] = useState(Date.now());
 
   useEffect(() => {
     let isMounted = true;
@@ -58,6 +59,29 @@ export default function PostDetail() {
     };
   }, [slug]);
 
+  // Force re-render when tab becomes visible
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        setRenderKey(Date.now());
+      }
+    };
+    
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    
+    // Also force re-render when the page loads via tab focus change
+    const handleFocus = () => {
+      setRenderKey(Date.now());
+    };
+    
+    window.addEventListener('focus', handleFocus);
+    
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      window.removeEventListener('focus', handleFocus);
+    };
+  }, []);
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-950 text-white">
       {/* Title with the blog post title if loaded */}
@@ -85,14 +109,14 @@ export default function PostDetail() {
           ) : notFound ? (
             <PostNotFound />
           ) : post ? (
-            <>
+            <div key={renderKey}>
               <PostHeader post={post} />
               <PostContent content={post.content} />
               <PostFooter post={post} />
               
               {/* Custom Scroll to Top button */}
               <CustomScrollToTop scrollThreshold={300} smooth={true} />
-            </>
+            </div>
           ) : null}
         </div>
       </div>
