@@ -10,55 +10,8 @@ const createHeadingId = (text: string, level: number): string => {
   return `heading-${level}-${cleanedText}`;
 };
 
-// CodeBlock component with proper initialization
-function CodeBlock({ language, code }: { language: string, code: string }) {
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    // Add a delay to ensure SyntaxHighlighter is fully initialized
-    // Longer delay for production environment
-    const timer = setTimeout(() => {
-      setMounted(true);
-    }, 100); // Increased from immediate to 100ms
-    
-    return () => {
-      clearTimeout(timer);
-      setMounted(false);
-    };
-  }, []);
-
-  return (
-    <div className="my-6 overflow-hidden rounded-lg bg-gray-950 shadow-xl">
-      <div className="flex items-center justify-between bg-gray-900 px-4 py-2">
-        <span className="text-xs font-semibold text-gray-400">
-          {language.toUpperCase()}
-        </span>
-        <CopyButton code={code} />
-      </div>
-      {mounted ? (
-        <SyntaxHighlighter
-          style={vscDarkPlus}
-          language={language}
-          PreTag="div"
-          showLineNumbers={true}
-          customStyle={{
-            margin: 0,
-            borderRadius: 0,
-            padding: '1.5rem',
-            fontSize: '0.9rem',
-            backgroundColor: 'transparent',
-          }}
-        >
-          {code}
-        </SyntaxHighlighter>
-      ) : (
-        <pre className="p-6 bg-gray-950 text-gray-300 overflow-x-auto">
-          <code>{code}</code>
-        </pre>
-      )}
-    </div>
-  );
-}
+// Preload syntax highlighter styles
+const preloadedStyle = vscDarkPlus;
 
 export const MarkdownRenderers = {
   code({node, inline, className, children, ...props}: any) {
@@ -70,8 +23,23 @@ export const MarkdownRenderers = {
       // This removes the final newline and trims any extra whitespace
       const codeString = String(children).replace(/\n$/, '').trim();
       
-      // Use the new CodeBlock component
-      return <CodeBlock language={match[1]} code={codeString} />;
+      // Custom component for code block with copy button
+      return (
+        <div className="my-6 overflow-hidden rounded-lg bg-gray-950 shadow-xl">
+          <div className="flex items-center justify-between bg-gray-900 px-4 py-2">
+            <span className="text-xs font-semibold text-gray-400">
+              {match[1].toUpperCase()}
+            </span>
+            <CopyButton code={codeString} />
+          </div>
+          <SyntaxHighlighterWithFallback
+            style={preloadedStyle}
+            language={match[1]}
+            codeString={codeString}
+            {...props}
+          />
+        </div>
+      );
     }
     
     // Regular inline code
@@ -341,5 +309,46 @@ function CheckIcon({ className = "w-5 h-5" }: { className?: string }) {
         d="M5 13l4 4L19 7" 
       />
     </svg>
+  );
+}
+
+// Component that handles syntax highlighting with fallback
+function SyntaxHighlighterWithFallback({ style, language, codeString, ...props }: any) {
+  const [isStyleLoaded, setIsStyleLoaded] = useState(false);
+  
+  useEffect(() => {
+    // Mark styles as loaded on component mount
+    setIsStyleLoaded(true);
+  }, []);
+  
+  // Fallback plain text rendering (will show while styles are loading)
+  if (!isStyleLoaded) {
+    return (
+      <pre className="p-6 text-gray-300 overflow-x-auto text-sm bg-gray-900 whitespace-pre">
+        <code>{codeString}</code>
+      </pre>
+    );
+  }
+  
+  // Render with syntax highlighting once styles are loaded
+  return (
+    <SyntaxHighlighter
+      style={style}
+      language={language}
+      PreTag="div"
+      showLineNumbers={true}
+      customStyle={{
+        margin: 0,
+        borderRadius: 0,
+        padding: '1.5rem',
+        fontSize: '0.9rem',
+        backgroundColor: 'transparent',
+        overflow: 'auto',
+        maxHeight: '400px',
+      }}
+      {...props}
+    >
+      {codeString}
+    </SyntaxHighlighter>
   );
 } 
