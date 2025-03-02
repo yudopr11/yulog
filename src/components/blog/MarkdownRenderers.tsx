@@ -103,6 +103,10 @@ export const MarkdownRenderers = {
       </div>
     );
   },
+  // Add custom renderer for horizontal rules (line separators)
+  hr: () => (
+    <hr className="my-8 border-t border-gray-700" />
+  ),
   // Custom heading renderers with IDs
   h1: ({children}: any) => {
     const id = createHeadingId(String(children), 1);
