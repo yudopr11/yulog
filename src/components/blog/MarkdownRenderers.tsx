@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
@@ -10,46 +10,38 @@ const createHeadingId = (text: string, level: number): string => {
   return `heading-${level}-${cleanedText}`;
 };
 
-// CodeBlock component with visibility detection
-function CodeBlock({ language, code }: { language: string, code: string }) {
-  const [key, setKey] = useState(Date.now());
-  const isInitialMount = useRef(true);
-  
+// Custom CodeBlock component with forced re-render capability
+const CodeBlock = ({ language, code, showLineNumbers = true }: { language: string, code: string, showLineNumbers?: boolean }) => {
+  const [renderKey, setRenderKey] = useState(0);
+
   useEffect(() => {
-    // Skip on first render
-    if (isInitialMount.current) {
-      isInitialMount.current = false;
-      return;
-    }
-    
-    // Handler for visibility change
+    // Force re-render when tab becomes visible
     const handleVisibilityChange = () => {
       if (document.visibilityState === 'visible') {
-        // Force re-render when tab becomes visible
-        setKey(Date.now());
+        setRenderKey(prev => prev + 1);
       }
     };
-    
+
     document.addEventListener('visibilitychange', handleVisibilityChange);
     
-    // Also force re-render after a short delay
+    // Also force a re-render after mount
     const timer = setTimeout(() => {
-      setKey(Date.now());
+      setRenderKey(prev => prev + 1);
     }, 100);
-    
+
     return () => {
       document.removeEventListener('visibilitychange', handleVisibilityChange);
       clearTimeout(timer);
     };
   }, []);
-  
+
   return (
     <SyntaxHighlighter
-      key={key}
+      key={renderKey}
       style={vscDarkPlus}
       language={language}
       PreTag="div"
-      showLineNumbers={true}
+      showLineNumbers={showLineNumbers}
       customStyle={{
         margin: 0,
         borderRadius: 0,
@@ -61,7 +53,7 @@ function CodeBlock({ language, code }: { language: string, code: string }) {
       {code}
     </SyntaxHighlighter>
   );
-}
+};
 
 export const MarkdownRenderers = {
   code({node, inline, className, children, ...props}: any) {
@@ -82,7 +74,10 @@ export const MarkdownRenderers = {
             </span>
             <CopyButton code={codeString} />
           </div>
-          <CodeBlock language={match[1]} code={codeString} />
+          <CodeBlock 
+            language={match[1]} 
+            code={codeString} 
+          />
         </div>
       );
     }
