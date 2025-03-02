@@ -1,4 +1,4 @@
-import type { PostDetail } from './PostDetail';
+import type { PostDetail } from '../../services/api';
 
 // Helper function to format dates
 const formatDate = (dateString: string) => {

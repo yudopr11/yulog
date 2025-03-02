@@ -1,10 +1,13 @@
 import { Link } from 'react-router-dom';
+import type { PostDetail } from '../../services/api';
 
 interface PostFooterProps {
-  title?: string;
+  post: PostDetail;
 }
 
-export default function PostFooter({ title = '' }: PostFooterProps) {
+export default function PostFooter({ post }: PostFooterProps) {
+  const title = post.title;
+
   return (
     <div className="mt-16 flex justify-between items-center border-t border-gray-800 pt-6">
       {/* Back to Blog - Left Side */}

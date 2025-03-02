@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import PageTitle from '../common/PageTitle';
-import { fetchBlogPostBySlug } from '../../services/api';
-import type { PostList } from './BlogPostCard';
+import { fetchBlogPostBySlug, type PostDetail } from '../../services/api';
 import ScrollToTop from 'react-scroll-to-top';
 
 // Import the extracted components
@@ -13,16 +12,12 @@ import LoadingSpinner from '../common/LoadingSpinner';
 import ErrorAlert from '../common/ErrorAlert';
 import PostNotFound from './PostNotFound';
 
-// Extend PostList for detail post yang lengkap
-export interface PostDetail extends PostList {
-  content: string;
-}
-
 export default function PostDetail() {
   const { slug } = useParams<{ slug: string }>();
   const [post, setPost] = useState<PostDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [notFound, setNotFound] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
@@ -32,15 +27,21 @@ export default function PostDetail() {
       
       try {
         setLoading(true);
+        setNotFound(false);
+        setError(null);
+        
         const data = await fetchBlogPostBySlug(slug);
         
         if (isMounted) {
-          setPost(data as PostDetail);
-          setError(null);
+          setPost(data);
         }
       } catch (err) {
         if (isMounted) {
-          setError('Failed to load post. Please try again later.');
+          if (err instanceof Error && err.message === 'Post not found') {
+            setNotFound(true);
+          } else {
+            setError('Failed to load post. Please try again later.');
+          }
           console.error(err);
         }
       } finally {
@@ -56,74 +57,59 @@ export default function PostDetail() {
       isMounted = false;
     };
   }, [slug]);
-  
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-950 text-white">
-      <PageTitle 
-        title={post?.title || 'Blog Post'} 
-        description={post?.excerpt || 'Blog post by yudopr'}
-      />
+      {/* Title with the blog post title if loaded */}
+      {post ? (
+        <PageTitle 
+          title={post.title} 
+          description={post.excerpt}
+        />
+      ) : (
+        <PageTitle 
+          title={notFound ? "Post Not Found" : "Loading Post..."} 
+          description="Blog post detail"
+        />
+      )}
       
       {/* Background pattern */}
       <div className="absolute inset-0 bg-grid-pattern opacity-5 pointer-events-none"></div>
       
       <div className="px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto py-12 relative z-10">
-          {error && <ErrorAlert message={error} />}
-          
           {loading ? (
             <LoadingSpinner />
+          ) : error ? (
+            <ErrorAlert message={error} />
+          ) : notFound ? (
+            <PostNotFound />
           ) : post ? (
             <>
-              <article className="prose prose-invert prose-lg max-w-none">
-                <PostHeader post={post} />
-                <PostContent content={post.content} excerpt={post.excerpt} />
-              </article>
+              <PostHeader post={post} />
+              <PostContent content={post.content} />
+              <PostFooter post={post} />
               
-              <PostFooter title={post.title} />
+              {/* Scroll to top button */}
+              <ScrollToTop 
+                smooth 
+                className="flex items-center justify-center bg-primary-700 hover:bg-primary-600 transition-colors"
+                style={{
+                  borderRadius: '50%',
+                  width: '40px',
+                  height: '40px',
+                  bottom: '20px',
+                }}
+                component={
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-white" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clipRule="evenodd" />
+                  </svg>
+                }
+              />
             </>
-          ) : (
-            <PostNotFound />
-          )}
+          ) : null}
         </div>
       </div>
-      
-      {/* Back to Top Button */}
-      <ScrollToTop 
-        smooth 
-        component={<ArrowUpIcon />} 
-        style={{
-          backgroundColor: '#2563eb', // primary blue color
-          borderRadius: '50%',
-          boxShadow: '0 4px 10px rgba(0, 0, 0, 0.3)',
-          color: 'white',
-          width: '40px',
-          height: '40px',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          zIndex: 20,
-          bottom: '1.5rem',
-          right: '1.5rem'
-        }}
-      />
     </div>
   );
-}
-
-// Arrow Up Icon Component
-const ArrowUpIcon = () => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="24"
-    height="24"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  >
-    <path d="M12 19V5M5 12l7-7 7 7" />
-  </svg>
-); 
+} 

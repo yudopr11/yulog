@@ -7,7 +7,7 @@ A modern, responsive personal blog and portfolio site built with React, TypeScri
 
 ## Features
 
-- 🔍 **Search functionality** - Find blog posts easily
+- 🔍 **Advanced Search** - Find posts with both keyword and AI-powered semantic search
 - 📱 **Fully responsive design** - Looks great on all devices
 - 🎨 **Dark theme** - Easy on the eyes
 - 📝 **Rich Markdown support** - Write content with formatting, code blocks, and more
@@ -47,12 +47,41 @@ cd yulog
 npm install
 ```
 
-3. Start the development server
+3. Create a .env file based on .env.example
+```bash
+cp .env.example .env
+```
+
+4. Start the development server
 ```bash
 npm run dev
 ```
 
-4. Open your browser and visit `http://localhost:300`
+5. Open your browser and visit `http://localhost:300`
+
+## Environment Configuration
+
+You can customize the app behavior using environment variables:
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| VITE_API_BASE_URL | URL of the API backend | http://localhost:8000 |
+| VITE_USE_RAG_DEFAULT | Enable/disable semantic search by default | true |
+
+## Smart Search with RAG
+
+Yulog includes a powerful search feature using Retrieval Augmented Generation (RAG) technology:
+
+- **Semantic Search**: Intelligently matches content based on meaning, not just keywords
+- **Toggle Option**: Users can switch between basic keyword search and AI-powered search
+- **Configurable**: Enable/disable RAG by default via environment variables
+
+The search feature works by:
+1. Converting search queries into semantic embeddings using AI
+2. Finding content that matches the intent of the search, even when exact keywords aren't present
+3. Ranking results by semantic relevance to provide the most meaningful matches
+
+This provides a significantly better search experience than traditional keyword-based searching.
 
 ## Project Structure
 

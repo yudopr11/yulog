@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import PageTitle from './common/PageTitle';
 import BlogPostCard, { type PostList } from './blog/BlogPostCard';
-import { fetchBlogPosts } from '../services/api';
+import { fetchBlogPosts, USE_RAG_DEFAULT } from '../services/api';
+
 
 export default function Blog() {
   // Default posts
@@ -9,18 +10,21 @@ export default function Blog() {
   const [defaultLoading, setDefaultLoading] = useState(true);
   const [defaultSkip, setDefaultSkip] = useState(0);
   const [hasMoreDefault, setHasMoreDefault] = useState(true);
+  const [totalDefault, setTotalDefault] = useState(0);
   
   // Search results
   const [searchPosts, setSearchPosts] = useState<PostList[]>([]);
   const [searchLoading, setSearchLoading] = useState(false);
   const [searchSkip, setSearchSkip] = useState(0);
   const [hasMoreSearch, setHasMoreSearch] = useState(true);
+  const [totalSearch, setTotalSearch] = useState(0);
   
   // Shared state
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
+  const [useRag, setUseRag] = useState<boolean>(USE_RAG_DEFAULT);
   const limit = 3; // Posts per page
-
+  
   // Effect for loading default posts (when search is empty)
   useEffect(() => {
     let isMounted = true;
@@ -34,13 +38,13 @@ export default function Blog() {
         
         if (isMounted) {
           if (defaultSkip === 0) {
-            setDefaultPosts(data);
+            setDefaultPosts(data.items);
           } else {
-            setDefaultPosts(prevPosts => [...prevPosts, ...data]);
+            setDefaultPosts(prevPosts => [...prevPosts, ...data.items]);
           }
           
-          // Only show "Load More" if we received exactly the limit number of posts
-          setHasMoreDefault(data.length >= limit);
+          setTotalDefault(data.total_count);
+          setHasMoreDefault(data.has_more);
           setError(null);
         }
       } catch (err) {
@@ -72,17 +76,17 @@ export default function Blog() {
     async function loadSearchResults() {
       try {
         setSearchLoading(true);
-        const data = await fetchBlogPosts(searchSkip, limit, searchTerm);
+        const data = await fetchBlogPosts(searchSkip, limit, searchTerm, undefined, 'published', useRag);
         
         if (isMounted) {
           if (searchSkip === 0) {
-            setSearchPosts(data);
+            setSearchPosts(data.items);
           } else {
-            setSearchPosts(prevPosts => [...prevPosts, ...data]);
+            setSearchPosts(prevPosts => [...prevPosts, ...data.items]);
           }
           
-          // Only show "Load More" if we received exactly the limit number of posts
-          setHasMoreSearch(data.length >= limit);
+          setTotalSearch(data.total_count);
+          setHasMoreSearch(data.has_more);
           setError(null);
         }
       } catch (err) {
@@ -107,7 +111,7 @@ export default function Blog() {
       isMounted = false;
       clearTimeout(timeoutId);
     };
-  }, [searchSkip, limit, searchTerm]);
+  }, [searchSkip, limit, searchTerm, useRag]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -128,6 +132,13 @@ export default function Blog() {
     } else {
       // Reset search pagination when input changes
       setSearchSkip(0);
+    }
+  };
+
+  const handleRagToggle = () => {
+    setUseRag(!useRag);
+    if (searchTerm) {
+      setSearchSkip(0); // Reset search pagination when changing search mode
     }
   };
 
@@ -171,10 +182,10 @@ export default function Blog() {
       
       <div className="px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto py-12 relative z-10">
-          {/* Search Bar */}
+          {/* Search Bar with RAG toggle */}
           <div className="pb-6">
             <form onSubmit={handleSearch}>
-              <div className="relative">
+              <div className="relative mb-3">
                 <input
                   type="text"
                   value={searchTerm}
@@ -190,6 +201,31 @@ export default function Blog() {
                 >
                   <path fillRule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clipRule="evenodd" />
                 </svg>
+              </div>
+              
+              {/* RAG toggle switch */}
+              <div className="flex items-center justify-end">
+                <span className="text-sm text-gray-400 mr-2">
+                  {useRag ? 'Smart Search' : 'Basic Search'}
+                </span>
+                <button 
+                  type="button"
+                  onClick={handleRagToggle}
+                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-300 focus:outline-none ${useRag ? 'bg-primary-600' : 'bg-gray-700'}`}
+                  aria-pressed={useRag}
+                  aria-labelledby="rag-toggle-label"
+                >
+                  <span className="sr-only">Use semantic search</span>
+                  <span 
+                    className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform duration-300 ${useRag ? 'translate-x-6' : 'translate-x-1'}`}
+                  />
+                </button>
+                <span 
+                  id="rag-toggle-label" 
+                  className="ml-2 text-xs text-gray-500"
+                >
+                  AI-powered search
+                </span>
               </div>
             </form>
           </div>
@@ -219,6 +255,11 @@ export default function Blog() {
                   ) : (
                     <>
                       {renderPostList(defaultPosts)}
+                      
+                      {/* Show post count and total */}
+                      <div className="mt-4 text-sm text-gray-500 text-center">
+                        Showing {defaultPosts.length} of {totalDefault} posts
+                      </div>
                       
                       {/* Load More Default Posts - only show if no error, posts exist, and hasMore is true */}
                       {!error && defaultPosts.length > 0 && hasMoreDefault && (
@@ -273,6 +314,9 @@ export default function Blog() {
                     <>
                       <div className="mb-6">
                         <h2 className="text-xl font-medium">Search results for "{searchTerm}"</h2>
+                        <p className="text-sm text-gray-500 mt-1">
+                          Found {totalSearch} results using {useRag ? 'semantic search' : 'keyword search'}
+                        </p>
                       </div>
                       {renderPostList(searchPosts)}
                       
