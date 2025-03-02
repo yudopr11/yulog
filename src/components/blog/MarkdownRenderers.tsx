@@ -10,48 +10,85 @@ const createHeadingId = (text: string, level: number): string => {
   return `heading-${level}-${cleanedText}`;
 };
 
-// Custom CodeBlock component with forced re-render capability
+// Custom CodeBlock component with enhanced re-render capability
 const CodeBlock = ({ language, code, showLineNumbers = true }: { language: string, code: string, showLineNumbers?: boolean }) => {
   const [renderKey, setRenderKey] = useState(0);
+  const [hasRendered, setHasRendered] = useState(false);
+
+  // Fungsi untuk memaksa re-render
+  const forceRerender = () => {
+    setRenderKey(prev => prev + 1);
+    setHasRendered(true);
+  };
 
   useEffect(() => {
-    // Force re-render when tab becomes visible
+    // Daftar event listener untuk berbagai kondisi yang memungkinkan
     const handleVisibilityChange = () => {
       if (document.visibilityState === 'visible') {
-        setRenderKey(prev => prev + 1);
+        forceRerender();
       }
     };
 
-    document.addEventListener('visibilitychange', handleVisibilityChange);
+    const handleFocus = () => {
+      forceRerender();
+    };
+
+    // Set up intersection observer untuk memicu re-render saat elemen terlihat
+    let observer: IntersectionObserver;
+    const currentRef = document.getElementById(`code-${renderKey}`);
     
-    // Also force a re-render after mount
-    const timer = setTimeout(() => {
-      setRenderKey(prev => prev + 1);
-    }, 100);
+    if (currentRef && window.IntersectionObserver) {
+      observer = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting) {
+          forceRerender();
+        }
+      }, { threshold: 0.1 });
+      
+      observer.observe(currentRef);
+    }
+
+    // Daftarkan event listener
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    window.addEventListener('focus', handleFocus);
 
     return () => {
       document.removeEventListener('visibilitychange', handleVisibilityChange);
-      clearTimeout(timer);
+      window.removeEventListener('focus', handleFocus);
+      if (observer && currentRef) {
+        observer.disconnect();
+      }
     };
+  }, [hasRendered, renderKey]);
+
+  // Monitor resize events termasuk tab restore
+  useEffect(() => {
+    const handleResize = () => {
+      forceRerender();
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   return (
-    <SyntaxHighlighter
-      key={renderKey}
-      style={vscDarkPlus}
-      language={language}
-      PreTag="div"
-      showLineNumbers={showLineNumbers}
-      customStyle={{
-        margin: 0,
-        borderRadius: 0,
-        padding: '1.5rem',
-        fontSize: '0.9rem',
-        backgroundColor: 'transparent',
-      }}
-    >
-      {code}
-    </SyntaxHighlighter>
+    <div id={`code-${renderKey}`}>
+      <SyntaxHighlighter
+        key={renderKey}
+        style={vscDarkPlus}
+        language={language}
+        PreTag="div"
+        showLineNumbers={showLineNumbers}
+        customStyle={{
+          margin: 0,
+          borderRadius: 0,
+          padding: '1.5rem',
+          fontSize: '0.9rem',
+          backgroundColor: 'transparent',
+        }}
+      >
+        {code}
+      </SyntaxHighlighter>
+    </div>
   );
 };
 
