@@ -59,15 +59,6 @@ npm run dev
 
 5. Open your browser and visit `http://localhost:300`
 
-## Environment Configuration
-
-You can customize the app behavior using environment variables:
-
-| Variable | Description | Default |
-|----------|-------------|---------|
-| VITE_API_BASE_URL | URL of the API backend | http://localhost:8000 |
-| VITE_USE_RAG_DEFAULT | Enable/disable semantic search by default | true |
-
 ## Smart Search with RAG
 
 Yulog includes a powerful search feature using Retrieval Augmented Generation (RAG) technology:
