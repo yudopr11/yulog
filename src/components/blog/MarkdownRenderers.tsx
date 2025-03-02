@@ -314,41 +314,53 @@ function CheckIcon({ className = "w-5 h-5" }: { className?: string }) {
 
 // Component that handles syntax highlighting with fallback
 function SyntaxHighlighterWithFallback({ style, language, codeString, ...props }: any) {
-  const [isStyleLoaded, setIsStyleLoaded] = useState(false);
+  const [highlighterReady, setHighlighterReady] = useState(false);
   
   useEffect(() => {
-    // Mark styles as loaded on component mount
-    setIsStyleLoaded(true);
+    // Use a small delay to ensure styles are fully loaded
+    // This is more reliable than just checking on mount
+    const timer = setTimeout(() => {
+      setHighlighterReady(true);
+    }, 100);
+    
+    return () => clearTimeout(timer);
   }, []);
   
-  // Fallback plain text rendering (will show while styles are loading)
-  if (!isStyleLoaded) {
-    return (
-      <pre className="p-6 text-gray-300 overflow-x-auto text-sm bg-gray-900 whitespace-pre">
+  // Always render both, but hide the one that's not active
+  return (
+    <>
+      {/* Fallback that's always rendered but hidden when highlighter is ready */}
+      <pre 
+        className="p-6 text-gray-300 overflow-x-auto text-sm bg-gray-900 whitespace-pre"
+        style={{ 
+          maxHeight: '400px',
+          display: highlighterReady ? 'none' : 'block'
+        }}
+      >
         <code>{codeString}</code>
       </pre>
-    );
-  }
-  
-  // Render with syntax highlighting once styles are loaded
-  return (
-    <SyntaxHighlighter
-      style={style}
-      language={language}
-      PreTag="div"
-      showLineNumbers={true}
-      customStyle={{
-        margin: 0,
-        borderRadius: 0,
-        padding: '1.5rem',
-        fontSize: '0.9rem',
-        backgroundColor: 'transparent',
-        overflow: 'auto',
-        maxHeight: '400px',
-      }}
-      {...props}
-    >
-      {codeString}
-    </SyntaxHighlighter>
+      
+      {/* Actual syntax highlighter that's hidden until ready */}
+      <div style={{ display: highlighterReady ? 'block' : 'none' }}>
+        <SyntaxHighlighter
+          style={style}
+          language={language}
+          PreTag="div"
+          showLineNumbers={true}
+          customStyle={{
+            margin: 0,
+            borderRadius: 0,
+            padding: '1.5rem',
+            fontSize: '0.9rem',
+            backgroundColor: 'transparent',
+            overflow: 'auto',
+            maxHeight: '400px',
+          }}
+          {...props}
+        >
+          {codeString}
+        </SyntaxHighlighter>
+      </div>
+    </>
   );
 } 
