@@ -29,13 +29,6 @@ export default defineConfig(({ mode }) => {
     build: {
       chunkSizeWarningLimit: 1200, // Increased slightly while we optimize
       target: 'esnext', // Optimizes output for modern browsers
-      minify: 'terser', // More aggressive minification
-      terserOptions: {
-        compress: {
-          drop_console: true, // Remove console logs
-          drop_debugger: true // Remove debugger statements
-        }
-      },
       rollupOptions: {
         output: {
           // Enable default vendor chunk splitting
