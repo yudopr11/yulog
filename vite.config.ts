@@ -41,7 +41,7 @@ export default defineConfig(({ mode }) => {
           // Enable default vendor chunk splitting
           manualChunks: {
             'react-core': ['react', 'react-dom'],
-            'router': ['react-router-dom', '@remix-run/router'],
+            'router': ['react-router-dom'],
             'ui-components': ['@headlessui/react', '@heroicons/react'],
             'markdown-processing': ['react-markdown', 'rehype-katex', 'rehype-raw', 'remark-gfm', 'remark-math', 'remark-toc', 'katex'],
             'utilities': ['axios', 'react-hot-toast', 'crypto-js'],
