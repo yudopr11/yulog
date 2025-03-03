@@ -1,13 +1,22 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { HelmetProvider } from 'react-helmet-async';
+import { lazy, Suspense } from 'react';
 import Navbar from './components/Navbar';
-import Home from './components/Home';
-import Blog from './components/Blog';
-import PostDetail from './components/blog/PostDetail';
-import NotFound from './components/NotFound';
 import SwipeHandler from './components/SwipeHandler';
-import SwipeIndicator from './components/SwipeIndicator';
+
+// Lazy load components for code splitting
+const Home = lazy(() => import('./components/Home'));
+const Blog = lazy(() => import('./components/Blog'));
+const PostDetail = lazy(() => import('./components/blog/PostDetail'));
+const NotFound = lazy(() => import('./components/NotFound'));
+
+// Loading component
+const LoadingFallback = () => (
+  <div className="flex justify-center items-center h-[70vh]">
+    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-400"></div>
+  </div>
+);
 
 export default function App() {
   return (
@@ -17,15 +26,16 @@ export default function App() {
         <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-950 text-white">
           <Navbar />
           <SwipeHandler>
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/blog" element={<Blog />} />
-              <Route path="/blog/:slug" element={<PostDetail />} />
-              {/* Catch all route for 404 pages */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
+            <Suspense fallback={<LoadingFallback />}>
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/blog" element={<Blog />} />
+                <Route path="/blog/:slug" element={<PostDetail />} />
+                {/* Catch all route for 404 pages */}
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </Suspense>
           </SwipeHandler>
-          <SwipeIndicator />
         </div>
       </Router>
     </HelmetProvider>

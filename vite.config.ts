@@ -15,7 +15,9 @@ export default defineConfig(({ mode }) => {
   }
 
   return {
-    plugins: [react()],
+    plugins: [
+      react()
+    ],
     server: {
       port: 3000,
     },
@@ -25,13 +27,25 @@ export default defineConfig(({ mode }) => {
       allowedHosts
     },
     build: {
-      chunkSizeWarningLimit: 1000, // Increase chunk size limit to 1000kb
+      chunkSizeWarningLimit: 1200, // Increased slightly while we optimize
+      target: 'esnext', // Optimizes output for modern browsers
+      minify: 'terser', // More aggressive minification
+      terserOptions: {
+        compress: {
+          drop_console: true, // Remove console logs
+          drop_debugger: true // Remove debugger statements
+        }
+      },
       rollupOptions: {
         output: {
+          // Enable default vendor chunk splitting
           manualChunks: {
-            'react-vendor': ['react', 'react-dom', 'react-router-dom'],
-            'ui-vendor': ['@headlessui/react', '@heroicons/react'],
-            'utils-vendor': ['axios']
+            'react-core': ['react', 'react-dom'],
+            'router': ['react-router-dom', '@remix-run/router'],
+            'ui-components': ['@headlessui/react', '@heroicons/react'],
+            'markdown-processing': ['react-markdown', 'rehype-katex', 'rehype-raw', 'remark-gfm', 'remark-math', 'remark-toc', 'katex'],
+            'utilities': ['axios', 'react-hot-toast', 'crypto-js'],
+            'syntax-highlighting': ['react-syntax-highlighter']
           }
         }
       }
