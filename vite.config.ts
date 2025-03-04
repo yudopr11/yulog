@@ -38,7 +38,7 @@ export default defineConfig(({ mode }) => {
             'ui-components': ['@headlessui/react', '@heroicons/react'],
             'markdown-processing': ['react-markdown', 'rehype-katex', 'rehype-raw', 'remark-gfm', 'remark-math', 'remark-toc', 'katex'],
             'utilities': ['axios', 'react-hot-toast', 'crypto-js'],
-            'syntax-highlighting': ['react-syntax-highlighter']
+            'syntax-highlighting': ['shiki']
           }
         }
       }
