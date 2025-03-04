@@ -368,12 +368,16 @@ export const MarkdownRenderers = {
     );
   },
   // Custom blockquote renderer with elegant styling
-  blockquote({children}: any) {
+  blockquote({children}: {children: React.ReactNode}) {
     // Check if this is a nested blockquote by looking at the parent elements
     const isNested = React.Children.toArray(children).some(
-      child => React.isValidElement(child) && child.props?.children?.some?.(
-        (grandChild: any) => React.isValidElement(grandChild) && grandChild.type === 'blockquote'
-      )
+      child => {
+        if (!React.isValidElement(child)) return false;
+        const childProps = child.props as {children?: React.ReactNode};
+        return React.Children.toArray(childProps.children).some(
+          grandChild => React.isValidElement(grandChild) && grandChild.type === 'blockquote'
+        );
+      }
     );
 
     if (isNested) {
