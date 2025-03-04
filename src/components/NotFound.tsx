@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Helmet } from 'react-helmet-async';
+import { usePageTitle } from '../hooks/usePageTitle';
 
 const NotFound: React.FC = () => {
   // State untuk animasi pulse
   const [isPulsing, setIsPulsing] = useState(false);
+  
+  // Set page title
+  usePageTitle('404 - Page Not Found');
   
   // Efek untuk menganimasikan pulse setiap beberapa detik
   useEffect(() => {
@@ -18,10 +21,6 @@ const NotFound: React.FC = () => {
 
   return (
     <div className="container mx-auto px-4 py-16">
-      <Helmet>
-        <title>404 - Page Not Found</title>
-      </Helmet>
-      
       <div className="flex flex-col items-center justify-center min-h-[60vh] text-center">
         {/* Background glow effect */}
         <div className={`absolute w-64 h-64 rounded-full bg-blue-500/10 blur-3xl transition-opacity duration-1000 ${isPulsing ? 'opacity-70' : 'opacity-20'}`}></div>

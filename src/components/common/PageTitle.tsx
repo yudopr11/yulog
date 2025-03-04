@@ -1,4 +1,4 @@
-import { Helmet } from 'react-helmet-async';
+import { usePageTitle } from '../../hooks/usePageTitle';
 
 interface PageTitleProps {
   title: string;
@@ -10,12 +10,6 @@ interface PageTitleProps {
  * Format: "yudopr | {title}"
  */
 export default function PageTitle({ title, description }: PageTitleProps) {
-  const fullTitle = title ? `yudopr | ${title}` : 'yudopr';
-  
-  return (
-    <Helmet>
-      <title>{fullTitle}</title>
-      {description && <meta name="description" content={description} />}
-    </Helmet>
-  );
+  usePageTitle(title, description);
+  return null;
 } 
