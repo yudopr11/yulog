@@ -64,6 +64,11 @@ export default function Home() {
                   description="Collection of APIs for my project."
                 />
                 <ProjectCard 
+                  to="https://github.com/yudopr11/cuan" 
+                  title="Cuan" 
+                  description="Web-based personal financial management application."
+                />
+                <ProjectCard 
                   to="https://github.com/yudopr11/ngakak" 
                   title="Ngakak" 
                   description="Web-based bill splitter using LLM."
