@@ -3,7 +3,8 @@
 A modern, responsive personal blog and portfolio site built with React, TypeScript and Tailwind CSS.
 
 <!-- Note: Add a screenshot of your site here -->
-<!-- ![Yulog Screenshot](public/screenshot.png) -->
+![Yulog Screenshot](Screenshot_8-3-2025_211332.jpeg)
+![Yulog Screenshot](Screenshot_8-3-2025_211340.jpeg)
 
 ## Features
 
