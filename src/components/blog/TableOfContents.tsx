@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Bars3BottomLeftIcon, ChevronDownIcon } from '@heroicons/react/24/outline';
 
 type HeadingType = {
   id: string;
@@ -134,36 +135,16 @@ const TableOfContents: React.FC<TableOfContentsProps> = ({ content }) => {
         onClick={toggleCollapsed}
       >
         <h2 className="text-lg font-bold text-white flex items-center">
-          <svg 
-            xmlns="http://www.w3.org/2000/svg" 
+          <Bars3BottomLeftIcon 
             className="h-5 w-5 mr-2" 
-            fill="none" 
-            viewBox="0 0 24 24" 
             stroke="currentColor"
-          >
-            <path 
-              strokeLinecap="round" 
-              strokeLinejoin="round" 
-              strokeWidth={2} 
-              d="M4 6h16M4 12h16M4 18h7" 
-            />
-          </svg>
+          />
           Table of Contents
         </h2>
-        <svg 
-          xmlns="http://www.w3.org/2000/svg" 
+        <ChevronDownIcon 
           className={`h-5 w-5 transform transition-transform duration-300 ${isCollapsed ? '' : 'rotate-180'}`} 
-          fill="none" 
-          viewBox="0 0 24 24" 
           stroke="currentColor"
-        >
-          <path 
-            strokeLinecap="round" 
-            strokeLinejoin="round" 
-            strokeWidth={2} 
-            d="M19 9l-7 7-7-7" 
-          />
-        </svg>
+        />
       </div>
       
       <div className={`transition-all duration-300 ${isCollapsed ? 'max-h-0' : 'max-h-[400px]'} overflow-y-auto`}>

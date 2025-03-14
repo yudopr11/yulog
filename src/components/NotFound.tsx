@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { usePageTitle } from '../hooks/usePageTitle';
+import { ArrowLeftIcon } from '@heroicons/react/24/outline';
 
 const NotFound: React.FC = () => {
   // State untuk animasi pulse
@@ -51,9 +52,10 @@ const NotFound: React.FC = () => {
           to="/" 
           className="inline-flex items-center text-gray-400 hover:text-primary-400 border border-gray-700 px-5 py-2 rounded-md hover:border-blue-400 hover:border-opacity-70 transition-all duration-300 group"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 transition-transform group-hover:-translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-          </svg>
+          <ArrowLeftIcon 
+            className="h-5 w-5 mr-2 transition-transform group-hover:-translate-x-1" 
+            stroke="currentColor"
+          />
           Back to Home
         </Link>
       </div>

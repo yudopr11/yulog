@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { UserIcon, CalendarIcon, ClockIcon, ArrowRightIcon } from '@heroicons/react/20/solid';
 
 // Author interface berdasarkan UserBase di openapi.json
 export interface UserBase {
@@ -50,9 +51,7 @@ export default function BlogPostCard({ post }: BlogPostCardProps) {
       <div className="flex flex-wrap items-center text-sm text-gray-400 mb-3 gap-2">
         {post.author && (
           <span className="flex items-center">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
-              <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
-            </svg>
+            <UserIcon className="h-4 w-4 mr-1" />
             {post.author.username}
           </span>
         )}
@@ -61,9 +60,7 @@ export default function BlogPostCard({ post }: BlogPostCardProps) {
         
         {formattedDate && (
           <span className="flex items-center">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
-              <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd" />
-            </svg>
+            <CalendarIcon className="h-4 w-4 mr-1" />
             {formattedDate}
           </span>
         )}
@@ -71,9 +68,7 @@ export default function BlogPostCard({ post }: BlogPostCardProps) {
         {(post.author || formattedDate) && <span className="mx-1">•</span>}
         
         <span className="flex items-center">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
-            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
-          </svg>
+          <ClockIcon className="h-4 w-4 mr-1" />
           {post.reading_time} min read
         </span>
       </div>
@@ -101,9 +96,7 @@ export default function BlogPostCard({ post }: BlogPostCardProps) {
           className="inline-flex items-center text-gray-400 hover:text-primary-400 transition-colors group"
         >
           <span className="group-hover:underline">Read Full Article</span>
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1 transition-transform group-hover:translate-x-1" viewBox="0 0 20 20" fill="currentColor">
-            <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
-          </svg>
+          <ArrowRightIcon className="h-4 w-4 ml-1 transition-transform group-hover:translate-x-1" />
         </Link>
       </div>
     </div>
