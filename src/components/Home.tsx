@@ -85,27 +85,29 @@ export default function Home() {
               
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <ProjectCard 
-                  to="https://github.com/yudopr11/yupi" 
+                  repoLink="https://github.com/yudopr11/yupi" 
                   title="Yupi" 
                   description="Collection of APIs for my project."
                 />
                 <ProjectCard 
-                  to="https://github.com/yudopr11/cuan" 
+                  repoLink="https://github.com/yudopr11/cuan" 
+                  demoLink="https://cuan.yudopr.dev"
                   title="Cuan" 
                   description="Web-based personal financial management application."
                 />
                 <ProjectCard 
-                  to="https://github.com/yudopr11/ngakak" 
+                  repoLink="https://github.com/yudopr11/ngakak" 
+                  demoLink="https://ngakak.yudopr.dev"
                   title="Ngakak" 
                   description="Web-based bill splitter using LLM."
                 />
                 <ProjectCard 
-                  to="https://github.com/yudopr11/latihan-matematika" 
+                  repoLink="https://github.com/yudopr11/latihan-matematika"
                   title="Latihan Matematika" 
                   description="Web-based math quiz application for high school students."
                 />
                 <ProjectCard 
-                  to="https://youtube.com/playlist?list=PLNxndFN0gO42oBYLVsXBrTsKW7aAPEbQP&si=l5crWKP-WnAFoKhr" 
+                  repoLink="https://youtube.com/playlist?list=PLNxndFN0gO42oBYLVsXBrTsKW7aAPEbQP&si=l5crWKP-WnAFoKhr" 
                   title="Belajar SQL" 
                   description="Video tutorials and SQL exercises for beginners."
                 />
