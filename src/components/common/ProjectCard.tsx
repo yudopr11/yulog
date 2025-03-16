@@ -22,7 +22,7 @@ export default function ProjectCard({
   const cardContent = (
     <>
       <h3 className="text-xl font-semibold mb-2 text-white">{title}</h3>
-      <p className={`text-gray-400 ${demoLink ? 'mb-14' : 'mb-0'}`}>{description}</p>
+      <p className={`text-gray-400 ${demoLink ? 'mb-10' : 'mb-0'}`}>{description}</p>
       
       {demoLink && (
         <div className="absolute bottom-6 right-6">
