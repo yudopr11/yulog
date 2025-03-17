@@ -13,14 +13,25 @@ export default function ProjectCard({
   description: string 
 }) {
   // Common styles for the card
-  const cardStyles = "p-6 bg-gradient-to-br from-[#192734] to-[#0c141d] hover:from-[#1e2f41] hover:to-[#101b25] rounded-lg transition-all duration-300 flex flex-col relative";
+  const cardStyles = "p-6 bg-gradient-to-br from-[#192734] to-[#0c141d] hover:from-[#1e2f41] hover:to-[#101b25] rounded-lg transition-all duration-300 flex flex-col relative cursor-pointer";
   
   // Button styles for CTAs
-  const buttonStyles = "px-4 py-2 bg-gradient-to-r from-[#1e2f41] to-[#101b25] hover:from-[#283d52] hover:to-[#192838] rounded-md text-white text-sm font-medium transition-all duration-300";
+  const buttonStyles = "px-3 py-2 bg-gradient-to-r from-[#1e2f41] to-[#101b25] hover:from-[#283d52] hover:to-[#192838] rounded text-white text-sm font-medium transition-all duration-300";
   
-  // Create card content
-  const cardContent = (
-    <>
+  // Handler for card click (repo link)
+  const handleCardClick = () => {
+    if (repoLink) {
+      window.open(repoLink, '_blank', 'noopener,noreferrer');
+    }
+  };
+  
+  return (
+    <div 
+      className={cardStyles}
+      onClick={handleCardClick}
+      role={repoLink ? "link" : undefined}
+      aria-label={repoLink ? `View ${title} repository` : undefined}
+    >
       <h3 className="text-xl font-semibold mb-2 text-white">{title}</h3>
       <p className={`text-gray-400 ${demoLink ? 'mb-10' : 'mb-0'}`}>{description}</p>
       
@@ -47,27 +58,6 @@ export default function ProjectCard({
           )}
         </div>
       )}
-    </>
-  );
-  
-  // If repo link exists, make the card clickable to the repo
-  if (repoLink) {
-    return (
-      <a 
-        href={repoLink}
-        target="_blank"
-        rel="noopener noreferrer"
-        className={cardStyles}
-      >
-        {cardContent}
-      </a>
-    );
-  }
-  
-  // If only demo link exists, make card non-clickable
-  return (
-    <div className={cardStyles}>
-      {cardContent}
     </div>
   );
 }
