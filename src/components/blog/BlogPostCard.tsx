@@ -3,14 +3,14 @@ import { UserIcon, CalendarIcon, ClockIcon, ArrowRightIcon } from '@heroicons/re
 
 // Author interface berdasarkan UserBase di openapi.json
 export interface UserBase {
-  id: number;
+  user_id: number;
   username: string;
   email: string;
 }
 
 // PostList interface berdasarkan openapi.json
 export interface PostList {
-  id: number;
+  post_id: number;
   uuid: string;
   title: string;
   excerpt: string;
@@ -80,7 +80,7 @@ export default function BlogPostCard({ post }: BlogPostCardProps) {
         <div className="flex flex-wrap gap-2 mb-4">
           {post.tags.map((tag, index) => (
             <span 
-              key={`${post.id}-${tag}-${index}`} 
+              key={`${post.post_id}-${tag}-${index}`} 
               className="px-2 py-1 bg-gray-700 text-xs rounded-md text-gray-300"
             >
               {tag}

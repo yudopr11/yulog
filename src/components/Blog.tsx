@@ -157,7 +157,7 @@ export default function Blog() {
       <div className="space-y-8">
         {posts.map((post, index) => (
           <div 
-            key={post.id} 
+            key={post.post_id} 
             className="animate-slide-in" 
             style={{ 
               animationDelay: `${index * 0.1}s`,
