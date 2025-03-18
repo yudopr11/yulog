@@ -3,6 +3,7 @@ import { Toaster } from 'react-hot-toast';
 import { lazy, Suspense } from 'react';
 import Navbar from './components/Navbar';
 import SwipeHandler from './components/SwipeHandler';
+import { useLocation } from 'react-router-dom';
 
 // Lazy load components for code splitting
 const Home = lazy(() => import('./components/Home'));
@@ -17,23 +18,61 @@ const LoadingFallback = () => (
   </div>
 );
 
+// Component to conditionally render SwipeHandler
+const RouteWrapper = ({ children }: { children: React.ReactNode }) => {
+  const location = useLocation();
+  const pathParts = location.pathname.split('/').filter(Boolean);
+  
+  // Only use SwipeHandler on top-level routes (no sub-paths)
+  if (pathParts.length <= 1) {
+    return <SwipeHandler>{children}</SwipeHandler>;
+  }
+  
+  return <>{children}</>;
+};
+
 export default function App() {
   return (
     <Router>
-      <Toaster position="top-center" />
+      <Toaster position="top-right" 
+        toastOptions={{
+          style: {
+            background: '#1e293b',
+            color: '#f8fafc',
+            border: '1px solid #475569'
+          },
+          success: {
+            iconTheme: {
+              primary: '#30BDF2',
+              secondary: '#1e293b',
+            },
+          },
+          error: {
+            iconTheme: {
+              primary: '#ef4444',
+              secondary: '#1e293b',
+            },
+          },
+        }} />
       <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-950 text-white">
         <Navbar />
-        <SwipeHandler>
-          <Suspense fallback={<LoadingFallback />}>
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/blog" element={<Blog />} />
-              <Route path="/blog/:slug" element={<PostDetail />} />
-              {/* Catch all route for 404 pages */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </Suspense>
-        </SwipeHandler>
+        <Suspense fallback={<LoadingFallback />}>
+          <Routes>
+            <Route path="/" element={
+              <RouteWrapper>
+                <Home />
+              </RouteWrapper>
+            } />
+            <Route path="/blog" element={
+              <RouteWrapper>
+                <Blog />
+              </RouteWrapper>
+            } />
+            <Route path="/blog/:slug" element={<PostDetail />} />
+            {/* Catch all route for 404 pages */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </Suspense>
       </div>
     </Router>
   );
