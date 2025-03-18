@@ -34,13 +34,13 @@ Get all published blog posts. Supports pagination and filtering.
 {
   "items": [
     {
-      "id": 0,
+      "post_id": 0,
       "title": "string",
       "excerpt": "string",
       "reading_time": 0,
       "tags": ["string"],
       "author": {
-        "id": 0,
+        "user_id": 0,
         "username": "string",
         "email": "string"
       },
@@ -74,7 +74,7 @@ Get a specific blog post by its slug.
 **Success Response**: `200 OK`
 ```json
 {
-  "id": 0,
+  "post_id": 0,
   "uuid": "string",
   "title": "string",
   "slug": "string",
@@ -86,7 +86,7 @@ Get a specific blog post by its slug.
   "created_at": "2023-01-01T00:00:00.000Z",
   "updated_at": "2023-01-01T00:00:00.000Z",
   "author": {
-    "id": 0,
+    "user_id": 0,
     "username": "string",
     "email": "string"
   }
