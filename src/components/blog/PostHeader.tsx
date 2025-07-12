@@ -24,7 +24,7 @@ export default function PostHeader({ post }: PostHeaderProps) {
         {/* Author & Date */}
         <div className="flex items-center mr-6 mb-2">
           <UserIcon className="h-4 w-4 mr-1" />
-          <span>{post.author?.username || 'Anonymous'}</span>
+          <span>{post.user?.username || 'Anonymous'}</span>
         </div>
         
         <div className="flex items-center mr-6 mb-2">
