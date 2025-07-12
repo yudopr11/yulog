@@ -1,5 +1,5 @@
-import type { PostDetail } from '../../services/api';
 import { UserIcon, CalendarIcon, ClockIcon } from '@heroicons/react/20/solid';
+import type { PostDetail } from '../../types/blog';
 
 // Helper function to format dates
 const formatDate = (dateString: string) => {

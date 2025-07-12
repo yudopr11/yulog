@@ -1,24 +1,10 @@
-import type { PostList } from '../components/blog/BlogPostCard';
+import type { PostDetail, PaginatedPostsResponse } from '../types/blog';
 
 // API base URL from environment variables (.env)
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://yupi-dev.up.railway.app';
 
 // Default RAG setting
 export const USE_RAG_DEFAULT = false;
-
-// Type definitions based on API documentation
-export interface PostDetail extends PostList {
-  content: string;
-  updated_at: string;
-}
-
-export interface PostListResponse {
-  items: PostList[];
-  total_count: number;
-  has_more: boolean;
-  limit: number;
-  skip: number;
-}
 
 // Blog Post Functions
 // Function to fetch blog posts with pagination and search
@@ -29,7 +15,7 @@ export async function fetchBlogPosts(
   tag?: string,
   publishedStatus: 'published' | 'unpublished' | 'all' = 'published',
   useRag?: boolean
-): Promise<PostListResponse> {
+): Promise<PaginatedPostsResponse> {
   let url = `${API_BASE_URL}/blog?skip=${skip}&limit=${limit}`;
   
   if (search) {

@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
-import type { PostDetail } from '../../services/api';
 import { ArrowLeftIcon, LinkIcon } from '@heroicons/react/20/solid';
+import type { PostDetail } from '../../types/blog';
 
 // Custom social media icon components since Heroicons doesn't have specific social icons
 const TwitterXIcon = ({ className }: { className?: string }) => (

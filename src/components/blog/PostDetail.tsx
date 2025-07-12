@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import PageTitle from '../common/PageTitle';
-import { fetchBlogPostBySlug, type PostDetail } from '../../services/api';
+import { fetchBlogPostBySlug } from '../../services/api';
+import type { PostDetail } from '../../types/blog';
 import CustomScrollToTop from '../common/CustomScrollToTop';
 
 // Import the extracted components
@@ -64,7 +65,7 @@ export default function PostDetail() {
       {post ? (
         <PageTitle 
           title={post.title} 
-          description={post.excerpt}
+          description={post.excerpt ?? undefined}
         />
       ) : (
         <PageTitle 
