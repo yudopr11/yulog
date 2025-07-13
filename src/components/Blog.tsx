@@ -1,20 +1,21 @@
 import { useState, useEffect } from 'react';
 import PageTitle from './common/PageTitle';
-import BlogPostCard, { type PostList } from './blog/BlogPostCard';
+import BlogPostCard from './blog/BlogPostCard';
 import { fetchBlogPosts, USE_RAG_DEFAULT } from '../services/api';
 import { MagnifyingGlassIcon } from '@heroicons/react/20/solid';
+import type { PostListItem } from '../types/blog';
 
 
 export default function Blog() {
   // Default posts
-  const [defaultPosts, setDefaultPosts] = useState<PostList[]>([]);
+  const [defaultPosts, setDefaultPosts] = useState<PostListItem[]>([]);
   const [defaultLoading, setDefaultLoading] = useState(true);
   const [defaultSkip, setDefaultSkip] = useState(0);
   const [hasMoreDefault, setHasMoreDefault] = useState(true);
   const [totalDefault, setTotalDefault] = useState(0);
   
   // Search results
-  const [searchPosts, setSearchPosts] = useState<PostList[]>([]);
+  const [searchPosts, setSearchPosts] = useState<PostListItem[]>([]);
   const [searchLoading, setSearchLoading] = useState(false);
   const [searchSkip, setSearchSkip] = useState(0);
   const [hasMoreSearch, setHasMoreSearch] = useState(true);
@@ -41,7 +42,11 @@ export default function Blog() {
           if (defaultSkip === 0) {
             setDefaultPosts(data.items);
           } else {
-            setDefaultPosts(prevPosts => [...prevPosts, ...data.items]);
+            setDefaultPosts(prevPosts => {
+              const existingIds = new Set(prevPosts.map(p => p.id));
+              const newUniquePosts = data.items.filter(item => !existingIds.has(item.id));
+              return [...prevPosts, ...newUniquePosts];
+            });
           }
           
           setTotalDefault(data.total_count);
@@ -83,7 +88,11 @@ export default function Blog() {
           if (searchSkip === 0) {
             setSearchPosts(data.items);
           } else {
-            setSearchPosts(prevPosts => [...prevPosts, ...data.items]);
+            setSearchPosts(prevPosts => {
+              const existingIds = new Set(prevPosts.map(p => p.id));
+              const newUniquePosts = data.items.filter(item => !existingIds.has(item.id));
+              return [...prevPosts, ...newUniquePosts];
+            });
           }
           
           setTotalSearch(data.total_count);
@@ -152,12 +161,12 @@ export default function Blog() {
   };
 
   // Helper to render posts with animation 
-  const renderPostList = (posts: PostList[]) => {
+  const renderPostList = (posts: PostListItem[]) => {
     return (
       <div className="space-y-8">
         {posts.map((post, index) => (
           <div 
-            key={post.post_id} 
+            key={post.id} 
             className="animate-slide-in" 
             style={{ 
               animationDelay: `${index * 0.1}s`,

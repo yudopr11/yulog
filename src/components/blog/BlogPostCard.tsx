@@ -1,29 +1,9 @@
 import { Link } from 'react-router-dom';
 import { UserIcon, CalendarIcon, ClockIcon, ArrowRightIcon } from '@heroicons/react/20/solid';
-
-// Author interface berdasarkan UserBase di openapi.json
-export interface UserBase {
-  user_id: number;
-  username: string;
-  email: string;
-}
-
-// PostList interface berdasarkan openapi.json
-export interface PostList {
-  post_id: number;
-  uuid: string;
-  title: string;
-  excerpt: string;
-  slug: string;
-  reading_time: number;
-  tags?: string[] | null;
-  published: boolean;
-  author: UserBase;
-  created_at?: string; // Menggunakan created_at dari API, bukan created_date
-}
+import type { PostListItem } from '../../types/blog';
 
 interface BlogPostCardProps {
-  post: PostList;
+  post: PostListItem;
 }
 
 export default function BlogPostCard({ post }: BlogPostCardProps) {
@@ -49,14 +29,14 @@ export default function BlogPostCard({ post }: BlogPostCardProps) {
       
       {/* Author, Date & Reading Time in single row */}
       <div className="flex flex-wrap items-center text-sm text-gray-400 mb-3 gap-2">
-        {post.author && (
+        {post.user && (
           <span className="flex items-center">
             <UserIcon className="h-4 w-4 mr-1" />
-            {post.author.username}
+            {post.user.username}
           </span>
         )}
         
-        {post.author && formattedDate && <span className="mx-1">•</span>}
+        {post.user && formattedDate && <span className="mx-1">•</span>}
         
         {formattedDate && (
           <span className="flex items-center">
@@ -65,7 +45,7 @@ export default function BlogPostCard({ post }: BlogPostCardProps) {
           </span>
         )}
         
-        {(post.author || formattedDate) && <span className="mx-1">•</span>}
+        {(post.user || formattedDate) && <span className="mx-1">•</span>}
         
         <span className="flex items-center">
           <ClockIcon className="h-4 w-4 mr-1" />
@@ -80,7 +60,7 @@ export default function BlogPostCard({ post }: BlogPostCardProps) {
         <div className="flex flex-wrap gap-2 mb-4">
           {post.tags.map((tag, index) => (
             <span 
-              key={`${post.post_id}-${tag}-${index}`} 
+              key={`${post.id}-${tag}-${index}`} 
               className="px-2 py-1 bg-gray-700 text-xs rounded-md text-gray-300"
             >
               {tag}
