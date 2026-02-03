@@ -3,6 +3,7 @@ import { Toaster } from 'react-hot-toast';
 import { lazy, Suspense } from 'react';
 import Navbar from './components/Navbar';
 import SwipeHandler from './components/SwipeHandler';
+import ScrollToTop from './components/ScrollToTop';
 import { useLocation } from 'react-router-dom';
 
 // Lazy load components for code splitting
@@ -34,6 +35,7 @@ const RouteWrapper = ({ children }: { children: React.ReactNode }) => {
 export default function App() {
   return (
     <Router>
+      <ScrollToTop />
       <Toaster position="top-right" 
         toastOptions={{
           style: {
