@@ -154,10 +154,24 @@ export default function Blog() {
 
   const loadMoreDefault = () => {
     setDefaultSkip(prev => prev + limit);
+    // Scroll to absolute bottom of screen after a slight delay to ensure posts are rendered
+    setTimeout(() => {
+      window.scrollTo({
+        top: document.documentElement.scrollHeight,
+        behavior: 'smooth'
+      });
+    }, 300);
   };
 
   const loadMoreSearch = () => {
     setSearchSkip(prev => prev + limit);
+    // Scroll to absolute bottom of screen after a slight delay to ensure posts are rendered
+    setTimeout(() => {
+      window.scrollTo({
+        top: document.documentElement.scrollHeight,
+        behavior: 'smooth'
+      });
+    }, 300);
   };
 
   // Helper to render posts with animation
@@ -304,7 +318,9 @@ export default function Blog() {
                     </div>
                   ) : (
                     <>
-                      {renderPostList(defaultPosts)}
+                      <div>
+                        {renderPostList(defaultPosts)}
+                      </div>
 
                       {/* Show post count and pagination info */}
                       <div className="mt-10 px-6 py-4 bg-gradient-to-r from-gray-900/30 to-gray-900/50 backdrop-blur-sm border border-gray-700/30 rounded-xl text-center">
@@ -409,7 +425,9 @@ export default function Blog() {
                           Found <span className="text-primary-400 font-semibold">{totalSearch}</span> result{totalSearch !== 1 ? 's' : ''} using {useRag ? '🤖 semantic search' : '🔍 keyword search'}
                         </p>
                       </div>
-                      {renderPostList(searchPosts)}
+                      <div>
+                        {renderPostList(searchPosts)}
+                      </div>
 
                       {/* Show search pagination info */}
                       <div className="mt-10 px-6 py-4 bg-gradient-to-r from-gray-900/30 to-gray-900/50 backdrop-blur-sm border border-gray-700/30 rounded-xl text-center">
