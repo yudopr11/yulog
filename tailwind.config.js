@@ -62,6 +62,10 @@ export default {
           '0%, 100%': { transform: 'rotate(0deg)' },
           '25%': { transform: 'rotate(20deg)' },
           '75%': { transform: 'rotate(-20deg)' }
+        },
+        'border-reveal': {
+          '0%': { transform: 'scaleX(0)', transformOrigin: 'left' },
+          '100%': { transform: 'scaleX(1)', transformOrigin: 'left' }
         }
       },
       animation: {
@@ -72,7 +76,8 @@ export default {
         'slide-in-stagger': 'slide-in-stagger 0.5s ease-out forwards',
         'rotate-slow': 'rotate 8s linear infinite',
         'float-gentle': 'float-gentle 3s ease-in-out infinite',
-        'wave': 'wave 1s ease-in-out infinite'
+        'wave': 'wave 1s ease-in-out infinite',
+        'border-reveal': 'border-reveal 0.6s ease-out forwards'
       },
       backdropBlur: {
         xs: '2px',

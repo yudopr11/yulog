@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import PageTitle from './common/PageTitle';
 import BlogPostCard from './blog/BlogPostCard';
 import { fetchBlogPosts, USE_RAG_DEFAULT } from '../services/api';
-import { MagnifyingGlassIcon } from '@heroicons/react/20/solid';
+import { MagnifyingGlassIcon, ArrowTopRightOnSquareIcon } from '@heroicons/react/20/solid';
 import type { PostListItem } from '../types/blog';
 
 
@@ -25,7 +25,7 @@ export default function Blog() {
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [useRag, setUseRag] = useState<boolean>(USE_RAG_DEFAULT);
-  const limit = 3; // Posts per page
+  const limit = 4; // Posts per page
   
   // Effect for loading default posts (when search is empty)
   useEffect(() => {
@@ -160,15 +160,15 @@ export default function Blog() {
     setSearchSkip(prev => prev + limit);
   };
 
-  // Helper to render posts with animation 
+  // Helper to render posts with animation
   const renderPostList = (posts: PostListItem[]) => {
     return (
-      <div className="space-y-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
         {posts.map((post, index) => (
-          <div 
-            key={post.id} 
-            className="animate-slide-in" 
-            style={{ 
+          <div
+            key={post.id}
+            className="animate-slide-in"
+            style={{
               animationDelay: `${index * 0.1}s`,
               opacity: 0, // Start with opacity 0 (will be animated to 1)
             }}
@@ -191,53 +191,80 @@ export default function Blog() {
       <div className="absolute inset-0 bg-grid-pattern opacity-5 pointer-events-none"></div>
       
       <div className="px-4 sm:px-6 lg:px-8">
-        <div className="max-w-4xl mx-auto py-12 relative z-10">
+        <div className="max-w-5xl mx-auto py-2 relative z-10">
           {/* Search Bar with RAG toggle */}
           <div className="pb-6">
             <form onSubmit={handleSearch}>
-              <div className="relative mb-3">
-                <input
-                  type="text"
-                  value={searchTerm}
-                  onChange={handleSearchChange}
-                  placeholder="Search posts..."
-                  className="w-full bg-transparent border-b border-gray-700 px-4 py-2 outline-none focus:border-gray-400 text-white transition-colors placeholder-gray-500"
-                />
-                <MagnifyingGlassIcon 
-                  className="h-5 w-5 absolute right-2 top-2 text-gray-500"
-                />
-              </div>
-              
-              {/* RAG toggle switch */}
-              <div className="flex items-center justify-end">
-                <span className="text-sm text-gray-400 mr-2">
-                  {useRag ? 'Smart Search' : 'Basic Search'}
-                </span>
-                <button 
-                  type="button"
-                  onClick={handleRagToggle}
-                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-300 focus:outline-none ${useRag ? 'bg-primary-600' : 'bg-gray-700'}`}
-                  aria-pressed={useRag}
-                  aria-labelledby="rag-toggle-label"
-                >
-                  <span className="sr-only">Use semantic search</span>
-                  <span 
-                    className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform duration-300 ${useRag ? 'translate-x-6' : 'translate-x-1'}`}
+              {/* Search Input */}
+              <div className="relative mb-6 group">
+                <div className="absolute inset-0 bg-gradient-to-r from-primary-500/20 to-primary-600/20 rounded-2xl blur-xl opacity-0 group-focus-within:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
+                <div className="relative flex items-center bg-gradient-to-br from-gray-900/40 to-gray-900/80 backdrop-blur-xl border border-gray-700/30 rounded-2xl focus-within:border-primary-500/50 transition-all duration-300 px-6 py-4">
+                  <MagnifyingGlassIcon className="h-5 w-5 text-gray-500 mr-3" />
+                  <input
+                    type="text"
+                    value={searchTerm}
+                    onChange={handleSearchChange}
+                    placeholder="Search posts by title, tag, or content..."
+                    className="flex-1 bg-transparent outline-none text-white placeholder-gray-500 text-sm sm:text-base"
                   />
-                </button>
-                <span 
-                  id="rag-toggle-label" 
-                  className="ml-2 text-xs text-gray-500"
-                >
-                  AI-powered search
-                </span>
+                  {searchTerm && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSearchTerm('');
+                        setSearchPosts([]);
+                        setSearchSkip(0);
+                      }}
+                      className="ml-2 text-gray-400 hover:text-gray-300 transition-colors"
+                      title="Clear search"
+                    >
+                      ✕
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              {/* Search Controls */}
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                {/* Search Mode Info */}
+                <div className="text-xs sm:text-sm text-gray-400">
+                  {searchTerm ? (
+                    <span>
+                      Searching with <span className="text-primary-400 font-medium">{useRag ? '🤖 AI-Powered' : '🔍 Keyword'}</span> mode
+                    </span>
+                  ) : (
+                    <span>
+                      <span className="text-primary-400 font-medium">{useRag ? '🤖 AI-Powered' : '🔍 Keyword'}</span> search mode
+                    </span>
+                  )}
+                </div>
+
+                {/* RAG Toggle Switch */}
+                <div className="flex items-center gap-3">
+                  <button
+                    type="button"
+                    onClick={handleRagToggle}
+                    className={`relative inline-flex h-7 w-12 items-center rounded-full transition-all duration-300 focus:outline-none ${useRag ? 'bg-gradient-to-r from-primary-600 to-primary-500 shadow-lg shadow-primary-500/30' : 'bg-gray-700'}`}
+                    aria-pressed={useRag}
+                    aria-labelledby="rag-toggle-label"
+                  >
+                    <span className="sr-only">Use semantic search</span>
+                    <span
+                      className={`inline-block h-5 w-5 transform rounded-full bg-white shadow-lg transition-transform duration-300 ${useRag ? 'translate-x-6' : 'translate-x-1'}`}
+                    />
+                  </button>
+                  <span id="rag-toggle-label" className="text-xs text-gray-500 whitespace-nowrap">
+                    Semantic search
+                  </span>
+                </div>
               </div>
             </form>
           </div>
           
           {error && (
-            <div className="bg-red-500/20 border border-red-500 text-white p-4 rounded-lg mb-6">
-              {error}
+            <div className="bg-gradient-to-br from-red-500/20 to-red-600/10 border border-red-500/50 backdrop-blur-xl text-red-200 p-4 sm:p-6 rounded-2xl mb-8 flex items-center gap-3">
+              <div className="text-xl flex-shrink-0">⚠️</div>
+              <p>{error}</p>
             </div>
           )}
           
@@ -251,36 +278,60 @@ export default function Blog() {
               ) : (
                 <>
                   {defaultPosts.length === 0 ? (
-                    <div className="text-center py-12">
-                      <h2 className="text-2xl font-semibold mb-2">No posts found</h2>
-                      <p className="text-gray-400">
-                        Check back later for new content
+                    <div className="text-center py-20 sm:py-28">
+                      {/* Animated empty state background */}
+                      <div className="mb-8 relative">
+                        <div className="absolute inset-0 bg-gradient-to-r from-primary-500/10 to-primary-600/10 rounded-full blur-3xl opacity-50"></div>
+                        <div className="relative text-7xl sm:text-8xl mb-6 animate-bounce" style={{ animationDelay: '0s' }}>✍️</div>
+                      </div>
+
+                      <h2 className="text-3xl sm:text-4xl font-bold mb-4 text-white">
+                        The blog is still being written! 📖
+                      </h2>
+                      <p className="text-lg text-gray-400 mb-2">
+                        Fresh content is coming soon. Check back regularly for new articles and insights.
                       </p>
+
+                      {/* Suggestions */}
+                      <div className="mt-10 space-y-3">
+                        <p className="text-sm text-gray-500">💡 In the meantime:</p>
+                        <ul className="text-sm text-gray-400 space-y-2 flex flex-col items-center">
+                          <li>• Follow on social media for updates</li>
+                          <li>• Check out the projects section</li>
+                          <li>• Bookmark this page to visit later</li>
+                        </ul>
+                      </div>
                     </div>
                   ) : (
                     <>
                       {renderPostList(defaultPosts)}
-                      
-                      {/* Show post count and total */}
-                      <div className="mt-4 text-sm text-gray-500 text-center">
-                        Showing {defaultPosts.length} of {totalDefault} posts
+
+                      {/* Show post count and pagination info */}
+                      <div className="mt-10 px-6 py-4 bg-gradient-to-r from-gray-900/30 to-gray-900/50 backdrop-blur-sm border border-gray-700/30 rounded-xl text-center">
+                        <p className="text-sm text-gray-400">
+                          Showing <span className="text-primary-400 font-bold text-base">{defaultPosts.length}</span> of <span className="text-primary-400 font-bold text-base">{totalDefault}</span> posts
+                          {hasMoreDefault && <span className="text-gray-500"> • More available</span>}
+                        </p>
                       </div>
                       
                       {/* Load More Default Posts - only show if no error, posts exist, and hasMore is true */}
                       {!error && defaultPosts.length > 0 && hasMoreDefault && (
-                        <div className="mt-10 flex justify-center">
+                        <div className="mt-12 flex justify-center">
                           <button
                             onClick={loadMoreDefault}
                             disabled={defaultLoading}
-                            className="px-6 py-2 rounded-lg border border-gray-700 hover:border-gray-500 text-gray-400 hover:text-white bg-gray-800/30 hover:bg-gray-800/50 transition-all duration-300 flex items-center space-x-2"
+                            className="group relative px-8 py-3 bg-gradient-to-r from-primary-600 to-primary-500 text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-primary-500/50 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2 hover:translate-y-[-2px]"
                           >
                             {defaultLoading && defaultSkip > 0 ? (
                               <>
-                                <span className="animate-spin h-4 w-4 border-t-2 border-b-2 border-gray-400 rounded-full"></span>
-                                <span>Loading...</span>
+                                <span className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full"></span>
+                                <span>Loading more posts...</span>
                               </>
                             ) : (
-                              <span>Load More</span>
+                              <>
+                                <span>Load More Posts</span>
+                                <ArrowTopRightOnSquareIcon className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                              </>
                             )}
                           </button>
                         </div>
@@ -288,8 +339,11 @@ export default function Blog() {
                       
                       {/* Message when all posts are loaded */}
                       {!hasMoreDefault && defaultPosts.length > 0 && !defaultLoading && (
-                        <div className="mt-8 text-center text-gray-500 text-sm">
-                          You've reached the end of the posts
+                        <div className="mt-12 text-center py-8">
+                          <div className="text-4xl mb-3">✨</div>
+                          <p className="text-gray-400">
+                            You've reached the end! All <span className="text-primary-400 font-semibold">{totalDefault}</span> posts displayed.
+                          </p>
                         </div>
                       )}
                     </>
@@ -309,37 +363,80 @@ export default function Blog() {
               ) : (
                 <>
                   {searchPosts.length === 0 ? (
-                    <div className="text-center py-12">
-                      <h2 className="text-2xl font-semibold mb-2">No search results</h2>
-                      <p className="text-gray-400">
-                        No results for "{searchTerm}"
+                    <div className="text-center py-20 sm:py-28">
+                      {/* Animated empty state background */}
+                      <div className="mb-8 relative">
+                        <div className="absolute inset-0 bg-gradient-to-r from-primary-500/10 to-primary-600/10 rounded-full blur-3xl opacity-50"></div>
+                        <div className="relative text-7xl sm:text-8xl mb-6 animate-bounce" style={{ animationDelay: '0s' }}>🔍</div>
+                      </div>
+
+                      <h2 className="text-3xl sm:text-4xl font-bold mb-4 text-white">
+                        Hmm, looks like that post went hiding! 🏃‍♂️
+                      </h2>
+                      <p className="text-lg text-gray-400 mb-2">
+                        We couldn't find any posts matching <span className="text-primary-400 font-semibold">"{searchTerm}"</span>
                       </p>
+
+                      {/* Suggestions */}
+                      <div className="mt-10 space-y-3">
+                        <p className="text-sm text-gray-500">💡 Try:</p>
+                        <ul className="text-sm text-gray-400 space-y-2 flex flex-col items-center">
+                          <li>• Using different keywords</li>
+                          <li>• Toggling {useRag ? 'keyword search' : 'AI-powered search'}</li>
+                          <li>• Checking your spelling</li>
+                        </ul>
+                      </div>
+
+                      {/* Clear search button */}
+                      <div className="mt-8">
+                        <button
+                          onClick={() => {
+                            setSearchTerm('');
+                            setSearchPosts([]);
+                            setSearchSkip(0);
+                          }}
+                          className="px-6 py-3 bg-gradient-to-r from-primary-600 to-primary-500 text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-primary-500/50 transition-all duration-300 hover:translate-y-[-2px] inline-block"
+                        >
+                          Clear Search
+                        </button>
+                      </div>
                     </div>
                   ) : (
                     <>
-                      <div className="mb-6">
-                        <h2 className="text-xl font-medium">Search results for "{searchTerm}"</h2>
-                        <p className="text-sm text-gray-500 mt-1">
-                          Found {totalSearch} results using {useRag ? 'semantic search' : 'keyword search'}
+                      <div className="mb-8 pb-8 border-b border-gray-700/30">
+                        <h2 className="text-2xl sm:text-3xl font-bold text-white mb-2">Search results for <span className="text-primary-400">"{searchTerm}"</span></h2>
+                        <p className="text-sm text-gray-400">
+                          Found <span className="text-primary-400 font-semibold">{totalSearch}</span> result{totalSearch !== 1 ? 's' : ''} using {useRag ? '🤖 semantic search' : '🔍 keyword search'}
                         </p>
                       </div>
                       {renderPostList(searchPosts)}
-                      
+
+                      {/* Show search pagination info */}
+                      <div className="mt-10 px-6 py-4 bg-gradient-to-r from-gray-900/30 to-gray-900/50 backdrop-blur-sm border border-gray-700/30 rounded-xl text-center">
+                        <p className="text-sm text-gray-400">
+                          Showing <span className="text-primary-400 font-bold text-base">{searchPosts.length}</span> of <span className="text-primary-400 font-bold text-base">{totalSearch}</span> result{totalSearch !== 1 ? 's' : ''}
+                          {hasMoreSearch && <span className="text-gray-500"> • More available</span>}
+                        </p>
+                      </div>
+
                       {/* Load More Search Results - only show if no error, search posts exist, and hasMore is true */}
                       {!error && searchPosts.length > 0 && hasMoreSearch && (
-                        <div className="mt-10 flex justify-center">
+                        <div className="mt-12 flex justify-center">
                           <button
                             onClick={loadMoreSearch}
                             disabled={searchLoading}
-                            className="px-6 py-2 rounded-lg border border-gray-700 hover:border-gray-500 text-gray-400 hover:text-white bg-gray-800/30 hover:bg-gray-800/50 transition-all duration-300 flex items-center space-x-2"
+                            className="group relative px-8 py-3 bg-gradient-to-r from-primary-600 to-primary-500 text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-primary-500/50 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2 hover:translate-y-[-2px]"
                           >
                             {searchLoading && searchSkip > 0 ? (
                               <>
-                                <span className="animate-spin h-4 w-4 border-t-2 border-b-2 border-gray-400 rounded-full"></span>
-                                <span>Loading...</span>
+                                <span className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full"></span>
+                                <span>Loading more results...</span>
                               </>
                             ) : (
-                              <span>Load More</span>
+                              <>
+                                <span>Load More Results</span>
+                                <ArrowTopRightOnSquareIcon className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                              </>
                             )}
                           </button>
                         </div>
@@ -347,8 +444,11 @@ export default function Blog() {
                       
                       {/* Message when all search results are loaded */}
                       {!hasMoreSearch && searchPosts.length > 0 && !searchLoading && (
-                        <div className="mt-8 text-center text-gray-500 text-sm">
-                          You've reached the end of the search results
+                        <div className="mt-12 text-center py-8">
+                          <div className="text-4xl mb-3">🎯</div>
+                          <p className="text-gray-400">
+                            That's all! <span className="text-primary-400 font-semibold">{totalSearch}</span> result{totalSearch !== 1 ? 's' : ''} found.
+                          </p>
                         </div>
                       )}
                     </>
