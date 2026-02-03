@@ -1,3 +1,4 @@
+import { useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeftIcon, LinkIcon, CheckIcon } from '@heroicons/react/20/solid';
 import toast from 'react-hot-toast';
@@ -8,7 +9,7 @@ interface PostFooterProps {
 }
 
 export default function PostFooter({ }: PostFooterProps) {
-  const handleCopyLink = async () => {
+  const handleCopyLink = useCallback(async () => {
     try {
       await navigator.clipboard.writeText(window.location.href);
       toast.custom((t) => (
@@ -41,7 +42,7 @@ export default function PostFooter({ }: PostFooterProps) {
         duration: 3000,
       });
     }
-  };
+  }, []);
 
   return (
     <div className="mt-16 relative overflow-hidden rounded-2xl group">

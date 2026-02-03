@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { UserIcon, CalendarIcon, ClockIcon, ArrowRightIcon } from '@heroicons/react/20/solid';
 import type { PostListItem } from '../../types/blog';
@@ -6,15 +7,17 @@ interface BlogPostCardProps {
   post: PostListItem;
 }
 
-export default function BlogPostCard({ post }: BlogPostCardProps) {
-  // Format tanggal jika tersedia
-  const formattedDate = post.created_at
-    ? new Date(post.created_at).toLocaleDateString('id-ID', {
-        day: 'numeric',
-        month: 'long',
-        year: 'numeric'
-      })
-    : null;
+function BlogPostCard({ post }: BlogPostCardProps) {
+  // Format tanggal jika tersedia - memoized to prevent unnecessary date formatting
+  const formattedDate = useMemo(() => {
+    return post.created_at
+      ? new Date(post.created_at).toLocaleDateString('id-ID', {
+          day: 'numeric',
+          month: 'long',
+          year: 'numeric'
+        })
+      : null;
+  }, [post.created_at]);
 
   return (
     <Link
@@ -96,4 +99,6 @@ export default function BlogPostCard({ post }: BlogPostCardProps) {
       </div>
     </Link>
   );
-} 
+}
+
+export default BlogPostCard; 

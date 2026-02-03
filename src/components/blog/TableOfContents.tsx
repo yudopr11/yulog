@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Bars3BottomLeftIcon, ChevronDownIcon } from '@heroicons/react/24/outline';
 
 type HeadingType = {
@@ -105,24 +105,23 @@ const TableOfContents: React.FC<TableOfContentsProps> = ({ content }) => {
   }, [headings]);
 
   // Handle clicking on a TOC item - smooth scroll to the section
-  const handleClickTocItem = (event: React.MouseEvent<HTMLAnchorElement>, id: string) => {
+  const handleClickTocItem = useCallback((event: React.MouseEvent<HTMLAnchorElement>, id: string) => {
     event.preventDefault();
     const element = document.getElementById(id);
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
       setActiveId(id);
-      
-      // On mobile, collapse after clicking
+
       if (window.innerWidth < 768) {
         setIsCollapsed(true);
       }
     }
-  };
+  }, []);
 
   // Toggle the collapsed state
-  const toggleCollapsed = () => {
-    setIsCollapsed(!isCollapsed);
-  };
+  const toggleCollapsed = useCallback(() => {
+    setIsCollapsed(prev => !prev);
+  }, []);
 
   if (headings.length === 0) {
     return null;

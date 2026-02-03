@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
@@ -16,7 +17,15 @@ export default function PostContent({ content }: PostContentProps) {
   if (!content) {
     return null;
   }
-  
+
+  const remarkPlugins = useMemo(() => [
+    remarkGfm,
+    remarkMath,
+    [remarkToc, { heading: "Contents", tight: true }]
+  ] as any, []);
+
+  const rehypePlugins = useMemo(() => [rehypeKatex, rehypeRaw], []);
+
   return (
     <div className="space-y-8">
       {/* Table of Contents */}
@@ -40,12 +49,8 @@ export default function PostContent({ content }: PostContentProps) {
             prose-ul:text-gray-300 prose-ol:text-gray-300
             prose-li:text-gray-300">
             <ReactMarkdown
-              remarkPlugins={[
-                remarkGfm,
-                remarkMath,
-                [remarkToc, { heading: "Contents", tight: true }]
-              ]}
-              rehypePlugins={[rehypeKatex, rehypeRaw]}
+              remarkPlugins={remarkPlugins}
+              rehypePlugins={rehypePlugins}
               components={MarkdownRenderers}
             >
               {content}

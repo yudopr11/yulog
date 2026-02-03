@@ -1,13 +1,73 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { codeToHtml } from 'shiki';
 import { ArrowTopRightOnSquareIcon, DocumentDuplicateIcon, CheckIcon as HeroCheckIcon } from '@heroicons/react/24/outline';
 
 // Helper to create heading IDs
 const createHeadingId = (text: string, level: number): string => {
-  const cleanedText = typeof text === 'string' 
+  const cleanedText = typeof text === 'string'
     ? text.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '')
     : '';
   return `heading-${level}-${cleanedText}`;
+};
+
+// Language normalization map - constant to avoid recreating on every render
+const LANGUAGE_MAP: Record<string, string> = {
+  'js': 'javascript',
+  'ts': 'typescript',
+  'jsx': 'tsx',
+  'nodejs': 'javascript',
+  'node': 'javascript',
+  'shell': 'bash',
+  'sh': 'bash',
+  'zsh': 'bash',
+  'bash': 'bash',
+  'curl': 'bash',
+  'powershell': 'powershell',
+  'ps': 'powershell',
+  'ps1': 'powershell',
+  'cmd': 'cmd',
+  'batch': 'batch',
+  'bat': 'batch',
+  'yml': 'yaml',
+  'yaml': 'yaml',
+  'json': 'json',
+  'json5': 'json',
+  'jsonc': 'jsonc',
+  'xml': 'xml',
+  'toml': 'toml',
+  'html': 'html',
+  'css': 'css',
+  'scss': 'scss',
+  'sass': 'sass',
+  'less': 'less',
+  'svg': 'svg',
+  'py': 'python',
+  'python': 'python',
+  'rb': 'ruby',
+  'ruby': 'ruby',
+  'go': 'go',
+  'golang': 'go',
+  'rs': 'rust',
+  'rust': 'rust',
+  'java': 'java',
+  'kotlin': 'kotlin',
+  'kt': 'kotlin',
+  'c': 'c',
+  'cpp': 'cpp',
+  'c++': 'cpp',
+  'cs': 'csharp',
+  'csharp': 'csharp',
+  'php': 'php',
+  'swift': 'swift',
+  'sql': 'sql',
+  'mysql': 'sql',
+  'pgsql': 'sql',
+  'postgres': 'sql',
+  'postgresql': 'sql',
+  'md': 'markdown',
+  'markdown': 'markdown',
+  'tex': 'latex',
+  'latex': 'latex',
 };
 
 // Custom CodeBlock component with Shiki syntax highlighting
@@ -17,81 +77,7 @@ const CodeBlock = ({ language, code, showLineNumbers = true }: { language: strin
 
   // Map some common language variations to supported ones
   const normalizeLanguage = (lang: string): string => {
-    const langMap: Record<string, string> = {
-      // JavaScript variants
-      'js': 'javascript',
-      'ts': 'typescript',
-      'jsx': 'tsx',
-      'nodejs': 'javascript',
-      'node': 'javascript',
-      
-      // Shell variants
-      'shell': 'bash',
-      'sh': 'bash',
-      'zsh': 'bash',
-      'bash': 'bash',
-      'curl': 'bash',
-      
-      // Windows command line variants
-      'powershell': 'powershell',
-      'ps': 'powershell',
-      'ps1': 'powershell',
-      'cmd': 'cmd',
-      'batch': 'batch',
-      'bat': 'batch',
-      
-      // Data formats
-      'yml': 'yaml',
-      'yaml': 'yaml',
-      'json': 'json',
-      'json5': 'json',
-      'jsonc': 'jsonc',
-      'xml': 'xml',
-      'toml': 'toml',
-      
-      // Web technologies
-      'html': 'html',
-      'css': 'css',
-      'scss': 'scss',
-      'sass': 'sass',
-      'less': 'less',
-      'svg': 'svg',
-      
-      // Common programming languages
-      'py': 'python',
-      'python': 'python',
-      'rb': 'ruby',
-      'ruby': 'ruby',
-      'go': 'go',
-      'golang': 'go',
-      'rs': 'rust',
-      'rust': 'rust',
-      'java': 'java',
-      'kotlin': 'kotlin',
-      'kt': 'kotlin',
-      'c': 'c',
-      'cpp': 'cpp',
-      'c++': 'cpp',
-      'cs': 'csharp',
-      'csharp': 'csharp',
-      'php': 'php',
-      'swift': 'swift',
-      
-      // Database
-      'sql': 'sql',
-      'mysql': 'sql',
-      'pgsql': 'sql',
-      'postgres': 'sql',
-      'postgresql': 'sql',
-      
-      // Markup
-      'md': 'markdown',
-      'markdown': 'markdown',
-      'tex': 'latex',
-      'latex': 'latex',
-    };
-    
-    return langMap[lang.toLowerCase()] || lang;
+    return LANGUAGE_MAP[lang.toLowerCase()] || lang;
   };
 
   useEffect(() => {
@@ -451,19 +437,18 @@ export const MarkdownRenderers = {
 function CopyButton({ code }: { code: string }) {
   const [copied, setCopied] = useState(false);
 
-  const handleCopy = async () => {
+  const handleCopy = useCallback(async () => {
     try {
       await navigator.clipboard.writeText(code);
       setCopied(true);
-      
-      // Reset copied state after 2 seconds
+
       setTimeout(() => {
         setCopied(false);
       }, 2000);
     } catch (err) {
       console.error('Failed to copy code: ', err);
     }
-  };
+  }, [code]);
 
   return (
     <button

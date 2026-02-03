@@ -1,10 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import PageTitle from './common/PageTitle';
 import BlogPostCard from './blog/BlogPostCard';
 import { fetchBlogPosts, USE_RAG_DEFAULT } from '../services/api';
 import { MagnifyingGlassIcon, ArrowTopRightOnSquareIcon } from '@heroicons/react/20/solid';
 import type { PostListItem } from '../types/blog';
 
+const POSTS_PER_PAGE = 4;
 
 export default function Blog() {
   // Default posts
@@ -25,7 +26,6 @@ export default function Blog() {
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [useRag, setUseRag] = useState<boolean>(USE_RAG_DEFAULT);
-  const limit = 4; // Posts per page
   
   // Effect for loading default posts (when search is empty)
   useEffect(() => {
@@ -36,7 +36,7 @@ export default function Blog() {
     async function loadDefaultPosts() {
       try {
         setDefaultLoading(true);
-        const data = await fetchBlogPosts(defaultSkip, limit);
+        const data = await fetchBlogPosts(defaultSkip, POSTS_PER_PAGE);
         
         if (isMounted) {
           if (defaultSkip === 0) {
@@ -71,7 +71,7 @@ export default function Blog() {
     return () => {
       isMounted = false;
     };
-  }, [defaultSkip, limit, searchTerm]);
+  }, [defaultSkip, POSTS_PER_PAGE, searchTerm]);
 
   // Effect for loading search results (when search has a term)
   useEffect(() => {
@@ -82,7 +82,7 @@ export default function Blog() {
     async function loadSearchResults() {
       try {
         setSearchLoading(true);
-        const data = await fetchBlogPosts(searchSkip, limit, searchTerm, undefined, 'published', useRag);
+        const data = await fetchBlogPosts(searchSkip, POSTS_PER_PAGE, searchTerm, undefined, 'published', useRag);
         
         if (isMounted) {
           if (searchSkip === 0) {
@@ -121,61 +121,57 @@ export default function Blog() {
       isMounted = false;
       clearTimeout(timeoutId);
     };
-  }, [searchSkip, limit, searchTerm, useRag]);
+  }, [searchSkip, POSTS_PER_PAGE, searchTerm, useRag]);
 
-  const handleSearch = (e: React.FormEvent) => {
+  const handleSearch = useCallback((e: React.FormEvent) => {
     e.preventDefault();
     if (searchTerm) {
-      setSearchSkip(0); // Reset search pagination
+      setSearchSkip(0);
       setHasMoreSearch(true);
     }
-  };
+  }, [searchTerm]);
 
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setSearchTerm(value);
-    
+
     if (!value) {
-      // Reset search when input is cleared
       setSearchPosts([]);
       setSearchSkip(0);
     } else {
-      // Reset search pagination when input changes
       setSearchSkip(0);
     }
-  };
+  }, []);
 
-  const handleRagToggle = () => {
+  const handleRagToggle = useCallback(() => {
     setUseRag(!useRag);
     if (searchTerm) {
-      setSearchSkip(0); // Reset search pagination when changing search mode
+      setSearchSkip(0);
     }
-  };
+  }, [useRag, searchTerm]);
 
-  const loadMoreDefault = () => {
-    setDefaultSkip(prev => prev + limit);
-    // Scroll to absolute bottom of screen after a slight delay to ensure posts are rendered
+  const loadMoreDefault = useCallback(() => {
+    setDefaultSkip(prev => prev + POSTS_PER_PAGE);
     setTimeout(() => {
       window.scrollTo({
         top: document.documentElement.scrollHeight,
         behavior: 'smooth'
       });
     }, 300);
-  };
+  }, []);
 
-  const loadMoreSearch = () => {
-    setSearchSkip(prev => prev + limit);
-    // Scroll to absolute bottom of screen after a slight delay to ensure posts are rendered
+  const loadMoreSearch = useCallback(() => {
+    setSearchSkip(prev => prev + POSTS_PER_PAGE);
     setTimeout(() => {
       window.scrollTo({
         top: document.documentElement.scrollHeight,
         behavior: 'smooth'
       });
     }, 300);
-  };
+  }, []);
 
-  // Helper to render posts with animation
-  const renderPostList = (posts: PostListItem[]) => {
+  // Helper to render posts with animation - memoized to prevent unnecessary re-renders
+  const renderPostList = useCallback((posts: PostListItem[]) => {
     return (
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
         {posts.map((post, index) => (
@@ -184,7 +180,7 @@ export default function Blog() {
             className="animate-slide-in"
             style={{
               animationDelay: `${index * 0.1}s`,
-              opacity: 0, // Start with opacity 0 (will be animated to 1)
+              opacity: 0,
             }}
           >
             <BlogPostCard post={post} />
@@ -192,7 +188,7 @@ export default function Blog() {
         ))}
       </div>
     );
-  };
+  }, []);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-950 text-white">
