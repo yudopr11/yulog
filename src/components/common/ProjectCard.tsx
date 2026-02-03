@@ -35,67 +35,83 @@ export default function ProjectCard({
 
   return (
     <div
-      className="card-hover group flex flex-col relative cursor-pointer h-full"
+      className="group flex flex-col relative cursor-pointer h-full overflow-hidden rounded-2xl transition-all duration-500 hover:scale-105"
       onClick={handleCardClick}
       role={repoLink ? 'link' : undefined}
       aria-label={repoLink ? `View ${title} repository` : undefined}
     >
-      {/* Header with type badge */}
-      <div className="flex items-start justify-between mb-4">
-        <h3 className="text-xl font-semibold text-white flex-grow pr-4">{title}</h3>
-        {projectType && (
-          <span className="flex-shrink-0 text-2xl">
-            {projectTypeIcons[projectType]}
-          </span>
+      {/* Glassmorphism background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-gray-900/40 to-gray-900/80 backdrop-blur-xl border border-gray-700/30 group-hover:border-primary-500/50 transition-all duration-500"></div>
+
+      {/* Animated gradient overlay on hover */}
+      <div className="absolute inset-0 bg-gradient-to-br from-primary-500/0 via-transparent to-primary-600/0 group-hover:from-primary-500/10 group-hover:to-primary-600/10 transition-all duration-500"></div>
+
+      {/* Glow effect on hover */}
+      <div className="absolute -top-1/2 -right-1/2 w-full h-full bg-gradient-to-br from-primary-500/20 to-transparent rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+
+      {/* Content */}
+      <div className="relative z-10 flex flex-col h-full p-6 sm:p-8">
+        {/* Header with type badge */}
+        <div className="flex items-start justify-between mb-4 sm:mb-6">
+          <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-white flex-grow pr-4 group-hover:text-primary-300 transition-colors duration-300">
+            {title}
+          </h3>
+          {projectType && (
+            <span className="flex-shrink-0 text-2xl sm:text-3xl group-hover:scale-125 transition-transform duration-300">
+              {projectTypeIcons[projectType]}
+            </span>
+          )}
+        </div>
+
+        {/* Description */}
+        <p className="text-sm sm:text-base text-gray-300 flex-grow mb-4 sm:mb-6 leading-relaxed">
+          {description}
+        </p>
+
+        {/* Tags */}
+        {tags.length > 0 && (
+          <div className="flex flex-wrap gap-2 mb-6 sm:mb-8">
+            {tags.map((tag, idx) => (
+              <span
+                key={idx}
+                className="px-3 py-1 text-xs sm:text-sm font-medium bg-gradient-to-r from-primary-500/20 to-primary-600/20 text-primary-300 rounded-full border border-primary-500/30 hover:border-primary-500/60 transition-all duration-300 hover:bg-gradient-to-r hover:from-primary-500/30 hover:to-primary-600/30"
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
+        )}
+
+        {/* Actions */}
+        {(demoLink || repoLink) && (
+          <div className="flex gap-3 mt-auto pt-2">
+            {demoLink && (
+              <a
+                href={demoLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={(e) => e.stopPropagation()}
+                className="flex-1 px-4 py-2.5 text-xs sm:text-sm font-semibold text-white bg-gradient-to-r from-primary-500 to-primary-600 rounded-xl hover:shadow-lg hover:shadow-primary-500/50 transition-all duration-300 flex items-center justify-center gap-2 hover:translate-y-[-2px]"
+              >
+                View Demo
+                <ArrowTopRightOnSquareIcon className="w-4 h-4" />
+              </a>
+            )}
+            {repoLink && (
+              <a
+                href={repoLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={(e) => e.stopPropagation()}
+                className="flex-1 px-4 py-2.5 text-xs sm:text-sm font-semibold text-primary-300 border-2 border-primary-500/50 rounded-xl hover:border-primary-400 hover:text-primary-200 hover:bg-primary-500/10 transition-all duration-300 flex items-center justify-center gap-2 hover:translate-y-[-2px]"
+              >
+                Code
+                <ArrowTopRightOnSquareIcon className="w-4 h-4" />
+              </a>
+            )}
+          </div>
         )}
       </div>
-
-      {/* Description */}
-      <p className="text-gray-400 flex-grow mb-4">{description}</p>
-
-      {/* Tags */}
-      {tags.length > 0 && (
-        <div className="flex flex-wrap gap-2 mb-4">
-          {tags.map((tag, idx) => (
-            <span
-              key={idx}
-              className="badge-tech text-xs"
-            >
-              {tag}
-            </span>
-          ))}
-        </div>
-      )}
-
-      {/* Actions */}
-      {(demoLink || repoLink) && (
-        <div className="flex gap-3 mt-auto">
-          {demoLink && (
-            <a
-              href={demoLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={(e) => e.stopPropagation()}
-              className="btn-secondary text-sm flex items-center gap-2 flex-1 justify-center hover-lift"
-            >
-              View Demo
-              <ArrowTopRightOnSquareIcon className="w-4 h-4" />
-            </a>
-          )}
-          {repoLink && (
-            <a
-              href={repoLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={(e) => e.stopPropagation()}
-              className="btn-ghost text-sm flex items-center gap-2 justify-center hover-lift"
-            >
-              Code
-              <ArrowTopRightOnSquareIcon className="w-4 h-4" />
-            </a>
-          )}
-        </div>
-      )}
     </div>
   );
 } 
