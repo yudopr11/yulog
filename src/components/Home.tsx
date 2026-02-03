@@ -1,10 +1,12 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
+import AOS from 'aos';
+import 'aos/dist/aos.css';
 import PageTitle from './common/PageTitle';
+import CustomScrollToTop from './common/CustomScrollToTop';
+import HeroCard from './home/HeroCard';
 import ProjectCard from './common/ProjectCard';
-import SocialLink from './common/SocialLink';
 
-// Let's create custom icon components for these social media platforms
-// since Heroicons doesn't have specific social media icons
+// Social Media Icons
 const LinkedInIcon = ({ className }: { className?: string }) => (
   <svg className={className} fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
     <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
@@ -30,110 +32,244 @@ const YouTubeIcon = ({ className }: { className?: string }) => (
 );
 
 export default function Home() {
-  const [, setIsLoaded] = useState(false);
-  
+  // Initialize AOS on mount
   useEffect(() => {
-    setIsLoaded(true);
+    AOS.init({
+      duration: 1000,
+      once: false,
+      offset: 100,
+      easing: 'ease-in-out',
+    });
+
+    // Refresh AOS on scroll
+    window.addEventListener('load', () => {
+      AOS.refresh();
+    });
+
+    return () => {
+      window.removeEventListener('load', () => {
+        AOS.refresh();
+      });
+    };
   }, []);
+
+  // Social links
+  const socialLinks = [
+    {
+      href: 'https://www.linkedin.com/in/yudho-prakoso/',
+      icon: <LinkedInIcon className="w-5 h-5" />,
+      label: 'LinkedIn',
+    },
+    {
+      href: 'https://github.com/yudopr11/',
+      icon: <GitHubIcon className="w-5 h-5" />,
+      label: 'GitHub',
+    },
+    {
+      href: 'https://www.tiktok.com/@yudopr',
+      icon: <TikTokIcon className="w-5 h-5" />,
+      label: 'TikTok',
+    },
+    {
+      href: 'https://www.youtube.com/SantapMalam',
+      icon: <YouTubeIcon className="w-5 h-5" />,
+      label: 'YouTube',
+    },
+  ];
 
   return (
     <div>
-      <PageTitle 
-        title="Home" 
-        description="Personal website and portfolio of yudopr"
+      <PageTitle
+        title="Home"
+        description="Personal website and portfolio of yudopr - Data Engineer"
       />
-      
+
       {/* Background pattern */}
       <div className="absolute inset-0 bg-grid-pattern opacity-5 pointer-events-none"></div>
-      
-      <div className="px-4 sm:px-6 lg:px-8">
-        <div className="max-w-4xl mx-auto py-12 relative z-10">
-          <div className="flex flex-col gap-16">
-            {/* About Me Section */}
-            <div>
-              <div className="flex flex-col md:flex-row items-center md:items-start gap-8">
-                {/* Profile Image - circular */}
-                <div className="flex-shrink-0">
-                  <div className="w-64 h-64 overflow-hidden rounded-full mx-auto md:mx-0">
-                    <img 
-                      src="https://res.cloudinary.com/dnf9bfdne/image/upload/e_grayscale/c_auto,g_auto,h_1836,w_1836/mzgrukkvsdiweksgszl7" 
-                      alt="Profile" 
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
+
+      <div className="container-responsive">
+        <div className="max-w-6xl mx-auto relative z-10">
+          {/* Hero Section with Parallax */}
+          <section
+            className="mt-10"
+            data-aos="fade-up"
+            data-aos-duration="1200"
+          >
+            <div
+              data-aos="zoom-in"
+              data-aos-delay="100"
+              data-aos-duration="1200"
+            >
+              <HeroCard
+                name="@yudopr"
+                bio="I'm a data engineer with 7 years of experience specializing in project management, data analysis, and data engineering. I excel at understanding complex business requirements and creating detailed data models. Recently exploring LLM applications like RAG and function calling to drive innovative solutions."
+                years={7}
+                projects={20}
+                onProjectsClick={() => {
+                  document
+                    .getElementById('projects')
+                    ?.scrollIntoView({ behavior: 'smooth' });
+                }}
+                onContactClick={() => {
+                  window.location.href = 'mailto:yudho.prakoso@gmail.com';
+                }}
+              />
+            </div>
+          </section>
+
+          {/* Projects Section */}
+          <section
+            className="section-spacing"
+            id="projects"
+            data-aos="fade-up"
+            data-aos-duration="1000"
+          >
+            <div data-aos="fade-up" data-aos-delay="50">
+              <h2 className="section-header">Featured Projects</h2>
+              <p className="section-subtitle">
+                Data engineering projects I'm actively working on
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {[
+                {
+                  repoLink: 'https://github.com/yudopr11/yupi',
+                  title: 'Yupi',
+                  description:
+                    'Collection of APIs for my projects. Providing foundational services for data integration.',
+                  projectType: 'data-pipeline' as const,
+                  tags: ['API', 'Backend', 'Microservices'],
+                  delay: '100',
+                },
+                {
+                  repoLink: 'https://github.com/yudopr11/cuan',
+                  demoLink: 'https://cuan.yudopr.dev',
+                  title: 'Cuan',
+                  description:
+                    'Personal financial management application with data analytics and visualization.',
+                  projectType: 'full-stack' as const,
+                  tags: ['React', 'Finance', 'Analytics'],
+                  delay: '150',
+                },
+                {
+                  repoLink: 'https://github.com/yudopr11/ngakak',
+                  demoLink: 'https://ngakak.yudopr.dev',
+                  title: 'Ngakak',
+                  description:
+                    'AI-powered bill splitter leveraging LLM for smart financial calculations.',
+                  projectType: 'llm' as const,
+                  tags: ['React', 'LLM', 'Function Calling'],
+                  delay: '200',
+                },
+                {
+                  repoLink: 'https://github.com/yudopr11/latihan-matematika',
+                  title: 'Latihan Matematika',
+                  description:
+                    'Interactive math quiz platform for high school students with progress tracking.',
+                  projectType: 'learning' as const,
+                  tags: ['React', 'Education', 'Quiz'],
+                  delay: '250',
+                },
+                {
+                  repoLink:
+                    'https://youtube.com/playlist?list=PLNxndFN0gO42oBYLVsXBrTsKW7aAPEbQP&si=l5crWKP-WnAFoKhr',
+                  title: 'Belajar SQL',
+                  description:
+                    'Comprehensive SQL tutorial series with practical exercises for beginners.',
+                  projectType: 'learning' as const,
+                  tags: ['SQL', 'Database', 'Tutorial'],
+                  delay: '300',
+                },
+              ].map((project, idx) => (
+                <div
+                  key={idx}
+                  data-aos="fade-up"
+                  data-aos-delay={project.delay}
+                  data-aos-duration="1000"
+                  className="animate-smooth-scale"
+                  style={{
+                    animation: `smoothScale 1000ms ease-out ${project.delay}ms both`,
+                  }}
+                >
+                  <ProjectCard
+                    repoLink={project.repoLink}
+                    demoLink={project.demoLink}
+                    title={project.title}
+                    description={project.description}
+                    projectType={project.projectType}
+                    tags={project.tags}
+                  />
                 </div>
-                
-                {/* Profile Info */}
-                <div className="flex-grow text-center md:text-left">
-                  <h1 className="text-4xl md:text-5xl font-bold mb-6 text-primary-400">
-                    Hello, I'm @yudopr!
-                  </h1>
-                  
-                  <p className="text-gray-300 mb-4 text-lg leading-relaxed">
-                  I'm a data engineer with 7 years of experience 🚀, specializing in project management, data analysis, and data engineering. 
-                  I excel at understanding complex business requirements and creating detailed data models 🤓. 
-                  In my most recent project, I increased financial visibility and efficiency through meticulous data pipeline development 📈. 
-                  Additionally, I've recently begun exploring LLM applications, such as Retrieval-Augmented Generation (RAG) and function calling 🤖, to drive innovative, data-driven solutions.
-                  </p>
-                </div>
+              ))}
+            </div>
+          </section>
+
+          {/* Social & CTA Footer */}
+          <section
+            className="section-spacing"
+            data-aos="fade-up"
+            data-aos-duration="1200"
+          >
+            <div
+              className="glass-card text-center py-12"
+              data-aos="zoom-in"
+              data-aos-delay="100"
+              data-aos-duration="1000"
+            >
+              <h2 className="text-h3 mb-4 gradient-text-primary">
+                Let's Connect
+              </h2>
+              <p className="text-gray-400 mb-8 max-w-xl mx-auto">
+                Whether you have a data challenge, want to collaborate, or just
+                want to chat about data engineering, I'd love to hear from you!
+              </p>
+
+              {/* Social Links */}
+              <div className="flex flex-wrap justify-center gap-4 mb-8">
+                {socialLinks.map((link, idx) => (
+                  <a
+                    key={idx}
+                    href={link.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="social-link-enhanced"
+                    aria-label={link.label}
+                    data-aos="fade-in"
+                    data-aos-delay={`${idx * 50}`}
+                  >
+                    {link.icon}
+                    <span className="hidden sm:inline">{link.label}</span>
+                  </a>
+                ))}
+              </div>
+
+              {/* Divider */}
+              <div className="divider my-8"></div>
+
+              {/* CTA Section */}
+              <div className="space-y-4">
+                <p className="text-gray-500 text-sm">
+                  Interested in my work? Let's discuss your data needs!
+                </p>
+                <button
+                  onClick={() => {
+                    window.location.href = 'mailto:yudho.prakoso@gmail.com';
+                  }}
+                  className="btn-primary group mx-auto"
+                  data-aos="pulse"
+                  data-aos-delay="200"
+                >
+                  Send Me an Email
+                </button>
               </div>
             </div>
-            
-            {/* Independent Projects Section */}
-            <div>
-              <h2 className="text-3xl font-bold mb-8 text-gray-100">Independent projects I'm working on:</h2>
-              
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <ProjectCard 
-                  repoLink="https://github.com/yudopr11/yupi" 
-                  title="Yupi" 
-                  description="Collection of APIs for my project."
-                />
-                <ProjectCard 
-                  repoLink="https://github.com/yudopr11/cuan" 
-                  demoLink="https://cuan.yudopr.dev"
-                  title="Cuan" 
-                  description="Web-based personal financial management application."
-                />
-                <ProjectCard 
-                  repoLink="https://github.com/yudopr11/ngakak" 
-                  demoLink="https://ngakak.yudopr.dev"
-                  title="Ngakak" 
-                  description="Web-based bill splitter using LLM."
-                />
-                <ProjectCard 
-                  repoLink="https://github.com/yudopr11/latihan-matematika"
-                  title="Latihan Matematika" 
-                  description="Web-based math quiz application for high school students."
-                />
-                <ProjectCard 
-                  repoLink="https://youtube.com/playlist?list=PLNxndFN0gO42oBYLVsXBrTsKW7aAPEbQP&si=l5crWKP-WnAFoKhr" 
-                  title="Belajar SQL" 
-                  description="Video tutorials and SQL exercises for beginners."
-                />
-              </div>
-            </div>
-            
-            {/* Social Media Links */}
-            <div>
-              <div className="flex justify-center gap-10">
-                <SocialLink href="https://www.linkedin.com/in/yudho-prakoso/" icon={
-                  <LinkedInIcon className="w-8 h-8" />
-                } />
-                <SocialLink href="https://github.com/yudopr11/" icon={
-                  <GitHubIcon className="w-8 h-8" />
-                } />
-                <SocialLink href="https://www.tiktok.com/@yudopr" icon={
-                  <TikTokIcon className="w-8 h-8" />
-                } />
-                <SocialLink href="https://www.youtube.com/SantapMalam" icon={
-                  <YouTubeIcon className="w-8 h-8" />
-                } />
-              </div>
-            </div>
-          </div>
+          </section>
         </div>
       </div>
+
+      {/* Scroll to Top */}
+      <CustomScrollToTop />
     </div>
   );
-} 
+}
