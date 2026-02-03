@@ -78,7 +78,7 @@ export default function PostDetail() {
       <div className="absolute inset-0 bg-grid-pattern opacity-5 pointer-events-none"></div>
       
       <div className="px-4 sm:px-6 lg:px-8">
-        <div className="max-w-4xl mx-auto py-12 relative z-10">
+        <div className="max-w-4xl mx-auto py-12 sm:py-16 relative z-10 space-y-12 sm:space-y-16">
           {loading ? (
             <LoadingSpinner />
           ) : error ? (
@@ -90,7 +90,7 @@ export default function PostDetail() {
               <PostHeader post={post} />
               <PostContent content={post.content} />
               <PostFooter post={post} />
-              
+
               {/* Custom Scroll to Top button */}
               <CustomScrollToTop scrollThreshold={300} smooth={true} />
             </>
