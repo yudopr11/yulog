@@ -97,7 +97,7 @@ export default function HeroCard({
           </div>
 
           {/* Social Links */}
-          <div className="flex items-center gap-3 pt-4">
+          <div className="flex items-center gap-3 pt-4 py-2">
             <span className="text-sm text-gray-500 font-medium">Find me on:</span>
             <div className="flex gap-3">
               <a

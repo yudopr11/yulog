@@ -96,9 +96,6 @@ export default function Home() {
             data-aos-duration="1200"
           >
             <div
-              data-aos="zoom-in"
-              data-aos-delay="100"
-              data-aos-duration="1200"
             >
               <HeroCard
                 name="@yudopr"

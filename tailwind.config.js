@@ -49,6 +49,19 @@ export default {
         'slide-in-stagger': {
           '0%': { transform: 'translateY(10px)', opacity: 0 },
           '100%': { transform: 'translateY(0)', opacity: 1 }
+        },
+        'rotate': {
+          '0%': { transform: 'rotate(0deg)' },
+          '100%': { transform: 'rotate(360deg)' }
+        },
+        'float-gentle': {
+          '0%, 100%': { transform: 'translateY(0px)' },
+          '50%': { transform: 'translateY(-10px)' }
+        },
+        'wave': {
+          '0%, 100%': { transform: 'rotate(0deg)' },
+          '25%': { transform: 'rotate(20deg)' },
+          '75%': { transform: 'rotate(-20deg)' }
         }
       },
       animation: {
@@ -56,7 +69,10 @@ export default {
         'data-flow': 'data-flow 3s infinite',
         'metric-pulse': 'metric-pulse 2s ease-in-out infinite',
         'gradient-shift': 'gradient-shift 6s ease infinite',
-        'slide-in-stagger': 'slide-in-stagger 0.5s ease-out forwards'
+        'slide-in-stagger': 'slide-in-stagger 0.5s ease-out forwards',
+        'rotate-slow': 'rotate 8s linear infinite',
+        'float-gentle': 'float-gentle 3s ease-in-out infinite',
+        'wave': 'wave 1s ease-in-out infinite'
       },
       backdropBlur: {
         xs: '2px',
