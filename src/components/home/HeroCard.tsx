@@ -21,7 +21,7 @@ export default function HeroCard({
   return (
     <div className="relative min-h-screen md:min-h-[600px] flex items-center overflow-hidden py-6 sm:py-8 md:py-0">
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-16 items-center w-full px-4 sm:px-6 lg:px-12">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-16 items-center w-full">
         {/* Left Content */}
         <div className="flex flex-col justify-center space-y-6 sm:space-y-8 order-2 lg:order-1">
           {/* Greeting Badge */}

@@ -201,7 +201,7 @@ export default function Blog() {
       <div className="absolute inset-0 bg-grid-pattern opacity-5 pointer-events-none"></div>
       
       <div className="px-4 sm:px-6 lg:px-8">
-        <div className="max-w-5xl mx-auto py-2 relative z-10">
+        <div className="max-w-6xl mx-auto relative z-10 py-4 sm:py-5 lg:py-6">
           {/* Search Bar with RAG toggle */}
           <div className="pb-6">
             <form onSubmit={handleSearch}>
