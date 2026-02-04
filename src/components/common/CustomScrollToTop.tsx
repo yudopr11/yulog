@@ -41,9 +41,9 @@ export default function CustomScrollToTop({
   return (
     <>
       {isVisible && (
-        <button 
+        <button
           onClick={scrollToTop}
-          className="fixed z-20 bg-primary-700 hover:bg-primary-600 transition-colors duration-300 rounded-full w-10 h-10 flex items-center justify-center shadow-lg"
+          className="fixed z-20 bg-gradient-to-br from-primary-500 to-primary-600 hover:from-primary-400 hover:to-primary-500 transition-all duration-300 rounded-full w-10 h-10 flex items-center justify-center shadow-lg hover:shadow-primary-500/50 hover:scale-110"
           style={{ bottom: '20px', right: '20px' }}
           aria-label="Scroll to top"
         >
