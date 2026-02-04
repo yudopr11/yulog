@@ -163,7 +163,7 @@ const TableOfContents: React.FC<TableOfContentsProps> = ({ content }) => {
         {/* Content List */}
         <div className={`transition-all duration-300 ${isCollapsed ? 'max-h-0' : 'max-h-[400px]'} overflow-y-auto`}>
           <ul className="p-5 sm:p-6 space-y-2">
-            {headings.map((heading, index) => (
+            {headings.map((heading) => (
               <li
                 key={heading.id}
                 className="transition-all duration-200"
