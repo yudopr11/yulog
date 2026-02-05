@@ -38,8 +38,8 @@ export default function HeroCard({
           <div className="space-y-2">
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black leading-tight tracking-tight">
               <span className="block text-white">Data Engineer</span>
-              <span className="block bg-gradient-to-r from-primary-400 via-primary-500 to-primary-600 bg-clip-text text-transparent">
-                Based in Asia
+              <span className="block text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl bg-gradient-to-r from-primary-400 via-primary-500 to-primary-600 bg-clip-text text-transparent font-semibold">
+                Based in Indonesia
               </span>
             </h1>
           </div>
