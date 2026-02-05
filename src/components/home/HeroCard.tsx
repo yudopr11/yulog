@@ -135,15 +135,11 @@ export default function HeroCard({
         {/* Right Profile Section */}
         <div className="relative flex flex-col items-center justify-center order-1 lg:order-2 h-auto lg:h-full">
           {/* Decorative circles and shapes */}
-          <div className="hidden sm:block absolute top-1/2 right-1/3 -translate-y-1/2 w-48 sm:w-60 md:w-72 h-48 sm:h-60 md:h-72 border-2 border-primary-500/20 rounded-full animate-rotate-slow"></div>
-          <div className="hidden md:block absolute bottom-1/4 -left-16 w-48 h-48 border-2 border-primary-400/10 rounded-full animate-float-gentle"></div>
-
-          {/* Geometric accent shapes */}
-          <div className="hidden md:block absolute top-20 right-12 w-40 h-40 bg-primary-500/10 rounded-3xl transform rotate-12 animate-pulse"></div>
-          <div className="hidden md:block absolute bottom-24 -left-8 w-32 h-32 bg-primary-400/10 rounded-2xl transform -rotate-12 animate-float-gentle" style={{ animationDelay: '1s' }}></div>
+          <div className="hidden sm:block absolute top-1/2 right-1/3 -translate-y-1/2 w-48 sm:w-60 md:w-72 h-48 sm:h-60 md:h-72 border-2 border-primary-400 rounded-full animate-rotate-slow" style={{ boxShadow: '0 0 0 2px rgba(56, 189, 248, 0.3), 0 0 20px 3px rgba(56, 189, 248, 0.6)', animation: 'glow-orbit 4s linear infinite' }}></div>
+          <div className="hidden md:block absolute bottom-1/4 -left-16 w-48 h-48 border-2 border-white rounded-full animate-float-gentle" style={{ animation: 'glow-orbit-white 5s linear infinite' }}></div>
 
           {/* Profile Image Container */}
-          <div className="relative z-10 w-64 sm:w-72 md:w-80 h-72 sm:h-80 md:h-96 rounded-3xl overflow-hidden border-4 border-primary-500/40 shadow-2xl">
+          <div className="relative z-10 w-64 sm:w-72 md:w-80 h-72 sm:h-80 md:h-96 rounded-3xl overflow-hidden border-4 border-primary-400 shadow-2xl">
             {/* Gradient overlay for depth */}
             <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-gray-900/50 z-10"></div>
             <img
