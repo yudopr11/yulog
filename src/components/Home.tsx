@@ -71,7 +71,7 @@ export default function Home() {
       label: 'TikTok',
     },
     {
-      href: 'https://www.youtube.com/SantapMalam',
+      href: 'https://www.youtube.com/@yudopr',
       icon: <YouTubeIcon className="w-5 h-5" />,
       label: 'YouTube',
     },
