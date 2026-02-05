@@ -442,6 +442,36 @@ pre.shiki code .line {
     }
   }
 
+  @keyframes fade-in-up {
+    0% {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fade-out-down {
+    0% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    100% {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+  }
+
+  .animate-fade-in-up {
+    animation: fade-in-up 0.4s ease-out forwards;
+  }
+
+  .animate-fade-out-down {
+    animation: fade-out-down 0.4s ease-out forwards;
+  }
+
   .animate-slide-in {
     animation: slide-in 0.5s ease-out forwards;
   }

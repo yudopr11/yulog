@@ -39,21 +39,20 @@ export default function CustomScrollToTop({
   }, []);
 
   return (
-    <>
-      {isVisible && (
-        <button
-          onClick={scrollToTop}
-          className="fixed z-20 bg-gradient-to-br from-primary-500 to-primary-600 hover:from-primary-400 hover:to-primary-500 transition-all duration-300 rounded-full w-10 h-10 flex items-center justify-center shadow-lg hover:shadow-primary-500/50 hover:scale-110"
-          style={{ bottom: '20px', right: '20px' }}
-          aria-label="Scroll to top"
-        >
-          <ChevronUpIcon 
-            className="h-5 w-5 text-white" 
-            stroke="currentColor"
-            strokeWidth={2}
-          />
-        </button>
-      )}
-    </>
+    <button
+      onClick={scrollToTop}
+      className={`fixed z-20 bg-gradient-to-br from-primary-500 to-primary-600 hover:from-primary-400 hover:to-primary-500 transition-all duration-300 rounded-full w-10 h-10 flex items-center justify-center shadow-lg hover:shadow-primary-500/50 hover:scale-110 ${
+        isVisible ? 'animate-fade-in-up' : 'animate-fade-out-down pointer-events-none'
+      }`}
+      style={{ bottom: '20px', right: '20px' }}
+      aria-label="Scroll to top"
+      disabled={!isVisible}
+    >
+      <ChevronUpIcon
+        className="h-5 w-5 text-white"
+        stroke="currentColor"
+        strokeWidth={2}
+      />
+    </button>
   );
 } 
