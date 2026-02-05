@@ -32,7 +32,7 @@ export default function PostDetail() {
         setError(null);
         
         const data = await fetchBlogPostBySlug(slug);
-        
+
         if (isMounted) {
           setPost(data);
         }
@@ -63,14 +63,16 @@ export default function PostDetail() {
     <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-950 text-white">
       {/* Title with the blog post title if loaded */}
       {post ? (
-        <PageTitle 
-          title={post.title} 
+        <PageTitle
+          title={post.title}
           description={post.excerpt ?? undefined}
+          type="article"
         />
       ) : (
-        <PageTitle 
-          title={notFound ? "Post Not Found" : "Loading Post..."} 
+        <PageTitle
+          title={notFound ? "Post Not Found" : "Loading Post..."}
           description="Blog post detail"
+          type="article"
         />
       )}
       
@@ -89,7 +91,7 @@ export default function PostDetail() {
             <>
               <PostHeader post={post} />
               <PostContent content={post.content} />
-              <PostFooter post={post} />
+              <PostFooter />
 
               {/* Custom Scroll to Top button */}
               <CustomScrollToTop scrollThreshold={300} smooth={true} />
