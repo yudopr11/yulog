@@ -5,7 +5,6 @@ interface ProjectCardProps {
   repoLink?: string;
   title: string;
   description: string;
-  tags?: string[];
   projectType?: 'data-pipeline' | 'analytics' | 'full-stack' | 'llm' | 'learning';
 }
 
@@ -23,7 +22,6 @@ export default function ProjectCard({
   repoLink,
   title,
   description,
-  tags = [],
   projectType,
 }: ProjectCardProps) {
   // Handler for card click (repo link)
@@ -64,23 +62,9 @@ export default function ProjectCard({
         </div>
 
         {/* Description */}
-        <p className="text-sm sm:text-base text-gray-300 flex-grow mb-4 sm:mb-6 leading-relaxed">
+        <p className="text-sm sm:text-base text-gray-300 flex-grow mb-6 sm:mb-8 leading-relaxed">
           {description}
         </p>
-
-        {/* Tags */}
-        {tags.length > 0 && (
-          <div className="flex flex-wrap gap-2 mb-6 sm:mb-8">
-            {tags.map((tag, idx) => (
-              <span
-                key={idx}
-                className="px-3 py-1 text-xs sm:text-sm font-medium bg-gradient-to-r from-primary-500/20 to-primary-600/20 text-primary-300 rounded-full border border-primary-500/30 hover:border-primary-500/60 transition-all duration-300 hover:bg-gradient-to-r hover:from-primary-500/30 hover:to-primary-600/30"
-              >
-                {tag}
-              </span>
-            ))}
-          </div>
-        )}
 
         {/* Actions */}
         {(demoLink || repoLink) && (
