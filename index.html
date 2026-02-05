@@ -3,7 +3,20 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="yudopr's Personal Website" />
+    <meta name="description" content="yudopr's Personal Website - Blog, Projects, and Portfolio" />
+
+    <!-- Open Graph Meta Tags for Social Sharing -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="yudopr" />
+    <meta property="og:description" content="yudopr's Personal Website - Blog, Projects, and Portfolio" />
+    <meta property="og:url" content="https://yudopr.dev/" />
+    <meta property="og:site_name" content="yudopr" />
+
+    <!-- Twitter Card Tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="yudopr" />
+    <meta name="twitter:description" content="yudopr's Personal Website - Blog, Projects, and Portfolio" />
+
     <title>yudopr</title>
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">
     <link rel="icon" href="/favicon.ico" sizes="48x48">
@@ -11,6 +24,30 @@
     <!-- <link rel="manifest" href="/site.webmanifest"> -->
     <meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)">
     <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
+
+    <!-- Script to set meta tags based on URL for social sharing (runs before React) -->
+    <script>
+      (function() {
+        // Check if this is a blog post URL (e.g., /blog/post-slug)
+        const pathMatch = window.location.pathname.match(/\/blog\/([^/]+)$/);
+
+        if (pathMatch) {
+          const slug = pathMatch[1];
+
+          // Set a data attribute that React can read to fetch and update meta tags
+          document.documentElement.setAttribute('data-post-slug', slug);
+
+          // Update og:url to current page
+          const ogUrl = document.querySelector('meta[property="og:url"]');
+          if (ogUrl) {
+            ogUrl.setAttribute('content', window.location.href);
+          }
+
+          // Set a placeholder that will be replaced by React
+          document.title = `Loading... | yudopr`;
+        }
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

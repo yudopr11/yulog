@@ -1,13 +1,73 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { codeToHtml } from 'shiki';
 import { ArrowTopRightOnSquareIcon, DocumentDuplicateIcon, CheckIcon as HeroCheckIcon } from '@heroicons/react/24/outline';
 
 // Helper to create heading IDs
 const createHeadingId = (text: string, level: number): string => {
-  const cleanedText = typeof text === 'string' 
+  const cleanedText = typeof text === 'string'
     ? text.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '')
     : '';
   return `heading-${level}-${cleanedText}`;
+};
+
+// Language normalization map - constant to avoid recreating on every render
+const LANGUAGE_MAP: Record<string, string> = {
+  'js': 'javascript',
+  'ts': 'typescript',
+  'jsx': 'tsx',
+  'nodejs': 'javascript',
+  'node': 'javascript',
+  'shell': 'bash',
+  'sh': 'bash',
+  'zsh': 'bash',
+  'bash': 'bash',
+  'curl': 'bash',
+  'powershell': 'powershell',
+  'ps': 'powershell',
+  'ps1': 'powershell',
+  'cmd': 'cmd',
+  'batch': 'batch',
+  'bat': 'batch',
+  'yml': 'yaml',
+  'yaml': 'yaml',
+  'json': 'json',
+  'json5': 'json',
+  'jsonc': 'jsonc',
+  'xml': 'xml',
+  'toml': 'toml',
+  'html': 'html',
+  'css': 'css',
+  'scss': 'scss',
+  'sass': 'sass',
+  'less': 'less',
+  'svg': 'svg',
+  'py': 'python',
+  'python': 'python',
+  'rb': 'ruby',
+  'ruby': 'ruby',
+  'go': 'go',
+  'golang': 'go',
+  'rs': 'rust',
+  'rust': 'rust',
+  'java': 'java',
+  'kotlin': 'kotlin',
+  'kt': 'kotlin',
+  'c': 'c',
+  'cpp': 'cpp',
+  'c++': 'cpp',
+  'cs': 'csharp',
+  'csharp': 'csharp',
+  'php': 'php',
+  'swift': 'swift',
+  'sql': 'sql',
+  'mysql': 'sql',
+  'pgsql': 'sql',
+  'postgres': 'sql',
+  'postgresql': 'sql',
+  'md': 'markdown',
+  'markdown': 'markdown',
+  'tex': 'latex',
+  'latex': 'latex',
 };
 
 // Custom CodeBlock component with Shiki syntax highlighting
@@ -17,81 +77,7 @@ const CodeBlock = ({ language, code, showLineNumbers = true }: { language: strin
 
   // Map some common language variations to supported ones
   const normalizeLanguage = (lang: string): string => {
-    const langMap: Record<string, string> = {
-      // JavaScript variants
-      'js': 'javascript',
-      'ts': 'typescript',
-      'jsx': 'tsx',
-      'nodejs': 'javascript',
-      'node': 'javascript',
-      
-      // Shell variants
-      'shell': 'bash',
-      'sh': 'bash',
-      'zsh': 'bash',
-      'bash': 'bash',
-      'curl': 'bash',
-      
-      // Windows command line variants
-      'powershell': 'powershell',
-      'ps': 'powershell',
-      'ps1': 'powershell',
-      'cmd': 'cmd',
-      'batch': 'batch',
-      'bat': 'batch',
-      
-      // Data formats
-      'yml': 'yaml',
-      'yaml': 'yaml',
-      'json': 'json',
-      'json5': 'json',
-      'jsonc': 'jsonc',
-      'xml': 'xml',
-      'toml': 'toml',
-      
-      // Web technologies
-      'html': 'html',
-      'css': 'css',
-      'scss': 'scss',
-      'sass': 'sass',
-      'less': 'less',
-      'svg': 'svg',
-      
-      // Common programming languages
-      'py': 'python',
-      'python': 'python',
-      'rb': 'ruby',
-      'ruby': 'ruby',
-      'go': 'go',
-      'golang': 'go',
-      'rs': 'rust',
-      'rust': 'rust',
-      'java': 'java',
-      'kotlin': 'kotlin',
-      'kt': 'kotlin',
-      'c': 'c',
-      'cpp': 'cpp',
-      'c++': 'cpp',
-      'cs': 'csharp',
-      'csharp': 'csharp',
-      'php': 'php',
-      'swift': 'swift',
-      
-      // Database
-      'sql': 'sql',
-      'mysql': 'sql',
-      'pgsql': 'sql',
-      'postgres': 'sql',
-      'postgresql': 'sql',
-      
-      // Markup
-      'md': 'markdown',
-      'markdown': 'markdown',
-      'tex': 'latex',
-      'latex': 'latex',
-    };
-    
-    return langMap[lang.toLowerCase()] || lang;
+    return LANGUAGE_MAP[lang.toLowerCase()] || lang;
   };
 
   useEffect(() => {
@@ -168,18 +154,32 @@ export const MarkdownRenderers = {
       
       // Custom component for code block with copy button
       return (
-        <div className="my-6 overflow-hidden rounded-lg bg-gray-950 shadow-xl">
-          <div className="flex items-center justify-between bg-gray-900 px-4 py-2">
-            <span className="text-xs font-semibold text-gray-400">
-              {match[1].toUpperCase()}
-            </span>
-            <CopyButton code={codeString} />
-          </div>
-          <div className="overflow-x-auto px-2">
-            <CodeBlock 
-              language={match[1]} 
-              code={codeString} 
-            />
+        <div className="my-6 overflow-hidden rounded-2xl group relative">
+          {/* Glassmorphism background */}
+          <div className="absolute inset-0 bg-gradient-to-br from-gray-900/40 to-gray-900/80 backdrop-blur-xl rounded-2xl"></div>
+
+          {/* Border with hover effect */}
+          <div className="absolute inset-0 border border-gray-700/30 rounded-2xl group-hover:border-primary-500/30 transition-all duration-300"></div>
+
+          {/* Shadow/glow effect */}
+          <div className="absolute -top-1/2 -right-1/4 w-3/4 h-full bg-gradient-to-br from-primary-500/10 to-transparent rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
+
+          <div className="relative z-10">
+            {/* Header with gradient background */}
+            <div className="flex items-center justify-between bg-gradient-to-r from-gray-900/50 to-gray-800/30 px-6 py-3 border-b border-gray-700/30 group-hover:border-primary-500/20 transition-colors duration-300">
+              <span className="text-xs font-semibold text-primary-300 bg-gradient-to-r from-primary-600/20 to-primary-500/20 px-3 py-1 rounded-full border border-primary-500/30">
+                {match[1].toUpperCase()}
+              </span>
+              <CopyButton code={codeString} />
+            </div>
+
+            {/* Code content */}
+            <div className="overflow-x-auto px-2 py-4">
+              <CodeBlock
+                language={match[1]}
+                code={codeString}
+              />
+            </div>
           </div>
         </div>
       );
@@ -241,37 +241,51 @@ export const MarkdownRenderers = {
   },
   // Add custom renderer for horizontal rules (line separators)
   hr: () => (
-    <hr className="my-8 border-t border-gray-700" />
+    <div className="my-8">
+      <div className="h-px bg-gradient-to-r from-transparent via-gray-700/50 to-transparent"></div>
+    </div>
   ),
-  // Custom heading renderers with IDs
+  // Custom heading renderers with IDs and gradient accents
   h1: ({children}: any) => {
     const id = createHeadingId(String(children), 1);
     return (
-      <h1 id={id} className="text-3xl sm:text-4xl font-bold mt-10 mb-6 text-white border-b border-gray-800 pb-2">
-        {children}
-      </h1>
+      <div className="relative mt-10 mb-6 group">
+        <h1 id={id} className="text-3xl sm:text-4xl font-bold text-white pb-3 relative z-10">
+          {children}
+        </h1>
+        {/* Bottom gradient line */}
+        <div className="absolute bottom-0 left-0 h-1 bg-gradient-to-r from-primary-500/50 via-primary-400/30 to-transparent group-hover:from-primary-500 group-hover:via-primary-400 transition-all duration-500"></div>
+      </div>
     );
   },
   h2: ({children}: any) => {
     const id = createHeadingId(String(children), 2);
     return (
-      <h2 id={id} className="text-2xl sm:text-3xl font-bold mt-8 mb-4 text-white border-b border-gray-800 pb-2">
-        {children}
-      </h2>
+      <div className="relative mt-8 mb-4 group">
+        <h2 id={id} className="text-2xl sm:text-3xl font-bold text-white pb-3 relative z-10 bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent group-hover:from-primary-300 group-hover:to-primary-100 transition-all duration-300">
+          {children}
+        </h2>
+        {/* Bottom gradient line */}
+        <div className="absolute bottom-0 left-0 h-1 bg-gradient-to-r from-primary-500/50 via-primary-400/30 to-transparent group-hover:from-primary-500 group-hover:via-primary-400 transition-all duration-500"></div>
+      </div>
     );
   },
   h3: ({children}: any) => {
     const id = createHeadingId(String(children), 3);
     return (
-      <h3 id={id} className="text-xl sm:text-2xl font-semibold mt-6 mb-3 text-white">
-        {children}
-      </h3>
+      <div className="relative mt-6 mb-3 group">
+        <h3 id={id} className="text-xl sm:text-2xl font-semibold text-white pb-2 relative z-10">
+          {children}
+        </h3>
+        {/* Left gradient accent */}
+        <div className="absolute left-0 top-0 h-full w-1 bg-gradient-to-b from-primary-500/50 to-primary-600/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-r"></div>
+      </div>
     );
   },
   h4: ({children}: any) => {
     const id = createHeadingId(String(children), 4);
     return (
-      <h4 id={id} className="text-lg sm:text-xl font-medium mt-5 mb-2 text-primary-300">
+      <h4 id={id} className="text-lg sm:text-xl font-medium mt-5 mb-2 text-primary-300 group-hover:text-primary-200 transition-colors">
         {children}
       </h4>
     );
@@ -279,7 +293,7 @@ export const MarkdownRenderers = {
   h5: ({children}: any) => {
     const id = createHeadingId(String(children), 5);
     return (
-      <h5 id={id} className="text-md sm:text-lg font-medium mt-4 mb-2 text-primary-300">
+      <h5 id={id} className="text-md sm:text-lg font-medium mt-4 mb-2 text-primary-300 group-hover:text-primary-200 transition-colors">
         {children}
       </h5>
     );
@@ -302,36 +316,42 @@ export const MarkdownRenderers = {
   li: ({children}: any) => (
     <li className="pl-1">{children}</li>
   ),
-  // Custom table renderers
+  // Custom table renderers with glassmorphism
   table: ({children}: any) => (
-    <div className="my-6 overflow-x-auto">
-      <table className="w-full border-collapse overflow-hidden bg-gray-950 shadow-xl rounded-lg">
+    <div className="my-6 overflow-x-auto rounded-2xl group relative">
+      {/* Glassmorphism wrapper */}
+      <div className="absolute inset-0 bg-gradient-to-br from-gray-900/40 to-gray-900/80 backdrop-blur-xl rounded-2xl border border-gray-700/30 group-hover:border-primary-500/30 transition-all duration-300"></div>
+
+      {/* Glow effect */}
+      <div className="absolute -top-1/2 -right-1/4 w-3/4 h-full bg-gradient-to-br from-primary-500/10 to-transparent rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
+
+      <table className="relative z-10 w-full border-collapse">
         {children}
       </table>
     </div>
   ),
   thead: ({children}: any) => (
-    <thead className="bg-gray-900 text-white border-b border-gray-800">
+    <thead className="bg-gradient-to-r from-gray-900/50 to-gray-800/30 text-white border-b border-gray-700/30">
       {children}
     </thead>
   ),
   tbody: ({children}: any) => (
-    <tbody className="divide-y divide-gray-800">
+    <tbody className="divide-y divide-gray-700/30">
       {children}
     </tbody>
   ),
   tr: ({children, isHeader}: any) => (
-    <tr className={isHeader ? "" : "hover:bg-gray-900/30 transition-colors"}>
+    <tr className={isHeader ? "" : "hover:bg-primary-500/5 transition-colors duration-200"}>
       {children}
     </tr>
   ),
   th: ({children}: any) => (
-    <th className="px-4 py-3 text-left font-semibold text-gray-300 border-r border-gray-800 last:border-r-0">
+    <th className="px-4 py-3 text-left font-semibold text-primary-300 border-r border-gray-700/20 last:border-r-0 group-hover:text-primary-200 transition-colors">
       {children}
     </th>
   ),
   td: ({children}: any) => (
-    <td className="px-4 py-3 text-gray-300 border-r border-gray-800 last:border-r-0">
+    <td className="px-4 py-3 text-gray-300 border-r border-gray-700/20 last:border-r-0">
       {children}
     </td>
   ),
@@ -417,19 +437,18 @@ export const MarkdownRenderers = {
 function CopyButton({ code }: { code: string }) {
   const [copied, setCopied] = useState(false);
 
-  const handleCopy = async () => {
+  const handleCopy = useCallback(async () => {
     try {
       await navigator.clipboard.writeText(code);
       setCopied(true);
-      
-      // Reset copied state after 2 seconds
+
       setTimeout(() => {
         setCopied(false);
       }, 2000);
     } catch (err) {
       console.error('Failed to copy code: ', err);
     }
-  };
+  }, [code]);
 
   return (
     <button

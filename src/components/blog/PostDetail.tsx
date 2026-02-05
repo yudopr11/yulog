@@ -9,7 +9,7 @@ import CustomScrollToTop from '../common/CustomScrollToTop';
 import PostHeader from './PostHeader';
 import PostContent from './PostContent';
 import PostFooter from './PostFooter';
-import LoadingSpinner from '../common/LoadingSpinner';
+import PostDetailSkeleton from './PostDetailSkeleton';
 import ErrorAlert from '../common/ErrorAlert';
 import PostNotFound from './PostNotFound';
 
@@ -32,7 +32,7 @@ export default function PostDetail() {
         setError(null);
         
         const data = await fetchBlogPostBySlug(slug);
-        
+
         if (isMounted) {
           setPost(data);
         }
@@ -63,14 +63,16 @@ export default function PostDetail() {
     <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-950 text-white">
       {/* Title with the blog post title if loaded */}
       {post ? (
-        <PageTitle 
-          title={post.title} 
+        <PageTitle
+          title={post.title}
           description={post.excerpt ?? undefined}
+          type="article"
         />
       ) : (
-        <PageTitle 
-          title={notFound ? "Post Not Found" : "Loading Post..."} 
+        <PageTitle
+          title={notFound ? "Post Not Found" : "Loading Post..."}
           description="Blog post detail"
+          type="article"
         />
       )}
       
@@ -78,9 +80,9 @@ export default function PostDetail() {
       <div className="absolute inset-0 bg-grid-pattern opacity-5 pointer-events-none"></div>
       
       <div className="px-4 sm:px-6 lg:px-8">
-        <div className="max-w-4xl mx-auto py-12 relative z-10">
+        <div className="max-w-6xl mx-auto relative z-10 py-4 sm:py-5 lg:py-6 space-y-12 sm:space-y-16">
           {loading ? (
-            <LoadingSpinner />
+            <PostDetailSkeleton />
           ) : error ? (
             <ErrorAlert message={error} />
           ) : notFound ? (
@@ -89,8 +91,8 @@ export default function PostDetail() {
             <>
               <PostHeader post={post} />
               <PostContent content={post.content} />
-              <PostFooter post={post} />
-              
+              <PostFooter />
+
               {/* Custom Scroll to Top button */}
               <CustomScrollToTop scrollThreshold={300} smooth={true} />
             </>

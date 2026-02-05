@@ -56,8 +56,8 @@ export default function Navbar() {
           : 'bg-gradient-to-b from-gray-800 to-gray-900'}`}
     >
       <div className="px-4 sm:px-6 lg:px-8">
-        <div className="max-w-4xl mx-auto">
-          <div className="flex justify-between h-16">
+        <div className="max-w-6xl mx-auto relative z-10 py-4 sm:py-5 lg:py-6">
+          <div className="flex justify-between items-center">
             <div className="flex items-center">
               <Link 
                 to="/" 
