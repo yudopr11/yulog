@@ -136,6 +136,7 @@ export default function Home() {
                   description:
                     'Collection of APIs for my projects. Providing foundational services for data integration.',
                   projectType: 'data-pipeline' as const,
+                  tags: ['API', 'Backend', 'Microservices'],
                   delay: '100',
                 },
                 {
@@ -145,6 +146,7 @@ export default function Home() {
                   description:
                     'Personal financial management application with data analytics and visualization.',
                   projectType: 'full-stack' as const,
+                  tags: ['React', 'Finance', 'Analytics'],
                   delay: '150',
                 },
                 {
@@ -154,6 +156,7 @@ export default function Home() {
                   description:
                     'AI-powered bill splitter leveraging LLM for smart financial calculations.',
                   projectType: 'llm' as const,
+                  tags: ['React', 'LLM', 'Function Calling'],
                   delay: '200',
                 },
                 {
@@ -162,6 +165,7 @@ export default function Home() {
                   description:
                     'Interactive math quiz platform for high school students with progress tracking.',
                   projectType: 'learning' as const,
+                  tags: ['Django', 'Fullstack', 'Education', 'Quiz'],
                   delay: '250',
                 },
                 {
@@ -171,6 +175,7 @@ export default function Home() {
                   description:
                     'Comprehensive SQL tutorial series with practical exercises for beginners.',
                   projectType: 'learning' as const,
+                  tags: ['SQL', 'Database', 'Tutorial'],
                   delay: '300',
                 },
               ].map((project, idx) => (
@@ -190,6 +195,7 @@ export default function Home() {
                     title={project.title}
                     description={project.description}
                     projectType={project.projectType}
+                    tags={project.tags}
                   />
                 </div>
               ))}

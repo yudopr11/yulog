@@ -6,6 +6,7 @@ interface ProjectCardProps {
   title: string;
   description: string;
   projectType?: 'data-pipeline' | 'analytics' | 'full-stack' | 'llm' | 'learning';
+  tags?: string[];
 }
 
 const projectTypeIcons = {
@@ -23,6 +24,7 @@ export default function ProjectCard({
   title,
   description,
   projectType,
+  tags = [],
 }: ProjectCardProps) {
   // Handler for card click (repo link)
   const handleCardClick = () => {
@@ -65,6 +67,20 @@ export default function ProjectCard({
         <p className="text-sm sm:text-base text-gray-300 flex-grow mb-6 sm:mb-8 leading-relaxed">
           {description}
         </p>
+
+        {/* Tags */}
+        {tags && tags.length > 0 && (
+          <div className="flex flex-wrap gap-2 mb-6">
+            {tags.map((tag, index) => (
+              <span
+                key={`${tag}-${index}`}
+                className="px-3 py-1 text-xs font-medium bg-gradient-to-r from-primary-500/20 to-primary-600/20 text-primary-300 rounded-full border border-primary-500/30 group-hover:border-primary-500/60 group-hover:bg-gradient-to-r group-hover:from-primary-500/30 group-hover:to-primary-600/30 transition-all duration-300"
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
+        )}
 
         {/* Actions */}
         {(demoLink || repoLink) && (
