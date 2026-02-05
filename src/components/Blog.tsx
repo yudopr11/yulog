@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import PageTitle from './common/PageTitle';
 import BlogPostCard from './blog/BlogPostCard';
 import { fetchBlogPosts, USE_RAG_DEFAULT } from '../services/api';
@@ -14,41 +14,49 @@ export default function Blog() {
   const [defaultSkip, setDefaultSkip] = useState(0);
   const [hasMoreDefault, setHasMoreDefault] = useState(true);
   const [totalDefault, setTotalDefault] = useState(0);
-  
+
   // Search results
   const [searchPosts, setSearchPosts] = useState<PostListItem[]>([]);
   const [searchLoading, setSearchLoading] = useState(false);
   const [searchSkip, setSearchSkip] = useState(0);
   const [hasMoreSearch, setHasMoreSearch] = useState(true);
   const [totalSearch, setTotalSearch] = useState(0);
-  
+
   // Shared state
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [useRag, setUseRag] = useState<boolean>(USE_RAG_DEFAULT);
+
+  // Track when to scroll to newly loaded posts
+  const [shouldScrollDefault, setShouldScrollDefault] = useState(false);
+  const [shouldScrollSearch, setShouldScrollSearch] = useState(false);
+  const newPostsRefDefault = useRef<HTMLDivElement>(null);
+  const newPostsRefSearch = useRef<HTMLDivElement>(null);
   
   // Effect for loading default posts (when search is empty)
   useEffect(() => {
     let isMounted = true;
-    
+
     if (searchTerm) return; // Skip if there's a search term
-    
+
     async function loadDefaultPosts() {
       try {
         setDefaultLoading(true);
         const data = await fetchBlogPosts(defaultSkip, POSTS_PER_PAGE);
-        
+
         if (isMounted) {
           if (defaultSkip === 0) {
             setDefaultPosts(data.items);
+            setShouldScrollDefault(false);
           } else {
             setDefaultPosts(prevPosts => {
               const existingIds = new Set(prevPosts.map(p => p.id));
               const newUniquePosts = data.items.filter(item => !existingIds.has(item.id));
               return [...prevPosts, ...newUniquePosts];
             });
+            setShouldScrollDefault(true);
           }
-          
+
           setTotalDefault(data.total_count);
           setHasMoreDefault(data.has_more);
           setError(null);
@@ -65,36 +73,51 @@ export default function Blog() {
         }
       }
     }
-    
+
     loadDefaultPosts();
-    
+
     return () => {
       isMounted = false;
     };
   }, [defaultSkip, POSTS_PER_PAGE, searchTerm]);
 
+  // Effect to scroll to bottom when new default posts are loaded
+  useEffect(() => {
+    if (shouldScrollDefault) {
+      setTimeout(() => {
+        window.scrollTo({
+          top: document.documentElement.scrollHeight,
+          behavior: 'smooth'
+        });
+      }, 200);
+      setShouldScrollDefault(false);
+    }
+  }, [shouldScrollDefault]);
+
   // Effect for loading search results (when search has a term)
   useEffect(() => {
     let isMounted = true;
-    
+
     if (!searchTerm) return; // Skip if there's no search term
-    
+
     async function loadSearchResults() {
       try {
         setSearchLoading(true);
         const data = await fetchBlogPosts(searchSkip, POSTS_PER_PAGE, searchTerm, undefined, 'published', useRag);
-        
+
         if (isMounted) {
           if (searchSkip === 0) {
             setSearchPosts(data.items);
+            setShouldScrollSearch(false);
           } else {
             setSearchPosts(prevPosts => {
               const existingIds = new Set(prevPosts.map(p => p.id));
               const newUniquePosts = data.items.filter(item => !existingIds.has(item.id));
               return [...prevPosts, ...newUniquePosts];
             });
+            setShouldScrollSearch(true);
           }
-          
+
           setTotalSearch(data.total_count);
           setHasMoreSearch(data.has_more);
           setError(null);
@@ -111,17 +134,30 @@ export default function Blog() {
         }
       }
     }
-    
+
     // Debounce search requests
     const timeoutId = setTimeout(() => {
       loadSearchResults();
     }, 300);
-    
+
     return () => {
       isMounted = false;
       clearTimeout(timeoutId);
     };
   }, [searchSkip, POSTS_PER_PAGE, searchTerm, useRag]);
+
+  // Effect to scroll to bottom when new search results are loaded
+  useEffect(() => {
+    if (shouldScrollSearch) {
+      setTimeout(() => {
+        window.scrollTo({
+          top: document.documentElement.scrollHeight,
+          behavior: 'smooth'
+        });
+      }, 200);
+      setShouldScrollSearch(false);
+    }
+  }, [shouldScrollSearch]);
 
   const handleSearch = useCallback((e: React.FormEvent) => {
     e.preventDefault();
@@ -152,22 +188,10 @@ export default function Blog() {
 
   const loadMoreDefault = useCallback(() => {
     setDefaultSkip(prev => prev + POSTS_PER_PAGE);
-    setTimeout(() => {
-      window.scrollTo({
-        top: document.documentElement.scrollHeight,
-        behavior: 'smooth'
-      });
-    }, 300);
   }, []);
 
   const loadMoreSearch = useCallback(() => {
     setSearchSkip(prev => prev + POSTS_PER_PAGE);
-    setTimeout(() => {
-      window.scrollTo({
-        top: document.documentElement.scrollHeight,
-        behavior: 'smooth'
-      });
-    }, 300);
   }, []);
 
   // Helper to render posts with animation - memoized to prevent unnecessary re-renders
@@ -314,7 +338,7 @@ export default function Blog() {
                     </div>
                   ) : (
                     <>
-                      <div>
+                      <div ref={newPostsRefDefault}>
                         {renderPostList(defaultPosts)}
                       </div>
 
@@ -421,7 +445,7 @@ export default function Blog() {
                           Found <span className="text-primary-400 font-semibold">{totalSearch}</span> result{totalSearch !== 1 ? 's' : ''} using {useRag ? '🤖 semantic search' : '🔍 keyword search'}
                         </p>
                       </div>
-                      <div>
+                      <div ref={newPostsRefSearch}>
                         {renderPostList(searchPosts)}
                       </div>
 
