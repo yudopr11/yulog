@@ -12,12 +12,6 @@ const Blog = lazy(() => import('./components/Blog'));
 const PostDetail = lazy(() => import('./components/blog/PostDetail'));
 const NotFound = lazy(() => import('./components/NotFound'));
 
-// Loading component
-const LoadingFallback = () => (
-  <div className="flex justify-center items-center h-[70vh]">
-    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-400"></div>
-  </div>
-);
 
 // Component to conditionally render SwipeHandler
 const RouteWrapper = ({ children }: { children: React.ReactNode }) => {
@@ -58,7 +52,7 @@ export default function App() {
         }} />
       <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-950 text-white">
         <Navbar />
-        <Suspense fallback={<LoadingFallback />}>
+        <Suspense fallback={<></>}>
           <Routes>
             <Route path="/" element={
               <RouteWrapper>

@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import PageTitle from './common/PageTitle';
 import BlogPostCard from './blog/BlogPostCard';
+import BlogPostCardSkeleton from './blog/BlogPostCardSkeleton';
 import { fetchBlogPosts, USE_RAG_DEFAULT } from '../services/api';
 import { MagnifyingGlassIcon, ArrowTopRightOnSquareIcon } from '@heroicons/react/20/solid';
 import type { PostListItem } from '../types/blog';
@@ -306,8 +307,12 @@ export default function Blog() {
           {!searchTerm && (
             <>
               {defaultLoading && defaultSkip === 0 ? (
-                <div className="flex justify-center items-center h-64">
-                  <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-500"></div>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
+                  {[1, 2, 3, 4].map((i) => (
+                    <div key={i}>
+                      <BlogPostCardSkeleton />
+                    </div>
+                  ))}
                 </div>
               ) : (
                 <>
@@ -393,8 +398,12 @@ export default function Blog() {
           {searchTerm && (
             <>
               {searchLoading && searchSkip === 0 ? (
-                <div className="flex justify-center items-center h-64">
-                  <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-500"></div>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
+                  {[1, 2, 3, 4].map((i) => (
+                    <div key={i}>
+                      <BlogPostCardSkeleton />
+                    </div>
+                  ))}
                 </div>
               ) : (
                 <>

@@ -9,7 +9,7 @@ import CustomScrollToTop from '../common/CustomScrollToTop';
 import PostHeader from './PostHeader';
 import PostContent from './PostContent';
 import PostFooter from './PostFooter';
-import LoadingSpinner from '../common/LoadingSpinner';
+import PostDetailSkeleton from './PostDetailSkeleton';
 import ErrorAlert from '../common/ErrorAlert';
 import PostNotFound from './PostNotFound';
 
@@ -82,7 +82,7 @@ export default function PostDetail() {
       <div className="px-4 sm:px-6 lg:px-8">
         <div className="max-w-6xl mx-auto relative z-10 py-4 sm:py-5 lg:py-6 space-y-12 sm:space-y-16">
           {loading ? (
-            <LoadingSpinner />
+            <PostDetailSkeleton />
           ) : error ? (
             <ErrorAlert message={error} />
           ) : notFound ? (
