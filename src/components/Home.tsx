@@ -101,7 +101,7 @@ export default function Home() {
                 name="@yudopr"
                 bio="I'm a data engineer with 7 years of experience specializing in project management, data analysis, and data engineering. I excel at understanding complex business requirements and creating detailed data models. Recently exploring LLM applications like RAG and function calling to drive innovative solutions."
                 years={7}
-                projects={20}
+                projects={5}
                 onProjectsClick={() => {
                   document
                     .getElementById('projects')
@@ -122,9 +122,9 @@ export default function Home() {
             data-aos-duration="1000"
           >
             <div data-aos="fade-up" data-aos-delay="50">
-              <h2 className="section-header">Featured Projects</h2>
+              <h2 className="section-header">Independent Project</h2>
               <p className="section-subtitle">
-                Data engineering projects I'm actively working on
+                Personal projects exploring data engineering and AI
               </p>
             </div>
 
