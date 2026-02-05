@@ -108,7 +108,7 @@ export default function Home() {
                     ?.scrollIntoView({ behavior: 'smooth' });
                 }}
                 onContactClick={() => {
-                  window.location.href = 'mailto:yudho.prakoso@gmail.com';
+                  window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'smooth' });
                 }}
               />
             </div>
