@@ -252,7 +252,7 @@ pre.shiki code .line {
 
   /* Section Spacing */
   .section-spacing {
-    @apply py-16 md:py-24;
+    @apply py-8 md:py-16;
   }
 
   .section-spacing-lg {

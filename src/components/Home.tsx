@@ -116,7 +116,7 @@ export default function Home() {
 
           {/* Projects Section */}
           <section
-            className="section-spacing"
+            className="pt-8 md:pt-16 pb-10 md:pb-18"
             id="projects"
             data-aos="fade-up"
             data-aos-duration="1000"
@@ -204,7 +204,7 @@ export default function Home() {
 
           {/* Social & CTA Footer */}
           <section
-            className="section-spacing"
+            className="pb-8 md:pb-16"
             data-aos="fade-up"
             data-aos-duration="1200"
           >
