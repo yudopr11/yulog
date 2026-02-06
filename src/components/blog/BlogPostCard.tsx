@@ -11,10 +11,10 @@ function BlogPostCard({ post }: BlogPostCardProps) {
   // Format tanggal jika tersedia - memoized to prevent unnecessary date formatting
   const formattedDate = useMemo(() => {
     return post.created_at
-      ? new Date(post.created_at).toLocaleDateString('id-ID', {
-          day: 'numeric',
+      ? new Date(post.created_at).toLocaleDateString('en-US', {
+          year: 'numeric',
           month: 'long',
-          year: 'numeric'
+          day: 'numeric'
         })
       : null;
   }, [post.created_at]);
