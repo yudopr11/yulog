@@ -318,16 +318,18 @@ export const MarkdownRenderers = {
   ),
   // Custom table renderers with glassmorphism
   table: ({children}: any) => (
-    <div className="my-6 overflow-x-auto rounded-2xl group relative">
+    <div className="my-6 rounded-2xl group relative">
       {/* Glassmorphism wrapper */}
       <div className="absolute inset-0 bg-gradient-to-br from-gray-900/40 to-gray-900/80 backdrop-blur-xl rounded-2xl border border-gray-700/30 group-hover:border-primary-500/30 transition-all duration-300"></div>
 
       {/* Glow effect */}
       <div className="absolute -top-1/2 -right-1/4 w-3/4 h-full bg-gradient-to-br from-primary-500/10 to-transparent rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
 
-      <table className="relative z-10 w-full border-collapse">
-        {children}
-      </table>
+      <div className="overflow-x-auto relative z-10 rounded-2xl">
+        <table className="w-full border-collapse">
+          {children}
+        </table>
+      </div>
     </div>
   ),
   thead: ({children}: any) => (
