@@ -251,7 +251,7 @@ export default function Home() {
                 </p>
                 <button
                   onClick={() => {
-                    window.location.href = 'mailto:yudopr10@gmail.com';
+                    window.location.href = 'mailto:me@yudopr.dev';
                   }}
                   className="btn-primary group mx-auto"
                   data-aos="pulse"
