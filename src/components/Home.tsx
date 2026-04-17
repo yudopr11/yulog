@@ -159,6 +159,16 @@ export default function Home() {
                   tags: ['React', 'LLM', 'Function Calling'],
                   delay: '200',
                 },
+                 {
+                  repoLink: 'https://github.com/yudopr11/sat-simulation',
+                  demoLink: 'https://sat.yudopr.dev',
+                  title: 'SAT Simulation',
+                  description:
+                    'Test simulation for SAT preparation.',
+                  projectType: 'learning' as const,
+                  tags: ['React', 'Education', 'Quiz'],
+                  delay: '250',
+                },
                 {
                   repoLink: 'https://github.com/yudopr11/latihan-matematika',
                   title: 'Latihan Matematika',
@@ -166,7 +176,7 @@ export default function Home() {
                     'Interactive math quiz platform for high school students with progress tracking.',
                   projectType: 'learning' as const,
                   tags: ['Django', 'Fullstack', 'Education', 'Quiz'],
-                  delay: '250',
+                  delay: '300',
                 },
                 {
                   repoLink:
@@ -176,7 +186,7 @@ export default function Home() {
                     'Comprehensive SQL tutorial series with practical exercises for beginners.',
                   projectType: 'learning' as const,
                   tags: ['SQL', 'Database', 'Tutorial'],
-                  delay: '300',
+                  delay: '350',
                 },
               ].map((project, idx) => (
                 <div
