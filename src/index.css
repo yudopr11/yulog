@@ -978,14 +978,6 @@ pre.shiki code .line {
   -webkit-backdrop-filter: blur(20px);
   border-bottom: 1px solid var(--border-medium);
   box-shadow: 0 4px 16px rgba(0,0,0,0.20);
-  transition: background 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
-}
-.cuan-nav--scrolled {
-  background: rgba(11,17,32,0.55);
-  backdrop-filter: blur(32px) saturate(1.6);
-  -webkit-backdrop-filter: blur(32px) saturate(1.6);
-  border-bottom: 1px solid rgba(48,189,242,0.18);
-  box-shadow: 0 8px 32px rgba(0,0,0,0.35), 0 1px 0 rgba(48,189,242,0.10) inset;
 }
 .cuan-nav-link {
   position: relative; padding: 8px 14px;
