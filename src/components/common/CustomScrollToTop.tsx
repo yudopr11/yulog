@@ -21,16 +21,9 @@ export default function CustomScrollToTop({
     }
   };
 
-  // Fungsi untuk scroll ke atas
   const scrollToTop = () => {
-    if (smooth) {
-      window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-      });
-    } else {
-      window.scrollTo(0, 0);
-    }
+    document.documentElement.scrollTo({ top: 0, behavior: smooth ? 'smooth' : 'auto' });
+    document.body.scrollTop = 0;
   };
 
   useEffect(() => {
@@ -46,7 +39,6 @@ export default function CustomScrollToTop({
       }`}
       style={{ bottom: '20px', right: '20px' }}
       aria-label="Scroll to top"
-      disabled={!isVisible}
     >
       <ChevronUpIcon
         className="h-5 w-5 text-white"

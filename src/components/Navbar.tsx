@@ -1,89 +1,41 @@
 import { Link, useLocation } from 'react-router-dom';
-import { useState, useEffect } from 'react';
-import type { ReactNode } from 'react';
-
-// NavLink component for modular navigation items
-interface NavLinkProps {
-  to: string;
-  children: ReactNode;
-  currentPath: string;
-}
-
-const NavLink = ({ to, children, currentPath }: NavLinkProps) => {
-  // Check if active: exact match or (for blog) if currentPath starts with "/blog/"
-  const isActive = 
-    currentPath === to || 
-    (to === '/blog' && (currentPath.startsWith('/blog/') || currentPath === '/blog'));
-  
-  return (
-    <Link
-      to={to}
-      className={`relative py-2 transition-all duration-300 
-        ${isActive 
-          ? 'text-primary-400 font-bold' 
-          : 'text-gray-300 hover:text-primary-400'}`}
-    >
-      {children}
-      <span 
-        className={`absolute bottom-0 left-0 w-full h-0.5 transform origin-left transition-all duration-300 ease-out 
-          ${isActive 
-            ? 'scale-x-100 bg-primary-400' 
-            : 'scale-x-0 hover:scale-x-100 bg-primary-400'}`}
-      />
-    </Link>
-  );
-};
 
 export default function Navbar() {
-  const [isScrolled, setIsScrolled] = useState(false);
   const location = useLocation();
-  
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrollPosition = window.scrollY;
-      setIsScrolled(scrollPosition > 0);
-    };
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  const isActive = (path: string) =>
+    location.pathname === path ||
+    (path === '/blog' && (location.pathname.startsWith('/blog/') || location.pathname === '/blog'));
 
   return (
-    <nav 
-      className={`sticky top-0 z-50 transition-all duration-300
-        ${isScrolled 
-          ? 'bg-gradient-to-b from-gray-800/80 to-gray-900/80 backdrop-blur-xl shadow-lg' 
-          : 'bg-gradient-to-b from-gray-800 to-gray-900'}`}
-    >
-      <div className="px-4 sm:px-6 lg:px-8">
-        <div className="max-w-6xl mx-auto relative z-10 py-4 sm:py-5 lg:py-6">
-          <div className="flex justify-between items-center">
-            <div className="flex items-center">
-              <Link 
-                to="/" 
-                className="flex items-center space-x-2 transition-all duration-300 hover:scale-105"
-              >
-                <span className={`text-2xl font-bold transition-all duration-300
-                  ${isScrolled
-                    ? 'bg-gradient-to-r from-primary-400 via-primary-300 to-primary-500 text-transparent bg-clip-text drop-shadow-sm'
-                    : 'bg-gradient-to-r from-primary-500 via-primary-400 to-primary-600 text-transparent bg-clip-text'}`}
-                >
-                  yudopr
-                </span>
-              </Link>
-            </div>
-            <div className="flex items-center space-x-8">
-              <NavLink to="/" currentPath={location.pathname}>
-                Home
-              </NavLink>
-              <NavLink to="/blog" currentPath={location.pathname}>
-                Blog
-              </NavLink>
-            </div>
-          </div>
+    <nav className="cuan-nav" style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 50 }}>
+      <div style={{
+        maxWidth: 1200, margin: '0 auto', padding: '14px 24px',
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+      }}>
+        {/* Brand */}
+        <Link to="/" style={{ display: 'flex', flexDirection: 'column', lineHeight: 1, textDecoration: 'none' }}>
+          <span className="brand-text" style={{ fontSize: 18, fontWeight: 900 }}>yudopr</span>
+          <span className="eyebrow" style={{ fontSize: 9, marginTop: 2 }}>data engineer</span>
+        </Link>
+
+        {/* Nav links */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+          {[
+            { path: '/', label: 'Home' },
+            { path: '/blog', label: 'Blog' },
+          ].map(({ path, label }) => (
+            <Link
+              key={path}
+              to={path}
+              className={`cuan-nav-link${isActive(path) ? ' active' : ''}`}
+            >
+              {label}
+              {isActive(path) && <span className="dot" />}
+            </Link>
+          ))}
         </div>
       </div>
     </nav>
   );
 }
-

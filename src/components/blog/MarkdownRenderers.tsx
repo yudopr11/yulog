@@ -129,7 +129,7 @@ const CodeBlock = ({ language, code, showLineNumbers = true }: { language: strin
   }, [code, language, showLineNumbers]);
 
   return (
-    <div className="overflow-x-auto w-full relative px-1">
+    <div className="w-full relative px-1">
       {isLoading ? (
         <div className="bg-gray-900 p-6 text-gray-400 animate-pulse">Loading...</div>
       ) : (
@@ -143,6 +143,7 @@ const CodeBlock = ({ language, code, showLineNumbers = true }: { language: strin
 };
 
 export const MarkdownRenderers = {
+  pre: ({children}: any) => <>{children}</>,
   code({node, inline, className, children, ...props}: any) {
     const match = /language-(\w+)/.exec(className || '');
     
@@ -154,32 +155,26 @@ export const MarkdownRenderers = {
       
       // Custom component for code block with copy button
       return (
-        <div className="my-6 overflow-hidden rounded-2xl group relative">
-          {/* Glassmorphism background */}
-          <div className="absolute inset-0 bg-gradient-to-br from-gray-900/40 to-gray-900/80 backdrop-blur-xl rounded-2xl"></div>
+        <div style={{
+          margin: '1.5em 0',
+          borderRadius: 12,
+          border: '1px solid var(--border-medium)',
+          background: 'var(--bg-elevated-1)',
+          overflow: 'clip',
+        }}>
+          {/* Header */}
+          <div style={{
+            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+            padding: '8px 16px',
+            borderBottom: '1px solid var(--border-soft)',
+          }}>
+            <span className="chip chip-brand" style={{ fontSize: 10 }}>{match[1].toUpperCase()}</span>
+            <CopyButton code={codeString} />
+          </div>
 
-          {/* Border with hover effect */}
-          <div className="absolute inset-0 border border-gray-700/30 rounded-2xl group-hover:border-primary-500/30 transition-all duration-300"></div>
-
-          {/* Shadow/glow effect */}
-          <div className="absolute -top-1/2 -right-1/4 w-3/4 h-full bg-gradient-to-br from-primary-500/10 to-transparent rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
-
-          <div className="relative z-10">
-            {/* Header with gradient background */}
-            <div className="flex items-center justify-between bg-gradient-to-r from-gray-900/50 to-gray-800/30 px-6 py-3 border-b border-gray-700/30 group-hover:border-primary-500/20 transition-colors duration-300">
-              <span className="text-xs font-semibold text-primary-300 bg-gradient-to-r from-primary-600/20 to-primary-500/20 px-3 py-1 rounded-full border border-primary-500/30">
-                {match[1].toUpperCase()}
-              </span>
-              <CopyButton code={codeString} />
-            </div>
-
-            {/* Code content */}
-            <div className="overflow-x-auto px-2 py-4">
-              <CodeBlock
-                language={match[1]}
-                code={codeString}
-              />
-            </div>
+          {/* Code — only this scrolls */}
+          <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
+            <CodeBlock language={match[1]} code={codeString} />
           </div>
         </div>
       );
@@ -318,18 +313,10 @@ export const MarkdownRenderers = {
   ),
   // Custom table renderers with glassmorphism
   table: ({children}: any) => (
-    <div className="my-6 rounded-2xl group relative">
-      {/* Glassmorphism wrapper */}
-      <div className="absolute inset-0 bg-gradient-to-br from-gray-900/40 to-gray-900/80 backdrop-blur-xl rounded-2xl border border-gray-700/30 group-hover:border-primary-500/30 transition-all duration-300"></div>
-
-      {/* Glow effect */}
-      <div className="absolute -top-1/2 -right-1/4 w-3/4 h-full bg-gradient-to-br from-primary-500/10 to-transparent rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
-
-      <div className="overflow-x-auto relative z-10 rounded-2xl">
-        <table className="w-full border-collapse">
-          {children}
-        </table>
-      </div>
+    <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch', maxWidth: '100%', margin: '1.5em 0' }}>
+      <table style={{ borderCollapse: 'collapse', width: 'max-content', minWidth: '100%' }}>
+        {children}
+      </table>
     </div>
   ),
   thead: ({children}: any) => (
@@ -348,7 +335,7 @@ export const MarkdownRenderers = {
     </tr>
   ),
   th: ({children}: any) => (
-    <th className="px-4 py-3 text-left font-semibold text-primary-300 border-r border-gray-700/20 last:border-r-0 group-hover:text-primary-200 transition-colors">
+    <th className="px-4 py-3 text-left font-semibold text-primary-300 border-r border-gray-700/20 last:border-r-0" style={{ whiteSpace: 'nowrap', background: 'rgba(11,17,32,0.6)' }}>
       {children}
     </th>
   ),
@@ -381,58 +368,19 @@ export const MarkdownRenderers = {
       </a>
     );
   },
-  // Custom blockquote renderer with elegant styling
-  blockquote({node, className, children, ...props}: React.ComponentPropsWithoutRef<'blockquote'> & {
-    node?: any;
-    className?: string;
-  }) {
-    // Check if this is a nested blockquote by looking at the parent elements
-    const isNested = React.Children.toArray(children).some(
-      child => {
-        if (!React.isValidElement(child)) return false;
-        const childProps = child.props as {children?: React.ReactNode};
-        return React.Children.toArray(childProps.children).some(
-          grandChild => React.isValidElement(grandChild) && grandChild.type === 'blockquote'
-        );
-      }
-    );
-
-    if (isNested) {
-      return (
-        <blockquote className={`ml-4 mt-4 mb-4 pl-4 border-l-2 border-blue-400/20 ${className || ''}`} {...props}>
-          <div className="text-gray-300 italic text-sm sm:text-base">
-            {children}
-          </div>
-        </blockquote>
-      );
-    }
-
-    return (
-      <div className="relative my-8 overflow-hidden group">
-        {/* Gradient background with blur effect */}
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-purple-500/5 backdrop-blur-3xl group-hover:from-blue-500/10 group-hover:to-purple-500/10 transition-colors duration-300"></div>
-        
-        {/* Left border with gradient */}
-        <div className="absolute left-0 top-0 h-full w-1 bg-gradient-to-b from-blue-400 to-purple-400 group-hover:from-blue-300 group-hover:to-purple-300 transition-colors duration-300"></div>
-        
-        {/* Top accent line */}
-        <div className="absolute top-0 left-6 right-6 h-px bg-gradient-to-r from-transparent via-blue-400/20 to-transparent"></div>
-        
-        {/* Bottom accent line */}
-        <div className="absolute bottom-0 left-6 right-6 h-px bg-gradient-to-r from-transparent via-purple-400/20 to-transparent"></div>
-        
-        {/* Quote content */}
-        <blockquote className={`relative rounded-r-lg py-6 pl-6 pr-4 sm:pl-8 sm:pr-6 ${className || ''}`} {...props}>
-          {/* Large quote mark */}
-          <div className="absolute -top-2 left-3 text-4xl sm:text-5xl text-blue-400/20 select-none font-serif transform -translate-y-1/4">"</div>
-          
-          <div className="relative text-gray-300 italic text-sm sm:text-base">
-            {children}
-          </div>
-        </blockquote>
-      </div>
-    );
-  }
+  blockquote: ({children}: any) => (
+    <blockquote style={{
+      borderLeft: '3px solid var(--primary-500)',
+      margin: '1.5em 0',
+      padding: '12px 16px',
+      background: 'rgba(48,189,242,0.05)',
+      borderRadius: '0 8px 8px 0',
+      color: 'var(--fg-4)',
+      fontStyle: 'italic',
+    }}>
+      {children}
+    </blockquote>
+  )
 }; 
 
 // Copy button component with copy-to-clipboard functionality

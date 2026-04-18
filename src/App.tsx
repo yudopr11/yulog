@@ -26,31 +26,27 @@ const RouteWrapper = ({ children }: { children: React.ReactNode }) => {
   return <>{children}</>;
 };
 
+
 export default function App() {
   return (
     <Router>
       <ScrollToTop />
-      <Toaster position="top-right" 
+      <Toaster position="top-right"
         toastOptions={{
           style: {
             background: '#1e293b',
             color: '#f8fafc',
-            border: '1px solid #475569'
+            border: '1px solid #475569',
           },
           success: {
-            iconTheme: {
-              primary: '#30BDF2',
-              secondary: '#1e293b',
-            },
+            iconTheme: { primary: '#30BDF2', secondary: '#1e293b' },
           },
           error: {
-            iconTheme: {
-              primary: '#ef4444',
-              secondary: '#1e293b',
-            },
+            iconTheme: { primary: '#ef4444', secondary: '#1e293b' },
           },
         }} />
-      <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-950 text-white">
+      <div className="min-h-screen text-white" style={{ background: 'var(--bg-base)', color: 'var(--fg-1)' }}>
+        <div className="page-bg" />
         <Navbar />
         <Suspense fallback={<></>}>
           <Routes>
@@ -65,7 +61,6 @@ export default function App() {
               </RouteWrapper>
             } />
             <Route path="/blog/:slug" element={<PostDetail />} />
-            {/* Catch all route for 404 pages */}
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Suspense>

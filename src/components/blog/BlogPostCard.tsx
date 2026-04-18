@@ -1,104 +1,106 @@
-import { useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { UserIcon, CalendarIcon, ClockIcon, ArrowRightIcon } from '@heroicons/react/20/solid';
 import type { PostListItem } from '../../types/blog';
 
 interface BlogPostCardProps {
   post: PostListItem;
 }
 
-function BlogPostCard({ post }: BlogPostCardProps) {
-  // Format tanggal jika tersedia - memoized to prevent unnecessary date formatting
+const CalendarIcon = () => (
+  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>
+  </svg>
+);
+const ClockIcon = () => (
+  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>
+  </svg>
+);
+const ArrowUpRight = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M7 17L17 7M8 7h9v9"/>
+  </svg>
+);
+
+export default function BlogPostCard({ post }: BlogPostCardProps) {
+  const [hover, setHover] = useState(false);
+
   const formattedDate = useMemo(() => {
     return post.created_at
-      ? new Date(post.created_at).toLocaleDateString('en-US', {
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric'
-        })
+      ? new Date(post.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
       : null;
   }, [post.created_at]);
 
   return (
     <Link
       to={`/blog/${post.slug}`}
-      className="group relative overflow-hidden rounded-2xl transition-all duration-500 hover:scale-105 block h-full"
+      style={{ textDecoration: 'none', display: 'flex', height: '100%' }}
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
     >
-      {/* Glassmorphism background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-gray-900/40 to-gray-900/80 backdrop-blur-xl border border-gray-700/30 group-hover:border-primary-500/50 transition-all duration-500"></div>
-
-      {/* Animated gradient overlay on hover */}
-      <div className="absolute inset-0 bg-gradient-to-br from-primary-500/0 via-transparent to-primary-600/0 group-hover:from-primary-500/10 group-hover:to-primary-600/10 transition-all duration-500"></div>
-
-      {/* Glow effect on hover */}
-      <div className="absolute -top-1/2 -right-1/2 w-full h-full bg-gradient-to-br from-primary-500/20 to-transparent rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
-
-      {/* Top accent line with reveal animation */}
-      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary-500/50 via-primary-400/30 to-transparent group-hover:from-primary-500 group-hover:via-primary-400 group-hover:animate-border-reveal transition-all duration-500"></div>
-
-      {/* Content */}
-      <div className="relative z-10 flex flex-col h-full p-6 sm:p-8">
-        {/* Meta Info */}
-        <div className="flex flex-wrap items-center text-xs sm:text-sm text-gray-400 mb-4 gap-3">
-          {post.user && (
-            <span className="flex items-center px-2 py-1 bg-gray-800/30 rounded-full border border-gray-700/30 group-hover:border-primary-500/30 transition-colors">
-              <UserIcon className="h-3 sm:h-4 w-3 sm:w-4 mr-1.5" />
-              {post.user.username}
+      <div
+        className={`cuan-card${hover ? ' hoverable' : ' hoverable'}`}
+        style={{
+          padding: 20, cursor: 'pointer', display: 'flex', flexDirection: 'column', gap: 12,
+          height: '100%', width: '100%',
+          background: hover ? 'linear-gradient(135deg,#1a2540,#151e2d)' : undefined,
+          borderColor: hover ? 'rgba(48,189,242,0.20)' : undefined,
+          boxShadow: hover ? 'var(--shadow-card-hi)' : undefined,
+          transform: hover ? 'translateY(-1px)' : undefined,
+          transition: 'all 200ms ease-out',
+        }}
+      >
+        {/* Meta chips */}
+        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 10 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
+            {formattedDate && (
+              <span className="chip chip-neutral" style={{ fontSize: 10, gap: 4 }}>
+                <CalendarIcon /> {formattedDate}
+              </span>
+            )}
+            <span className="chip chip-neutral" style={{ fontSize: 10, gap: 4 }}>
+              <ClockIcon /> {post.reading_time} min
             </span>
-          )}
-
-          {formattedDate && (
-            <span className="flex items-center px-2 py-1 bg-gray-800/30 rounded-full border border-gray-700/30 group-hover:border-primary-500/30 transition-colors">
-              <CalendarIcon className="h-3 sm:h-4 w-3 sm:w-4 mr-1.5" />
-              {formattedDate}
-            </span>
-          )}
-
-          <span className="flex items-center px-2 py-1 bg-gray-800/30 rounded-full border border-gray-700/30 group-hover:border-primary-500/30 transition-colors">
-            <ClockIcon className="h-3 sm:h-4 w-3 sm:w-4 mr-1.5" />
-            {post.reading_time}m
-          </span>
+          </div>
+          <div style={{
+            color: hover ? 'var(--primary-500)' : 'var(--fg-5)',
+            transition: 'all 200ms',
+            transform: hover ? 'translate(2px,-2px)' : 'none',
+            flexShrink: 0,
+          }}>
+            <ArrowUpRight />
+          </div>
         </div>
 
         {/* Title */}
-        <h2 className="text-xl sm:text-2xl font-bold mb-3 text-white group-hover:text-primary-300 transition-colors duration-300 line-clamp-2">
+        <h3 style={{
+          margin: 0, fontSize: 18, fontWeight: 700, lineHeight: 1.3,
+          color: hover ? 'var(--primary-300)' : 'var(--fg-1)',
+          transition: 'color 200ms',
+        }}>
           {post.title}
-        </h2>
+        </h3>
 
         {/* Excerpt */}
-        <p className="text-sm sm:text-base text-gray-300 mb-4 flex-grow line-clamp-2 group-hover:text-gray-200 transition-colors">
+        <p style={{
+          margin: 0, fontSize: 13, color: 'var(--fg-4)', lineHeight: 1.55,
+          display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden',
+        }}>
           {post.excerpt}
         </p>
 
         {/* Tags */}
         {post.tags && post.tags.length > 0 && (
-          <div className="flex flex-wrap gap-2 mb-5">
-            {post.tags.slice(0, 3).map((tag, index) => (
-              <span
-                key={`${post.id}-${tag}-${index}`}
-                className="px-3 py-1 text-xs font-medium bg-gradient-to-r from-primary-500/20 to-primary-600/20 text-primary-300 rounded-full border border-primary-500/30 group-hover:border-primary-500/60 group-hover:bg-gradient-to-r group-hover:from-primary-500/30 group-hover:to-primary-600/30 transition-all duration-300"
-              >
-                {tag}
-              </span>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5, marginTop: 'auto' }}>
+            {post.tags.slice(0, 3).map(tag => (
+              <span key={tag} className="chip chip-neutral" style={{ fontSize: 10 }}>{tag}</span>
             ))}
             {post.tags.length > 3 && (
-              <span className="px-3 py-1 text-xs font-medium text-gray-400">
-                +{post.tags.length - 3}
-              </span>
+              <span className="chip chip-neutral" style={{ fontSize: 10 }}>+{post.tags.length - 3}</span>
             )}
           </div>
         )}
-
-        {/* CTA Button */}
-        <div className="flex items-center justify-between pt-4 border-t border-gray-700/30 group-hover:border-primary-500/30 transition-colors">
-          <span className="text-sm font-semibold text-primary-300 group-hover:text-primary-200 transition-colors">
-            Read Article
-          </span>
-          <ArrowRightIcon className="h-5 w-5 text-primary-400 transition-all duration-300 group-hover:translate-x-2 group-hover:text-primary-300" />
-        </div>
       </div>
     </Link>
   );
 }
-
-export default BlogPostCard; 

@@ -1,66 +1,54 @@
-import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { usePageTitle } from '../hooks/usePageTitle';
-import { ArrowLeftIcon } from '@heroicons/react/24/outline';
 
-const NotFound: React.FC = () => {
-  // State untuk animasi pulse
-  const [isPulsing, setIsPulsing] = useState(false);
-  
-  // Set page title
+const ArrowLeftIcon = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M19 12H5M11 6l-6 6 6 6"/>
+  </svg>
+);
+
+export default function NotFound() {
   usePageTitle('404 - Page Not Found');
-  
-  // Efek untuk menganimasikan pulse setiap beberapa detik
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      setIsPulsing(true);
-      setTimeout(() => setIsPulsing(false), 1000);
-    }, 3000);
-    
-    return () => clearInterval(intervalId);
-  }, []);
 
   return (
-    <div className="container mx-auto px-4 py-16">
-      <div className="flex flex-col items-center justify-center min-h-[60vh] text-center">
-        {/* Background glow effect */}
-        <div className={`absolute w-64 h-64 rounded-full bg-blue-500/10 blur-3xl transition-opacity duration-1000 ${isPulsing ? 'opacity-70' : 'opacity-20'}`}></div>
-        
-        <h1 className="relative text-8xl md:text-9xl font-extrabold mb-4">
-          {/* Shadow layer for depth */}
-          <span className="absolute inset-0 text-8xl md:text-9xl blur-[3px] select-none bg-gradient-to-br from-blue-700 via-blue-900 to-blue-950 text-transparent bg-clip-text opacity-80 transform -translate-y-[2px] -translate-x-[2px]">404</span>
-          
-          {/* Blurred glow for metallic shine */}
-          <span className={`absolute inset-0 text-8xl md:text-9xl blur-[2px] select-none bg-gradient-to-br from-blue-400 via-blue-600 to-blue-800 text-transparent bg-clip-text transition-opacity duration-700 ${isPulsing ? 'opacity-90' : 'opacity-70'}`}>404</span>
-          
-          {/* Light reflection layer */}
-          <span className="absolute inset-0 text-8xl md:text-9xl select-none bg-gradient-to-br from-blue-200 via-blue-400 to-blue-700 text-transparent bg-clip-text transform translate-y-[1px] translate-x-[1px]">404</span>
-          
-          {/* Main visible layer with gradient */}
-          <span className="relative z-10 bg-gradient-to-br from-blue-300 via-cyan-400 to-blue-600 text-transparent bg-clip-text select-none">404</span>
-        </h1>
-        
-        {/* Metallic reflection line with animation */}
-        <div className={`w-40 h-[2px] bg-gradient-to-r from-transparent via-blue-400 to-transparent mb-10 transition-all duration-700 ${isPulsing ? 'opacity-90 w-48' : 'opacity-70 w-40'}`}></div>
-        
-        <h2 className="text-3xl md:text-4xl font-semibold mb-6 text-gray-200">Page Not Found</h2>
-        <p className="text-gray-300 text-lg mb-10 max-w-lg">
-          Sorry, the page you are looking for doesn't exist or has been moved.
+    <div style={{
+      minHeight: '100vh',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: '80px 24px',
+      position: 'relative',
+      zIndex: 1,
+      textAlign: 'center',
+    }}>
+      <div>
+        <div style={{
+          fontSize: 'clamp(96px, 20vw, 160px)',
+          fontWeight: 900,
+          letterSpacing: '-0.05em',
+          lineHeight: 1,
+          background: 'var(--gradient-text)',
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent',
+          backgroundClip: 'text',
+          marginBottom: 24,
+        }}>
+          404
+        </div>
+
+        <div className="cuan-divider" style={{ maxWidth: 160, margin: '0 auto 32px' }} />
+
+        <h2 style={{ margin: '0 0 12px', fontSize: 28, fontWeight: 700, color: 'var(--fg-1)', letterSpacing: '-0.02em' }}>
+          Page Not Found
+        </h2>
+        <p style={{ margin: '0 0 36px', color: 'var(--fg-4)', fontSize: 16, maxWidth: 400 }}>
+          The page you're looking for doesn't exist or has been moved.
         </p>
-        
-        <Link 
-          to="/" 
-          className="inline-flex items-center text-gray-400 hover:text-primary-400 border border-gray-700 px-5 py-2 rounded-md hover:border-blue-400 hover:border-opacity-70 transition-all duration-300 group"
-        >
-          <ArrowLeftIcon 
-            className="h-5 w-5 mr-2 transition-transform group-hover:-translate-x-1" 
-            stroke="currentColor"
-          />
-          Back to Home
+
+        <Link to="/" className="cuan-btn cuan-btn-primary" style={{ textDecoration: 'none', padding: '12px 24px' }}>
+          <ArrowLeftIcon /> Back to Home
         </Link>
       </div>
     </div>
   );
-};
-
-export default NotFound; 
+}

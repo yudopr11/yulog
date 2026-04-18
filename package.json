@@ -1,7 +1,7 @@
 {
   "name": "yulog",
   "private": true,
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A modern, responsive personal blog and portfolio site built with React, TypeScript and Tailwind CSS",
   "type": "module",
   "author": {

@@ -5,13 +5,13 @@ import { fetchBlogPostBySlug } from '../../services/api';
 import type { PostDetail } from '../../types/blog';
 import CustomScrollToTop from '../common/CustomScrollToTop';
 
-// Import the extracted components
 import PostHeader from './PostHeader';
 import PostContent from './PostContent';
 import PostFooter from './PostFooter';
 import PostDetailSkeleton from './PostDetailSkeleton';
 import ErrorAlert from '../common/ErrorAlert';
 import PostNotFound from './PostNotFound';
+import TableOfContents from './TableOfContents';
 
 export default function PostDetail() {
   const { slug } = useParams<{ slug: string }>();
@@ -22,15 +22,15 @@ export default function PostDetail() {
 
   useEffect(() => {
     let isMounted = true;
-    
+
     async function loadPostDetail() {
       if (!slug) return;
-      
+
       try {
         setLoading(true);
         setNotFound(false);
         setError(null);
-        
+
         const data = await fetchBlogPostBySlug(slug);
 
         if (isMounted) {
@@ -51,17 +51,16 @@ export default function PostDetail() {
         }
       }
     }
-    
+
     loadPostDetail();
-    
+
     return () => {
       isMounted = false;
     };
   }, [slug]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-950 text-white">
-      {/* Title with the blog post title if loaded */}
+    <div style={{ position: 'relative', zIndex: 1 }}>
       {post ? (
         <PageTitle
           title={post.title}
@@ -70,35 +69,37 @@ export default function PostDetail() {
         />
       ) : (
         <PageTitle
-          title={notFound ? "Post Not Found" : "Loading Post..."}
+          title={notFound ? 'Post Not Found' : 'Loading Post...'}
           description="Blog post detail"
           type="article"
         />
       )}
-      
-      {/* Background pattern */}
-      <div className="absolute inset-0 bg-grid-pattern opacity-5 pointer-events-none"></div>
-      
-      <div className="px-4 sm:px-6 lg:px-8">
-        <div className="max-w-6xl mx-auto relative z-10 py-4 sm:py-5 lg:py-6 space-y-12 sm:space-y-16">
-          {loading ? (
-            <PostDetailSkeleton />
-          ) : error ? (
-            <ErrorAlert message={error} />
-          ) : notFound ? (
-            <PostNotFound />
-          ) : post ? (
-            <>
+
+      <div style={{ maxWidth: 1200, margin: '0 auto', padding: '80px 24px 80px' }}>
+        {loading ? (
+          <PostDetailSkeleton />
+        ) : error ? (
+          <ErrorAlert message={error} />
+        ) : notFound ? (
+          <PostNotFound />
+        ) : post ? (
+          <div className="post-layout">
+            {/* Main article column */}
+            <article style={{ minWidth: 0 }}>
               <PostHeader post={post} />
               <PostContent content={post.content} />
               <PostFooter />
+            </article>
 
-              {/* Custom Scroll to Top button */}
-              <CustomScrollToTop scrollThreshold={300} smooth={true} />
-            </>
-          ) : null}
-        </div>
+            {/* Sticky sidebar */}
+            <aside className="post-sidebar" style={{ position: 'sticky', top: 88 }}>
+              <TableOfContents content={post.content ?? ''} />
+            </aside>
+          </div>
+        ) : null}
       </div>
+
+      <CustomScrollToTop scrollThreshold={300} smooth={true} />
     </div>
   );
-} 
+}
