@@ -1,14 +1,22 @@
+import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
 export default function Navbar() {
   const location = useLocation();
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
 
   const isActive = (path: string) =>
     location.pathname === path ||
     (path === '/blog' && (location.pathname.startsWith('/blog/') || location.pathname === '/blog'));
 
   return (
-    <nav className="cuan-nav" style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 50 }}>
+    <nav className={`cuan-nav${scrolled ? ' cuan-nav--scrolled' : ''}`} style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 50 }}>
       <div style={{
         maxWidth: 1200, margin: '0 auto', padding: '14px 24px',
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
