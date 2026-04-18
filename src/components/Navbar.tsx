@@ -35,7 +35,7 @@ export default function Navbar() {
         {/* Brand */}
         <Link to="/" style={{ display: 'flex', flexDirection: 'column', lineHeight: 1, textDecoration: 'none' }}>
           <span className="brand-text" style={{ fontSize: 18, fontWeight: 900 }}>yudopr</span>
-          <span className="eyebrow" style={{ fontSize: 9, marginTop: 2 }}>data engineer</span>
+          {/* <span className="eyebrow" style={{ fontSize: 9, marginTop: 2 }}>data engineer</span> */}
         </Link>
 
         {/* Nav links */}
