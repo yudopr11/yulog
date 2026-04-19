@@ -222,6 +222,7 @@ export default function Blog() {
   }, []);
 
   return (
+    <>
     <div className="min-h-screen" style={{ position: 'relative', zIndex: 1 }}>
       <PageTitle
         title="Blog"
@@ -449,5 +450,6 @@ export default function Blog() {
       </div>
     </div>
     <CustomScrollToTop />
+    </>
   );
 } 
