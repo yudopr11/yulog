@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import PageTitle from './common/PageTitle';
 import BlogPostCard from './blog/BlogPostCard';
 import BlogPostCardSkeleton from './blog/BlogPostCardSkeleton';
+import CustomScrollToTop from './common/CustomScrollToTop';
 import { fetchBlogPosts, USE_RAG_DEFAULT } from '../services/api';
 import type { PostListItem } from '../types/blog';
 
@@ -447,5 +448,6 @@ export default function Blog() {
           )}
       </div>
     </div>
+    <CustomScrollToTop />
   );
 } 
