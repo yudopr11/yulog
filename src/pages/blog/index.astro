@@ -1,0 +1,12 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Blog from '../../components/Blog';
+---
+
+<BaseLayout
+  title="Blog"
+  description="Blog posts and articles by yudopr — long-form posts on data engineering, LLMs, and side projects."
+  pathname="/blog"
+>
+  <Blog client:load />
+</BaseLayout>

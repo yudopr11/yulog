@@ -1,8 +1,8 @@
 {
   "name": "yulog",
   "private": true,
-  "version": "1.0.1",
-  "description": "A modern, responsive personal blog and portfolio site built with React, TypeScript and Tailwind CSS",
+  "version": "2.0.0",
+  "description": "A modern, responsive personal blog and portfolio site built with Astro, React, TypeScript and Tailwind CSS",
   "type": "module",
   "author": {
     "name": "yudopr",
@@ -17,31 +17,30 @@
   "keywords": [
     "blog",
     "portfolio",
+    "astro",
     "react",
     "typescript",
     "tailwindcss",
     "markdown"
   ],
   "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build",
+    "dev": "astro dev --port 3000",
+    "build": "astro check && astro build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview --host 0.0.0.0 --port ${PORT:-3000}"
+    "preview": "astro preview --host 0.0.0.0 --port ${PORT:-3000}",
+    "astro": "astro"
   },
   "dependencies": {
+    "@astrojs/node": "^9.0.0",
+    "@astrojs/react": "^4.0.0",
     "@headlessui/react": "^2.2.3",
     "@heroicons/react": "^2.2.0",
-    "@types/crypto-js": "^4.2.2",
-    "aos": "^2.3.4",
-    "axios": "^1.15.0",
-    "crypto-js": "^4.2.0",
+    "astro": "^5.0.0",
     "katex": "^0.16.22",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-hot-toast": "^2.5.2",
     "react-markdown": "^10.1.0",
-    "react-router-dom": "^7.13.0",
-    "react-swipeable": "^7.0.2",
     "rehype-katex": "^7.0.1",
     "rehype-raw": "^7.0.0",
     "remark-gfm": "^4.0.1",
@@ -50,33 +49,19 @@
     "shiki": "^3.4.0"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4.1.18",
-    "@types/aos": "^3.0.7",
+    "@astrojs/check": "^0.9.0",
+    "@tailwindcss/vite": "^4.1.18",
     "@types/node": "^22.15.18",
     "@types/react": "^19.1.0",
     "@types/react-dom": "^19.1.5",
-    "@types/react-router-dom": "^5.3.3",
     "@typescript-eslint/eslint-plugin": "^8.32.1",
     "@typescript-eslint/parser": "^8.32.1",
-    "@vitejs/plugin-react": "^4.4.1",
-    "autoprefixer": "^10.4.24",
     "eslint": "^9.26.0",
     "eslint-plugin-react-hooks": "^5.2.0",
-    "eslint-plugin-react-refresh": "^0.4.20",
-    "postcss": "^8.4.40",
     "tailwindcss": "^4.1.18",
-    "typescript": "^5.8.3",
-    "vite": "^6.4.2"
+    "typescript": "^5.8.3"
   },
   "engines": {
     "node": ">=22.15.0"
-  },
-  "overrides": {
-    "esbuild": "^0.25.4",
-    "glob": "^11.0.2",
-    "rimraf": "^6.0.1",
-    "inflight": "npm:lru-cache@^11.1.0",
-    "@humanwhocodes/config-array": "npm:@eslint/config-array@^0.20.0",
-    "@humanwhocodes/object-schema": "npm:@eslint/object-schema@^2.1.6"
   }
 }

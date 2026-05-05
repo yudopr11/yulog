@@ -1,5 +1,4 @@
 import { useCallback } from 'react';
-import { Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { shareOnSocialMedia } from '../../services/metaTags';
 
@@ -66,13 +65,13 @@ export default function PostFooter() {
       <div className="cuan-divider" />
 
       {/* Back */}
-      <Link
-        to="/blog"
+      <a
+        href="/blog"
         className="cuan-btn cuan-btn-secondary"
         style={{ textDecoration: 'none', padding: '11px 16px', fontSize: 14, justifyContent: 'center' }}
       >
         <ArrowLeftIcon /> Back to Blog
-      </Link>
+      </a>
     </div>
   );
 }

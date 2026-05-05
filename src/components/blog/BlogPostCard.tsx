@@ -1,5 +1,4 @@
 import { useState, useMemo } from 'react';
-import { Link } from 'react-router-dom';
 import type { PostListItem } from '../../types/blog';
 
 interface BlogPostCardProps {
@@ -32,14 +31,14 @@ export default function BlogPostCard({ post }: BlogPostCardProps) {
   }, [post.created_at]);
 
   return (
-    <Link
-      to={`/blog/${post.slug}`}
+    <a
+      href={`/blog/${post.slug}`}
       style={{ textDecoration: 'none', display: 'flex', height: '100%' }}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
     >
       <div
-        className={`cuan-card${hover ? ' hoverable' : ' hoverable'}`}
+        className="cuan-card hoverable"
         style={{
           padding: 20, cursor: 'pointer', display: 'flex', flexDirection: 'column', gap: 12,
           height: '100%', width: '100%',
@@ -101,6 +100,6 @@ export default function BlogPostCard({ post }: BlogPostCardProps) {
           </div>
         )}
       </div>
-    </Link>
+    </a>
   );
 }
