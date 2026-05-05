@@ -1,6 +1,6 @@
 # Yulog
 
-A modern, responsive personal blog and portfolio site built with React, TypeScript and Tailwind CSS.
+A modern, responsive personal blog and portfolio site built with Astro, React, TypeScript and Tailwind CSS — styled with the **Cuan Design System** (deep navy, Cuan Sky accent, glassmorphic cards).
 
 <!-- Note: Add a screenshot of your site here -->
 ![Yulog Screenshot](Screenshot_8-3-2025_211332.jpeg)
@@ -8,38 +8,39 @@ A modern, responsive personal blog and portfolio site built with React, TypeScri
 
 ## Features
 
-- 🔍 **Advanced Search** - Find posts with both keyword and AI-powered semantic search
-- 📱 **Fully responsive design** - Looks great on all devices
-- 🎨 **Dark theme** - Easy on the eyes
-- 📝 **Rich Markdown support** - Write content with formatting, code blocks, and more
-- 📑 **Table of Contents** - Auto-generated for blog posts
-- 🔗 **SEO optimized** - Dynamic page titles and descriptions
-- 💻 **Code syntax highlighting** - With copy-to-clipboard functionality
-- ⚡ **Fast loading** - Optimized for performance
-- 🔙 **Back to top button** - Easy navigation for long posts
-- 🔄 **Load more pagination** - Smooth infinite scroll-like experience
+- **Advanced Search** - Find posts with both keyword and AI-powered semantic search
+- **Fully responsive design** - Looks great on all devices
+- **Cuan Design System** - Deep navy background, Cuan Sky (#30BDF2) accent, glassmorphic gradient cards
+- **Rich Markdown support** - Formatting, code blocks, math (KaTeX), and more
+- **Syntax highlighting** - Powered by Shiki with copy-to-clipboard
+- **Table of Contents** - Auto-generated for blog posts
+- **SEO optimized** - Server-side rendered meta tags and Open Graph per page
+- **Back to top button** - Easy navigation for long posts
+- **Load more pagination** - Smooth paginated blog listing
 
 ## Tech Stack
 
-- **Frontend**: React, TypeScript
-- **Styling**: Tailwind CSS
-- **Routing**: React Router
+- **Framework**: Astro 5 (SSR, `@astrojs/node` adapter)
+- **UI**: React 19 islands (`client:load`)
+- **Styling**: Tailwind CSS v4 (via `@tailwindcss/vite`)
 - **Markdown**: React Markdown with remark/rehype plugins
-- **Build Tool**: Vite
+- **Math rendering**: KaTeX
+- **Syntax highlighting**: Shiki
+- **Build Tool**: Astro + Vite
 - **Package Manager**: npm
 
 ## Getting Started
 
 ### Prerequisites
 
-- Node.js (v18 or newer)
-- npm or yarn
+- Node.js v22 or newer
+- npm
 
 ### Installation
 
 1. Clone the repository
 ```bash
-git clone https://github.com/yourusername/yulog.git
+git clone https://github.com/yudopr11/yulog.git
 cd yulog
 ```
 
@@ -48,7 +49,7 @@ cd yulog
 npm install
 ```
 
-3. Create a .env file based on .env.example
+3. Create a `.env` file based on `.env.example`
 ```bash
 cp .env.example .env
 ```
@@ -58,14 +59,14 @@ cp .env.example .env
 npm run dev
 ```
 
-5. Open your browser and visit `http://localhost:300`
+5. Open your browser and visit `http://localhost:3000`
 
 ## Smart Search with RAG
 
 Yulog includes a powerful search feature using Retrieval Augmented Generation (RAG) technology:
 
 - **Semantic Search**: Intelligently matches content based on meaning, not just keywords
-- **Toggle Option**: Users can switch between basic keyword search and AI-powered search
+- **Toggle Option**: Users can switch between Keyword and Semantic (AI-powered) search via a period-toggle control
 - **Configurable**: Enable/disable RAG by default via environment variables
 
 The search feature works by:
@@ -73,86 +74,109 @@ The search feature works by:
 2. Finding content that matches the intent of the search, even when exact keywords aren't present
 3. Ranking results by semantic relevance to provide the most meaningful matches
 
-This provides a significantly better search experience than traditional keyword-based searching.
-
 ## Project Structure
 
 ```
 yulog/
 ├── public/             # Static assets
 ├── src/
-│   ├── components/     # React components
+│   ├── components/
 │   │   ├── blog/       # Blog-specific components
 │   │   ├── common/     # Reusable components
+│   │   ├── home/       # Home page sections
+│   │   ├── Blog.tsx
+│   │   ├── Home.tsx
+│   │   ├── Navbar.tsx
 │   │   └── ...
-│   ├── services/       # API and other services
-│   ├── App.tsx         # Main application component
-│   ├── main.tsx        # Entry point
-│   └── ...
-├── package.json        # Dependencies and scripts
-├── tailwind.config.js  # Tailwind CSS configuration
-├── tsconfig.json       # TypeScript configuration
-└── vite.config.ts      # Vite configuration
+│   ├── hooks/          # Custom React hooks
+│   ├── layouts/
+│   │   └── BaseLayout.astro  # HTML shell with SSR meta tags
+│   ├── pages/
+│   │   ├── index.astro
+│   │   ├── 404.astro
+│   │   ├── api/blog/   # Server-side API proxy (avoids CORS)
+│   │   └── blog/
+│   │       ├── index.astro
+│   │       └── [slug].astro
+│   ├── services/       # API service functions
+│   ├── types/          # TypeScript type definitions
+│   └── index.css       # Cuan Design System CSS custom properties
+├── astro.config.mjs
+├── package.json
+└── tsconfig.json
 ```
 
 ## Key Components
 
 ### Blog Components
 
-- **Blog**: Main blog listing page with search functionality
+- **Blog**: Main blog listing page with Cuan-styled search and period-toggle (Keyword / Semantic)
 - **PostDetail**: Blog post detail page with table of contents
+- **PostHeader**: Chip-brand tags, title, author icon-tile, calendar/clock metadata
 - **TableOfContents**: Auto-generated navigation from post headings
-- **MarkdownRenderers**: Custom renderers for Markdown content
+- **MarkdownRenderers**: Custom renderers for Markdown content (code, math, images)
+
+### Home Components
+
+- **HeroCard**: Large hero with bio, CTA buttons
+- **ProjectCard**: Project showcase cards
 
 ### Common Components
 
-- **PageTitle**: SEO-friendly dynamic page titles
-- **ProjectCard**: Showcases projects with links
-- **SocialLink**: Displays social media links
-- **LoadingSpinner**: Loading indicator
+- **ProjectCard**: Cuan card with icon tiles, chip tags, and CTA buttons
+- **PageTitle**: Client-side dynamic page title updates
+- **ErrorAlert**: Error display component
+
+## Cuan Design System
+
+Yulog uses the Cuan DS vocabulary for all UI components:
+
+| Class | Purpose |
+|---|---|
+| `cuan-card` | Glassmorphic gradient card |
+| `cuan-nav` | Frosted-glass navbar |
+| `cuan-btn` | Primary call-to-action button |
+| `chip` / `chip-brand` | Tag/label pills |
+| `icon-tile` | Semantic colored icon boxes |
+| `eyebrow` | Small uppercase section labels |
+| `brand-text` | Gradient brand wordmark |
+| `period-toggle` | Segmented toggle control |
+
+Colors are defined as CSS custom properties in `src/index.css` (e.g. `--bg-base`, `--fg-*`, `--border-*`, `--gradient-*`).
 
 ## Building for Production
-
-To build the app for production, run:
 
 ```bash
 npm run build
 ```
 
-The built files will be in the `dist` directory, ready to be deployed.
+Built files will be in the `dist` directory. The server entry point is `dist/server/entry.mjs`.
 
 ## Deployment
 
 ### Railway
 
-Deploying to Railway is simple:
-
 1. Create an account on [Railway](https://railway.app)
-2. Click "New Project" on the Railway dashboard or "New Services" inside Railway Project
-3. Select "Deploy from GitHub repo"
-4. Choose your cloned repository
-5. Railway will automatically detect the Vite configuration and deploy your site
+2. Click "New Project" → "Deploy from GitHub repo"
+3. Choose your repository
+4. Set the start command to `node ./dist/server/entry.mjs`
 
-That's it! Railway will automatically build and deploy your application. If needed, you can add environment variables in your project settings.
+Add the required environment variables in your Railway project settings.
 
-## Customization
+## Environment Variables
 
-### Styling
-
-The project uses Tailwind CSS for styling. You can customize the theme in `tailwind.config.js`.
-
-### Content
-
-Update the content in the appropriate components:
-
-- Home page content: `src/components/Home.tsx`
-- Blog posts: Managed through the API service
+| Variable | Purpose |
+|----------|---------|
+| `VITE_API_BASE_URL` | yupi backend base URL |
+| `VITE_USE_RAG_DEFAULT` | `true`/`false` — default search mode |
 
 ## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
 
 ## Acknowledgments
+
 - Created by [yudopr](https://github.com/yudopr11)
-- Built with [Vite](https://vitejs.dev/), [React](https://reactjs.org/), [TypeScript](https://www.typescriptlang.org/), and [Tailwind CSS](https://tailwindcss.com/)
+- Built with [Astro](https://astro.build/), [React](https://reactjs.org/), [TypeScript](https://www.typescriptlang.org/), and [Tailwind CSS](https://tailwindcss.com/)
+- Styled with the [Cuan Design System](https://github.com/yudopr11/cuan)
 - Deploy with [Railway](https://railway.app)

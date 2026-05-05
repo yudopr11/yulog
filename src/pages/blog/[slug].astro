@@ -1,0 +1,29 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PostDetail from '../../components/blog/PostDetail';
+import type { PostDetail as PostDetailType } from '../../types/blog';
+
+const { slug } = Astro.params;
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'https://yupi-dev.up.railway.app';
+
+let post: PostDetailType | null = null;
+
+try {
+  const res = await fetch(`${API_BASE_URL}/blog/${slug}`);
+  if (res.ok) {
+    post = await res.json() as PostDetailType;
+  }
+} catch {
+  // fall through — PostDetail island handles client-side fetch and errors
+}
+---
+
+<BaseLayout
+  title={post ? post.title : 'Post'}
+  description={post?.excerpt ?? ''}
+  type="article"
+  pathname={`/blog/${slug}`}
+>
+  <PostDetail slug={slug!} initialPost={post ?? undefined} client:load />
+</BaseLayout>

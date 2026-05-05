@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import { Bars3BottomLeftIcon, ChevronDownIcon } from '@heroicons/react/24/outline';
+import { useState, useEffect, useCallback } from 'react';
 
 type HeadingType = {
   id: string;
@@ -11,167 +10,80 @@ interface TableOfContentsProps {
   content: string;
 }
 
-const TableOfContents: React.FC<TableOfContentsProps> = ({ content }) => {
+export default function TableOfContents({ content }: TableOfContentsProps) {
   const [headings, setHeadings] = useState<HeadingType[]>([]);
-  const [activeId, setActiveId] = useState<string>("");
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [activeId, setActiveId] = useState<string>('');
 
-  // Parse markdown content for headings
   useEffect(() => {
     if (!content) return;
-    
-    // First, identify code blocks to exclude their content from heading search
-    const findCodeBlocks = (markdown: string) => {
-      const codeBlockRegex = /```[\s\S]*?```/g;
-      const codeBlocks: { start: number; end: number }[] = [];
-      
-      let match;
-      while ((match = codeBlockRegex.exec(markdown)) !== null) {
-        codeBlocks.push({
-          start: match.index,
-          end: match.index + match[0].length
-        });
-      }
-      return codeBlocks;
-    };
-    
-    // Check if a position is inside any code block
-    const isInsideCodeBlock = (position: number, codeBlocks: { start: number; end: number }[]) => {
-      return codeBlocks.some(block => position >= block.start && position < block.end);
-    };
-    
-    const codeBlocks = findCodeBlocks(content);
-    
-    // Match all headings (h1-h6) in markdown
-    // Format: # Heading1, ## Heading2, etc.
+
+    const codeBlockRegex = /```[\s\S]*?```/g;
+    const codeBlocks: { start: number; end: number }[] = [];
+    let m;
+    while ((m = codeBlockRegex.exec(content)) !== null) {
+      codeBlocks.push({ start: m.index, end: m.index + m[0].length });
+    }
+    const inCodeBlock = (pos: number) => codeBlocks.some(b => pos >= b.start && pos < b.end);
+
     const headingRegex = /^(#{1,6})\s+(.+)$/gm;
-    const matches: { level: number; title: string; position: number }[] = [];
-    
-    let match;
-    while ((match = headingRegex.exec(content)) !== null) {
-      // Skip headings inside code blocks
-      if (!isInsideCodeBlock(match.index, codeBlocks)) {
-        matches.push({
-          level: match[1].length,
-          title: match[2].trim(),
-          position: match.index
-        });
+    const parsed: HeadingType[] = [];
+    while ((m = headingRegex.exec(content)) !== null) {
+      if (!inCodeBlock(m.index)) {
+        const level = m[1].length;
+        const title = m[2].trim();
+        const id = `heading-${level}-${title.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '')}`;
+        parsed.push({ id, title, level });
       }
     }
-    
-    const parsedHeadings = matches.map(match => {
-      const { level, title } = match;
-      // Generate an id from the title
-      const id = `heading-${level}-${title.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '')}`;
-      
-      return { id, title, level };
-    });
-    
-    setHeadings(parsedHeadings);
-    
-    // Default to collapsed on mobile
-    setIsCollapsed(window.innerWidth < 768);
+    setHeadings(parsed);
   }, [content]);
 
-  // Set up intersection observer to highlight active section
   useEffect(() => {
-    if (typeof window === 'undefined' || !document) return;
-    
+    if (headings.length === 0) return;
+
     const observer = new IntersectionObserver(
       entries => {
         entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            setActiveId(entry.target.id);
-          }
+          if (entry.isIntersecting) setActiveId(entry.target.id);
         });
       },
       { rootMargin: '0px 0px -80% 0px' }
     );
-    
-    // Observe all section headings
-    document.querySelectorAll('h1, h2, h3, h4, h5, h6').forEach(heading => {
-      if (heading.id) {
-        observer.observe(heading);
-      }
+
+    document.querySelectorAll('h1, h2, h3, h4, h5, h6').forEach(el => {
+      if (el.id) observer.observe(el);
     });
-    
-    return () => {
-      document.querySelectorAll('h1, h2, h3, h4, h5, h6').forEach(heading => {
-        if (heading.id) {
-          observer.unobserve(heading);
-        }
-      });
-    };
+
+    return () => observer.disconnect();
   }, [headings]);
 
-  // Handle clicking on a TOC item - smooth scroll to the section
-  const handleClickTocItem = (event: React.MouseEvent<HTMLAnchorElement>, id: string) => {
-    event.preventDefault();
-    const element = document.getElementById(id);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
+  const handleClick = useCallback((e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
+    e.preventDefault();
+    const el = document.getElementById(id);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth' });
       setActiveId(id);
-      
-      // On mobile, collapse after clicking
-      if (window.innerWidth < 768) {
-        setIsCollapsed(true);
-      }
     }
-  };
+  }, []);
 
-  // Toggle the collapsed state
-  const toggleCollapsed = () => {
-    setIsCollapsed(!isCollapsed);
-  };
-
-  if (headings.length === 0) {
-    return null;
-  }
+  if (headings.length === 0) return null;
 
   return (
-    <nav className="mb-8 bg-gray-900 rounded-lg shadow-lg overflow-hidden transition-all duration-300">
-      <div 
-        className="flex items-center justify-between p-4 border-b border-gray-800 cursor-pointer"
-        onClick={toggleCollapsed}
-      >
-        <h2 className="text-lg font-bold text-white flex items-center">
-          <Bars3BottomLeftIcon 
-            className="h-5 w-5 mr-2" 
-            stroke="currentColor"
-          />
-          Table of Contents
-        </h2>
-        <ChevronDownIcon 
-          className={`h-5 w-5 transform transition-transform duration-300 ${isCollapsed ? '' : 'rotate-180'}`} 
-          stroke="currentColor"
-        />
-      </div>
-      
-      <div className={`transition-all duration-300 ${isCollapsed ? 'max-h-0' : 'max-h-[400px]'} overflow-y-auto`}>
-        <ul className="p-4 space-y-1">
-          {headings.map(heading => (
-            <li 
-              key={heading.id}
-              className="transition-colors duration-200"
-              style={{ paddingLeft: `${(heading.level - 1) * 0.75}rem` }}
-            >
-              <a
-                href={`#${heading.id}`}
-                onClick={(e) => handleClickTocItem(e, heading.id)}
-                className={`text-sm hover:text-primary-400 transition-colors block py-1 ${
-                  activeId === heading.id 
-                    ? 'text-primary-400 font-medium' 
-                    : 'text-gray-400'
-                }`}
-              >
-                {heading.title}
-              </a>
-            </li>
-          ))}
-        </ul>
-      </div>
-    </nav>
+    <div className="toc-panel">
+      <div className="eyebrow" style={{ marginBottom: 14, color: 'var(--primary-500)' }}>On this page</div>
+      <nav>
+        {headings.map(h => (
+          <a
+            key={h.id}
+            href={`#${h.id}`}
+            onClick={e => handleClick(e, h.id)}
+            className={`toc-panel-link${activeId === h.id ? ' active' : ''}`}
+            style={{ paddingLeft: `${(h.level - 1) * 12 + 10}px` }}
+          >
+            {h.title}
+          </a>
+        ))}
+      </nav>
+    </div>
   );
-};
-
-export default TableOfContents; 
+}

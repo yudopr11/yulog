@@ -1,0 +1,12 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Home from '../components/Home';
+---
+
+<BaseLayout
+  title="Home"
+  description="Personal website and portfolio of yudopr - Data Engineer"
+  pathname="/"
+>
+  <Home client:load />
+</BaseLayout>
