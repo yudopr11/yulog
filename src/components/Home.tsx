@@ -220,7 +220,7 @@ export default function Home() {
                 <div className="eyebrow" style={{ marginBottom: 10, color: 'var(--primary-500)' }}>Recent writing</div>
                 <h2 style={{ margin: 0, fontSize: 32, fontWeight: 700, letterSpacing: '-0.02em', color: 'var(--fg-1)' }}>From the blog</h2>
                 <p style={{ margin: '10px 0 0', color: 'var(--fg-4)', fontSize: 15, maxWidth: 560 }}>
-                  Notes on data engineering, LLMs and the messy middle of shipping things.
+                  Notes from the pipeline: Data engineering, LLMs, and the messy middle of shipping things.
                 </p>
               </div>
               <a

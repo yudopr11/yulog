@@ -240,7 +240,7 @@ export default function Blog() {
             Notes from <span className="brand-text">the pipeline.</span>
           </h1>
           <p style={{ marginTop: 14, color: 'var(--fg-4)', fontSize: 16, maxWidth: 600 }}>
-            Long-form posts on data engineering, LLMs, and side projects.
+            Long-form thoughts on data, AI, and the unexpected outputs of a dev life.
           </p>
         </div>
 
