@@ -31,7 +31,7 @@
     "astro": "astro"
   },
   "dependencies": {
-    "@astrojs/node": "^9.0.0",
+    "@astrojs/node": "^10.0.5",
     "@astrojs/react": "^4.0.0",
     "@headlessui/react": "^2.2.3",
     "@heroicons/react": "^2.2.0",
