@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
 
-export default function Navbar() {
-  const location = useLocation();
+interface NavbarProps {
+  pathname?: string;
+}
+
+export default function Navbar({ pathname = '/' }: NavbarProps) {
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -12,8 +14,8 @@ export default function Navbar() {
   }, []);
 
   const isActive = (path: string) =>
-    location.pathname === path ||
-    (path === '/blog' && (location.pathname.startsWith('/blog/') || location.pathname === '/blog'));
+    pathname === path ||
+    (path === '/blog' && (pathname.startsWith('/blog/') || pathname === '/blog'));
 
   return (
     <nav
@@ -33,10 +35,9 @@ export default function Navbar() {
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
       }}>
         {/* Brand */}
-        <Link to="/" style={{ display: 'flex', flexDirection: 'column', lineHeight: 1, textDecoration: 'none' }}>
+        <a href="/" style={{ display: 'flex', flexDirection: 'column', lineHeight: 1, textDecoration: 'none' }}>
           <span className="brand-text" style={{ fontSize: 18, fontWeight: 900 }}>yudopr</span>
-          {/* <span className="eyebrow" style={{ fontSize: 9, marginTop: 2 }}>data engineer</span> */}
-        </Link>
+        </a>
 
         {/* Nav links */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
@@ -44,14 +45,14 @@ export default function Navbar() {
             { path: '/', label: 'Home' },
             { path: '/blog', label: 'Blog' },
           ].map(({ path, label }) => (
-            <Link
+            <a
               key={path}
-              to={path}
+              href={path}
               className={`cuan-nav-link${isActive(path) ? ' active' : ''}`}
             >
               {label}
               {isActive(path) && <span className="dot" />}
-            </Link>
+            </a>
           ))}
         </div>
       </div>

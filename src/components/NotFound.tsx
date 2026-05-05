@@ -1,4 +1,3 @@
-import { Link } from 'react-router-dom';
 import { usePageTitle } from '../hooks/usePageTitle';
 
 const ArrowLeftIcon = () => (
@@ -45,9 +44,9 @@ export default function NotFound() {
           The page you're looking for doesn't exist or has been moved.
         </p>
 
-        <Link to="/" className="cuan-btn cuan-btn-primary" style={{ textDecoration: 'none', padding: '12px 24px' }}>
+        <a href="/" className="cuan-btn cuan-btn-primary" style={{ textDecoration: 'none', padding: '12px 24px' }}>
           <ArrowLeftIcon /> Back to Home
-        </Link>
+        </a>
       </div>
     </div>
   );

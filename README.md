@@ -1,6 +1,6 @@
 # Yulog
 
-A modern, responsive personal blog and portfolio site built with React, TypeScript and Tailwind CSS — styled with the **Cuan Design System** (deep navy, Cuan Sky accent, glassmorphic cards).
+A modern, responsive personal blog and portfolio site built with Astro, React, TypeScript and Tailwind CSS — styled with the **Cuan Design System** (deep navy, Cuan Sky accent, glassmorphic cards).
 
 <!-- Note: Add a screenshot of your site here -->
 ![Yulog Screenshot](Screenshot_8-3-2025_211332.jpeg)
@@ -14,30 +14,26 @@ A modern, responsive personal blog and portfolio site built with React, TypeScri
 - **Rich Markdown support** - Formatting, code blocks, math (KaTeX), and more
 - **Syntax highlighting** - Powered by Shiki with copy-to-clipboard
 - **Table of Contents** - Auto-generated for blog posts
-- **SEO optimized** - Dynamic page titles and meta descriptions
-- **HeroDashboard hero** - Stat cards, profile photo, Stack/Exploring chips
+- **SEO optimized** - Server-side rendered meta tags and Open Graph per page
 - **Back to top button** - Easy navigation for long posts
-- **Load more pagination** - Smooth infinite scroll-like experience
-- **Scroll animations** - Powered by AOS
+- **Load more pagination** - Smooth paginated blog listing
 
 ## Tech Stack
 
-- **Frontend**: React 19, TypeScript
-- **Styling**: Tailwind CSS v4
-- **Routing**: React Router v7
+- **Framework**: Astro 5 (SSR, `@astrojs/node` adapter)
+- **UI**: React 19 islands (`client:load`)
+- **Styling**: Tailwind CSS v4 (via `@tailwindcss/vite`)
 - **Markdown**: React Markdown with remark/rehype plugins
 - **Math rendering**: KaTeX
 - **Syntax highlighting**: Shiki
-- **Animations**: AOS
-- **HTTP client**: Axios
-- **Build Tool**: Vite 6
+- **Build Tool**: Astro + Vite
 - **Package Manager**: npm
 
 ## Getting Started
 
 ### Prerequisites
 
-- Node.js (v22 or newer)
+- Node.js v22 or newer
 - npm
 
 ### Installation
@@ -63,7 +59,7 @@ cp .env.example .env
 npm run dev
 ```
 
-5. Open your browser and visit `http://localhost:5173`
+5. Open your browser and visit `http://localhost:3000`
 
 ## Smart Search with RAG
 
@@ -88,20 +84,26 @@ yulog/
 │   │   ├── blog/       # Blog-specific components
 │   │   ├── common/     # Reusable components
 │   │   ├── home/       # Home page sections
-│   │   ├── App.tsx
 │   │   ├── Blog.tsx
 │   │   ├── Home.tsx
 │   │   ├── Navbar.tsx
 │   │   └── ...
 │   ├── hooks/          # Custom React hooks
-│   ├── services/       # API and other services
+│   ├── layouts/
+│   │   └── BaseLayout.astro  # HTML shell with SSR meta tags
+│   ├── pages/
+│   │   ├── index.astro
+│   │   ├── 404.astro
+│   │   ├── api/blog/   # Server-side API proxy (avoids CORS)
+│   │   └── blog/
+│   │       ├── index.astro
+│   │       └── [slug].astro
+│   ├── services/       # API service functions
 │   ├── types/          # TypeScript type definitions
-│   ├── index.css       # Cuan Design System CSS custom properties
-│   └── main.tsx        # Entry point
+│   └── index.css       # Cuan Design System CSS custom properties
+├── astro.config.mjs
 ├── package.json
-├── tailwind.config.js
-├── tsconfig.json
-└── vite.config.ts
+└── tsconfig.json
 ```
 
 ## Key Components
@@ -116,21 +118,14 @@ yulog/
 
 ### Home Components
 
-- **HeroCard**: HeroDashboard — 2-col grid with stat cards, profile photo, Stack/Exploring chips
-- **TechStackSection**: Technology stack showcase
-- **ExpertiseCard**: Expertise areas display
-- **ProfessionalTimeline**: Career timeline
-- **NumberCounter**: Animated stat counters
-- **DataFlowVisualization**: Visual data flow diagram
-- **SocialCTAFooter**: Connect section with radial glow and Cuan-button CTAs
+- **HeroCard**: Large hero with bio, CTA buttons
+- **ProjectCard**: Project showcase cards
 
 ### Common Components
 
 - **ProjectCard**: Cuan card with icon tiles, chip tags, and CTA buttons
-- **PageTitle**: SEO-friendly dynamic page titles
-- **SocialLink**: Social media links
+- **PageTitle**: Client-side dynamic page title updates
 - **ErrorAlert**: Error display component
-- **LoadingSpinner**: Loading indicator
 
 ## Cuan Design System
 
@@ -155,7 +150,7 @@ Colors are defined as CSS custom properties in `src/index.css` (e.g. `--bg-base`
 npm run build
 ```
 
-Built files will be in the `dist` directory.
+Built files will be in the `dist` directory. The server entry point is `dist/server/entry.mjs`.
 
 ## Deployment
 
@@ -164,9 +159,16 @@ Built files will be in the `dist` directory.
 1. Create an account on [Railway](https://railway.app)
 2. Click "New Project" → "Deploy from GitHub repo"
 3. Choose your repository
-4. Railway will automatically detect the Vite configuration and deploy your site
+4. Set the start command to `node ./dist/server/entry.mjs`
 
-Add any required environment variables in your Railway project settings.
+Add the required environment variables in your Railway project settings.
+
+## Environment Variables
+
+| Variable | Purpose |
+|----------|---------|
+| `VITE_API_BASE_URL` | yupi backend base URL |
+| `VITE_USE_RAG_DEFAULT` | `true`/`false` — default search mode |
 
 ## License
 
@@ -175,6 +177,6 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 ## Acknowledgments
 
 - Created by [yudopr](https://github.com/yudopr11)
-- Built with [Vite](https://vitejs.dev/), [React](https://reactjs.org/), [TypeScript](https://www.typescriptlang.org/), and [Tailwind CSS](https://tailwindcss.com/)
+- Built with [Astro](https://astro.build/), [React](https://reactjs.org/), [TypeScript](https://www.typescriptlang.org/), and [Tailwind CSS](https://tailwindcss.com/)
 - Styled with the [Cuan Design System](https://github.com/yudopr11/cuan)
 - Deploy with [Railway](https://railway.app)

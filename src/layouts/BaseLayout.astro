@@ -1,0 +1,63 @@
+---
+import '../index.css';
+import 'katex/dist/katex.min.css';
+import Navbar from '../components/Navbar';
+
+interface Props {
+  title: string;
+  description?: string;
+  image?: string;
+  type?: string;
+  pathname?: string;
+}
+
+const {
+  title,
+  description = 'Personal website and portfolio of yudopr - Data Engineer',
+  image,
+  type = 'website',
+  pathname = '/',
+} = Astro.props;
+
+const pageTitle = title === 'Home' ? 'yudopr' : `yudopr | ${title}`;
+const canonicalURL = new URL(pathname, Astro.site ?? Astro.url.origin);
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalURL} />
+
+    <!-- Open Graph -->
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content={type} />
+    <meta property="og:url" content={canonicalURL} />
+    {image && <meta property="og:image" content={image} />}
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={description} />
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+    />
+
+    <title>{pageTitle}</title>
+  </head>
+  <body class="min-h-screen text-white" style="background: var(--bg-base); color: var(--fg-1);">
+    <div class="page-bg"></div>
+    <Navbar pathname={pathname} client:load />
+    <main>
+      <slot />
+    </main>
+  </body>
+</html>

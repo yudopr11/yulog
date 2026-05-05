@@ -1,6 +1,4 @@
-import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import PageTitle from './common/PageTitle';
 import CustomScrollToTop from './common/CustomScrollToTop';
 import HeroCard from './home/HeroCard';
@@ -63,7 +61,6 @@ const SOCIALS = [
   { label: 'TikTok',   href: 'https://www.tiktok.com/@yudopr' },
 ];
 
-
 const MailIcon = () => (
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
     <rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/>
@@ -120,8 +117,8 @@ function RecentPostCard({ post }: { post: PostListItem }) {
     : null;
 
   return (
-    <Link
-      to={`/blog/${post.slug}`}
+    <a
+      href={`/blog/${post.slug}`}
       style={{ textDecoration: 'none', display: 'flex', height: '100%' }}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
@@ -183,12 +180,11 @@ function RecentPostCard({ post }: { post: PostListItem }) {
           </div>
         )}
       </div>
-    </Link>
+    </a>
   );
 }
 
 export default function Home() {
-  const navigate = useNavigate();
   const [recentPosts, setRecentPosts] = useState<PostListItem[]>([]);
 
   useEffect(() => {
@@ -213,7 +209,7 @@ export default function Home() {
             const el = document.getElementById('projects');
             el && window.scrollTo({ top: el.offsetTop - 80, behavior: 'smooth' });
           }}
-          onBlogClick={() => navigate('/blog')}
+          onBlogClick={() => { window.location.href = '/blog'; }}
         />
 
         {/* Recent Writing */}
@@ -227,13 +223,13 @@ export default function Home() {
                   Notes on data engineering, LLMs and the messy middle of shipping things.
                 </p>
               </div>
-              <button
-                onClick={() => navigate('/blog')}
+              <a
+                href="/blog"
                 className="cuan-btn cuan-btn-secondary"
-                style={{ padding: '10px 18px', fontSize: 13, whiteSpace: 'nowrap' }}
+                style={{ padding: '10px 18px', fontSize: 13, whiteSpace: 'nowrap', textDecoration: 'none' }}
               >
                 View all <ArrowUpRightIcon />
-              </button>
+              </a>
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 300px), 1fr))', gap: 16 }}>
               {recentPosts.map(post => (
@@ -245,7 +241,6 @@ export default function Home() {
 
         {/* Projects */}
         <section id="projects" style={{ padding: '56px 0 32px', scrollMarginTop: 80 }}>
-          {/* Section head */}
           <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: 16, marginBottom: 32, flexWrap: 'wrap' }}>
             <div>
               <div className="eyebrow" style={{ marginBottom: 10, color: 'var(--primary-500)' }}>Independent work</div>

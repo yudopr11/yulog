@@ -1,4 +1,3 @@
-import { Link } from 'react-router-dom';
 import { ArrowLeftIcon } from '@heroicons/react/20/solid';
 
 export default function PostNotFound() {
@@ -8,18 +7,18 @@ export default function PostNotFound() {
       <p className="text-gray-400">
         The post you're looking for doesn't exist or has been removed.
       </p>
-      
+
       <div className="mt-6">
-        <Link 
-          to="/blog" 
+        <a
+          href="/blog"
           className="inline-flex items-center text-gray-400 hover:text-primary-400 transition-colors group"
         >
-          <ArrowLeftIcon 
-            className="h-4 w-4 mr-1 transition-transform group-hover:-translate-x-1" 
+          <ArrowLeftIcon
+            className="h-4 w-4 mr-1 transition-transform group-hover:-translate-x-1"
           />
           <span className="group-hover:underline">Back to Blog</span>
-        </Link>
+        </a>
       </div>
     </div>
   );
-} 
+}
