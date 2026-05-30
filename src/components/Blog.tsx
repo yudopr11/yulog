@@ -33,14 +33,14 @@ export default function Blog() {
   // Default posts
   const [defaultPosts, setDefaultPosts] = useState<PostListItem[]>([]);
   const [defaultLoading, setDefaultLoading] = useState(true);
-  const [defaultSkip, setDefaultSkip] = useState(0);
+  const [defaultCursor, setDefaultCursor] = useState<string | null>(null);
   const [hasMoreDefault, setHasMoreDefault] = useState(true);
   const [totalDefault, setTotalDefault] = useState(0);
 
   // Search results
   const [searchPosts, setSearchPosts] = useState<PostListItem[]>([]);
   const [searchLoading, setSearchLoading] = useState(false);
-  const [searchSkip, setSearchSkip] = useState(0);
+  const [searchCursor, setSearchCursor] = useState<string | null>(null);
   const [hasMoreSearch, setHasMoreSearch] = useState(true);
   const [totalSearch, setTotalSearch] = useState(0);
 
@@ -64,10 +64,10 @@ export default function Blog() {
     async function loadDefaultPosts() {
       try {
         setDefaultLoading(true);
-        const data = await fetchBlogPosts(defaultSkip, POSTS_PER_PAGE);
+        const data = await fetchBlogPosts(0, POSTS_PER_PAGE, undefined, undefined, 'published', undefined, defaultCursor);
 
         if (isMounted) {
-          if (defaultSkip === 0) {
+          if (!defaultCursor) {
             setDefaultPosts(data.items);
             setShouldScrollDefault(false);
           } else {
@@ -87,7 +87,7 @@ export default function Blog() {
         if (isMounted) {
           setError('Failed to load blog posts. Please try again later.');
           console.error(err);
-          setHasMoreDefault(false); // Set hasMore to false when there's an error
+          setHasMoreDefault(false);
         }
       } finally {
         if (isMounted) {
@@ -101,7 +101,7 @@ export default function Blog() {
     return () => {
       isMounted = false;
     };
-  }, [defaultSkip, POSTS_PER_PAGE, searchTerm]);
+  }, [defaultCursor, POSTS_PER_PAGE, searchTerm]);
 
   // Effect to scroll to bottom when new default posts are loaded
   useEffect(() => {
@@ -125,10 +125,10 @@ export default function Blog() {
     async function loadSearchResults() {
       try {
         setSearchLoading(true);
-        const data = await fetchBlogPosts(searchSkip, POSTS_PER_PAGE, searchTerm, undefined, 'published', useRag);
+        const data = await fetchBlogPosts(0, POSTS_PER_PAGE, searchTerm, undefined, 'published', useRag, searchCursor);
 
         if (isMounted) {
-          if (searchSkip === 0) {
+          if (!searchCursor) {
             setSearchPosts(data.items);
             setShouldScrollSearch(false);
           } else {
@@ -148,7 +148,7 @@ export default function Blog() {
         if (isMounted) {
           setError('Failed to load search results. Please try again later.');
           console.error(err);
-          setHasMoreSearch(false); // Set hasMore to false when there's an error
+          setHasMoreSearch(false);
         }
       } finally {
         if (isMounted) {
@@ -166,7 +166,7 @@ export default function Blog() {
       isMounted = false;
       clearTimeout(timeoutId);
     };
-  }, [searchSkip, POSTS_PER_PAGE, searchTerm, useRag]);
+  }, [searchCursor, POSTS_PER_PAGE, searchTerm, useRag]);
 
   // Effect to scroll to bottom when new search results are loaded
   useEffect(() => {
@@ -184,7 +184,7 @@ export default function Blog() {
   const handleSearch = useCallback((e: React.FormEvent) => {
     e.preventDefault();
     if (searchTerm) {
-      setSearchSkip(0);
+      setSearchCursor(null);
       setHasMoreSearch(true);
     }
   }, [searchTerm]);
@@ -195,19 +195,25 @@ export default function Blog() {
 
     if (!value) {
       setSearchPosts([]);
-      setSearchSkip(0);
+      setSearchCursor(null);
+      setDefaultCursor(null);
     } else {
-      setSearchSkip(0);
+      setSearchCursor(null);
     }
   }, []);
 
   const loadMoreDefault = useCallback(() => {
-    setDefaultSkip(prev => prev + POSTS_PER_PAGE);
-  }, []);
+    // Use the last post's created_at as cursor
+    if (defaultPosts.length > 0) {
+      setDefaultCursor(defaultPosts[defaultPosts.length - 1].created_at);
+    }
+  }, [defaultPosts]);
 
   const loadMoreSearch = useCallback(() => {
-    setSearchSkip(prev => prev + POSTS_PER_PAGE);
-  }, []);
+    if (searchPosts.length > 0) {
+      setSearchCursor(searchPosts[searchPosts.length - 1].created_at);
+    }
+  }, [searchPosts]);
 
   const renderPostList = useCallback((posts: PostListItem[]) => {
     return (
@@ -247,56 +253,46 @@ export default function Blog() {
         {/* Search block */}
         <div className="cuan-card" style={{ padding: 20, marginBottom: 32 }}>
           <form onSubmit={handleSearch}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 14 }}>
-              <span style={{ color: 'var(--fg-5)', flexShrink: 0, display: 'flex' }}><SearchIcon /></span>
-              <input
-                type="text"
-                value={searchTerm}
-                onChange={handleSearchChange}
-                placeholder="Search by title, tag, or content…"
-                style={{
-                  flex: 1, background: 'transparent', border: 'none',
-                  color: 'var(--fg-1)', outline: 'none', fontSize: 15,
-                  fontFamily: 'inherit',
-                }}
-              />
-              {searchTerm && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10, flex: 1, minWidth: 200 }}>
+                <span style={{ color: 'var(--fg-5)', flexShrink: 0, display: 'flex' }}><SearchIcon /></span>
+                <input
+                  type="text"
+                  value={searchTerm}
+                  onChange={handleSearchChange}
+                  placeholder="Search by title, tag, or content…"
+                  style={{
+                    flex: 1, background: 'transparent', border: 'none',
+                    color: 'var(--fg-1)', outline: 'none', fontSize: 15,
+                    fontFamily: 'inherit', minWidth: 0,
+                  }}
+                />
+                {searchTerm && (
+                  <button
+                    type="button"
+                    onClick={() => { setSearchTerm(''); setSearchPosts([]); setSearchCursor(null); setDefaultCursor(null); }}
+                    className="cuan-btn cuan-btn-ghost"
+                    style={{ padding: 6 }}
+                  >
+                    <XIcon />
+                  </button>
+                )}
+              </div>
+              <div className="period-toggle" style={{ flexShrink: 0 }}>
                 <button
                   type="button"
-                  onClick={() => { setSearchTerm(''); setSearchPosts([]); setSearchSkip(0); }}
-                  className="cuan-btn cuan-btn-ghost"
-                  style={{ padding: 6 }}
+                  className={!useRag ? 'active' : ''}
+                  onClick={() => { setUseRag(false); if (searchTerm) setSearchCursor(null); }}
                 >
-                  <XIcon />
+                  <SearchIcon /> Keyword
                 </button>
-              )}
-            </div>
-
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10, flexWrap: 'wrap' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
-                <span className="eyebrow" style={{ fontSize: 11 }}>Search mode</span>
-                <div className="period-toggle">
-                  <button
-                    type="button"
-                    className={!useRag ? 'active' : ''}
-                    onClick={() => { setUseRag(false); if (searchTerm) setSearchSkip(0); }}
-                  >
-                    <SearchIcon /> Keyword
-                  </button>
-                  <button
-                    type="button"
-                    className={useRag ? 'active' : ''}
-                    onClick={() => { setUseRag(true); if (searchTerm) setSearchSkip(0); }}
-                  >
-                    <SparkleIcon /> Semantic
-                  </button>
-                </div>
-              </div>
-              <div style={{ fontSize: 12, color: 'var(--fg-5)' }}>
-                {searchTerm
-                  ? <>Showing <span style={{ color: 'var(--primary-400)', fontWeight: 600 }}>{totalSearch}</span> results for "<span style={{ color: 'var(--fg-2)' }}>{searchTerm}</span>"</>
-                  : <>Showing <span style={{ color: 'var(--primary-400)', fontWeight: 600 }}>{totalDefault}</span> posts</>
-                }
+                <button
+                  type="button"
+                  className={useRag ? 'active' : ''}
+                  onClick={() => { setUseRag(true); if (searchTerm) setSearchCursor(null); }}
+                >
+                  <SparkleIcon /> Semantic
+                </button>
               </div>
             </div>
           </form>
@@ -315,7 +311,7 @@ export default function Blog() {
           {/* Default Posts Container - Visible when search is empty */}
           {!searchTerm && (
             <>
-              {defaultLoading && defaultSkip === 0 ? (
+              {defaultLoading && !defaultCursor ? (
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 300px), 1fr))', gap: 16 }}>
                   {[1, 2, 3, 4].map((i) => (
                     <div key={i}>
@@ -359,15 +355,8 @@ export default function Blog() {
                             className="cuan-btn cuan-btn-primary"
                             style={{ padding: '12px 24px', opacity: defaultLoading ? 0.6 : 1 }}
                           >
-                            {defaultLoading && defaultSkip > 0 ? 'Loading…' : <>Load more posts <ArrowIcon /></>}
+                            {defaultLoading && defaultCursor ? 'Loading…' : <>Load more posts <ArrowIcon /></>}
                           </button>
-                        </div>
-                      )}
-
-                      {/* All loaded */}
-                      {!hasMoreDefault && defaultPosts.length > 0 && !defaultLoading && (
-                        <div style={{ marginTop: 40, textAlign: 'center', color: 'var(--fg-5)', fontSize: 13 }}>
-                          All <span style={{ color: 'var(--primary-400)', fontWeight: 600 }}>{totalDefault}</span> posts displayed.
                         </div>
                       )}
                     </>
@@ -380,7 +369,7 @@ export default function Blog() {
           {/* Search Results Container - Visible when search has a term */}
           {searchTerm && (
             <>
-              {searchLoading && searchSkip === 0 ? (
+              {searchLoading && !searchCursor ? (
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 300px), 1fr))', gap: 16 }}>
                   {[1, 2, 3, 4].map((i) => (
                     <div key={i}>
@@ -402,7 +391,7 @@ export default function Blog() {
                       <button
                         className="cuan-btn cuan-btn-primary"
                         style={{ padding: '10px 20px' }}
-                        onClick={() => { setSearchTerm(''); setSearchPosts([]); setSearchSkip(0); }}
+                        onClick={() => { setSearchTerm(''); setSearchPosts([]); setSearchCursor(null); setDefaultCursor(null); }}
                       >
                         Clear search
                       </button>
@@ -419,7 +408,7 @@ export default function Blog() {
                         borderRadius: 12, border: '1px solid var(--border-soft)',
                         background: 'rgba(255,255,255,0.02)', fontSize: 13, color: 'var(--fg-5)',
                       }}>
-                        Showing <span style={{ color: 'var(--primary-400)', fontWeight: 600 }}>{searchPosts.length}</span> of <span style={{ color: 'var(--primary-400)', fontWeight: 600 }}>{totalSearch}</span> results
+                        Showing <span style={{ color: 'var(--primary-400)', fontWeight: 600 }}>{searchPosts.length}</span> of <span style={{ color: 'var(--primary-400)', fontWeight: 600 }}>{totalSearch}</span> results for "<span style={{ color: 'var(--fg-2)' }}>{searchTerm}</span>"
                       </div>
 
                       {/* Load more */}
@@ -431,14 +420,8 @@ export default function Blog() {
                             className="cuan-btn cuan-btn-primary"
                             style={{ padding: '12px 24px', opacity: searchLoading ? 0.6 : 1 }}
                           >
-                            {searchLoading && searchSkip > 0 ? 'Loading…' : <>Load more results <ArrowIcon /></>}
+                            {searchLoading && searchCursor ? 'Loading…' : <>Load more results <ArrowIcon /></>}
                           </button>
-                        </div>
-                      )}
-
-                      {!hasMoreSearch && searchPosts.length > 0 && !searchLoading && (
-                        <div style={{ marginTop: 40, textAlign: 'center', color: 'var(--fg-5)', fontSize: 13 }}>
-                          All <span style={{ color: 'var(--primary-400)', fontWeight: 600 }}>{totalSearch}</span> results found.
                         </div>
                       )}
                     </>

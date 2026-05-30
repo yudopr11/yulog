@@ -13,8 +13,6 @@ interface PostContentProps {
 }
 
 export default function PostContent({ content }: PostContentProps) {
-  if (!content) return null;
-
   const remarkPlugins = useMemo(() => [
     remarkGfm,
     remarkMath,
@@ -22,6 +20,8 @@ export default function PostContent({ content }: PostContentProps) {
   ] as any, []);
 
   const rehypePlugins = useMemo(() => [rehypeKatex, rehypeRaw], []);
+
+  if (!content) return null;
 
   return (
     <div className="article" style={{ marginTop: 24 }}>

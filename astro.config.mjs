@@ -12,5 +12,8 @@ export default defineConfig({
     build: {
       chunkSizeWarningLimit: 1200,
     },
+    optimizeDeps: {
+      include: ['react', 'react-dom', 'react-dom/client'],
+    },
   },
 });

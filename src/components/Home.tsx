@@ -10,47 +10,48 @@ const PROJECTS = [
   {
     repoLink: 'https://github.com/yudopr11/yupi',
     title: 'Yupi',
-    description: 'Collection of APIs for my projects. Providing foundational services for data integration.',
+    description: 'Multi-tenant API backend powering my entire app ecosystem. FastAPI, PostgreSQL + pgvector, JWT auth, embedded MCP server.',
     projectType: 'full-stack' as const,
-    tags: ['API', 'Backend', 'Microservices'],
+    tags: ['Python', 'FastAPI', 'PostgreSQL', 'MCP'],
   },
   {
     repoLink: 'https://github.com/yudopr11/cuan',
     demoLink: 'https://cuan.yudopr.dev',
     title: 'Cuan',
-    description: 'Personal financial management application with data analytics and visualization.',
+    description: 'Personal finance manager with transaction tracking, multi-account support, and financial analytics dashboards.',
     projectType: 'full-stack' as const,
-    tags: ['React', 'Finance', 'Analytics'],
+    tags: ['React', 'TypeScript', 'Finance', 'Analytics'],
+  },
+  {
+    repoLink: 'https://github.com/yudopr11/yuchat',
+    demoLink: 'https://chat.yudopr.dev',
+    title: 'YuChat',
+    description: 'AI chat app powered by MiMo LLM with multi-MCP tool execution, SSE streaming, and structured data visualization.',
+    projectType: 'llm' as const,
+    tags: ['React', 'LLM', 'MCP', 'SSE'],
   },
   {
     repoLink: 'https://github.com/yudopr11/ngakak',
     demoLink: 'https://ngakak.yudopr.dev',
     title: 'Ngakak',
-    description: 'AI-powered bill splitter leveraging LLM for smart financial calculations.',
+    description: 'AI-powered bill splitter using GPT-4 Vision for receipt parsing and LLM for fair cost calculation.',
     projectType: 'llm' as const,
-    tags: ['React', 'LLM', 'Function Calling'],
+    tags: ['React', 'GPT-4 Vision', 'Function Calling'],
   },
   {
     repoLink: 'https://github.com/yudopr11/sat-simulation',
     demoLink: 'https://sat.yudopr.dev',
     title: 'SAT Simulation',
-    description: 'Test simulation for SAT preparation.',
+    description: 'Digital SAT math exam simulator with KaTeX rendering, PDF viewer, and session recovery.',
     projectType: 'learning' as const,
-    tags: ['React', 'Education', 'Quiz'],
-  },
-  {
-    repoLink: 'https://github.com/yudopr11/latihan-matematika',
-    title: 'Latihan Matematika',
-    description: 'Interactive math quiz platform for high school students with progress tracking.',
-    projectType: 'learning' as const,
-    tags: ['Django', 'Fullstack', 'Education', 'Quiz'],
+    tags: ['React', 'KaTeX', 'Education'],
   },
   {
     repoLink: 'https://youtube.com/playlist?list=PLNxndFN0gO42oBYLVsXBrTsKW7aAPEbQP&si=l5crWKP-WnAFoKhr',
     title: 'Belajar SQL',
-    description: 'Comprehensive SQL tutorial series with practical exercises for beginners.',
+    description: 'Comprehensive SQL tutorial series on YouTube with practical exercises for beginners.',
     projectType: 'analytics' as const,
-    tags: ['SQL', 'Database', 'Tutorial'],
+    tags: ['SQL', 'Database', 'YouTube'],
   },
 ];
 
@@ -195,14 +196,14 @@ export default function Home() {
     <div style={{ position: 'relative', zIndex: 1 }}>
       <PageTitle
         title="Home"
-        description="Personal website and portfolio of yudopr - Data Engineer"
+        description="Data engineer building full-stack apps and LLM-powered tools."
       />
 
       <div style={{ maxWidth: 1200, margin: '0 auto', padding: '64px 24px 0' }}>
         {/* Hero */}
         <HeroCard
           name="@yudopr"
-          bio="I'm a data engineer with 7 years of experience specializing in project management, data analysis, and data engineering. I excel at understanding complex business requirements and creating detailed data models. Recently exploring LLM applications like RAG, function calling, and MCP to drive innovative solutions."
+          bio="Data engineer with 7+ years of experience building end-to-end data pipelines and full-stack applications. I design APIs, manage infrastructure, and explore LLM-powered tools — from RAG and function calling to MCP integrations. Currently building a personal ecosystem of apps that combine data engineering with AI."
           years={7}
           projects={6}
           onProjectsClick={() => {

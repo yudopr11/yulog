@@ -30,4 +30,5 @@ export interface PaginatedPostsResponse {
   has_more: boolean;
   limit: number;
   skip: number;
+  next_cursor: string | null;
 }

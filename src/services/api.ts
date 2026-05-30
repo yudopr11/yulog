@@ -6,15 +6,17 @@ export const USE_RAG_DEFAULT = false;
 // Blog Post Functions
 export async function fetchBlogPosts(
   skip: number = 0,
-  limit: number = 3,
+  limit: number = 10,
   search?: string,
   tag?: string,
   publishedStatus: 'published' | 'unpublished' | 'all' = 'published',
-  useRag?: boolean
+  useRag?: boolean,
+  cursor?: string | null,
 ): Promise<PaginatedPostsResponse> {
   const params = new URLSearchParams();
   params.set('skip', String(skip));
   params.set('limit', String(limit));
+  if (cursor) params.set('cursor', cursor);
 
   if (search) params.set('search', search);
   if (tag) params.set('tag', tag);
