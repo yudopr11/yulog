@@ -255,6 +255,8 @@ export default function Blog() {
               <div style={{ display: 'flex', alignItems: 'center', gap: 10, flex: 1, minWidth: 200 }}>
                 <span style={{ color: 'var(--fg-5)', flexShrink: 0, display: 'flex' }}><SearchIcon /></span>
                 <input
+                  id="blog-search"
+                  name="q"
                   type="text"
                   value={searchTerm}
                   onChange={handleSearchChange}
