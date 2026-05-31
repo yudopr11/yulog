@@ -35,7 +35,7 @@ export default function Navbar({ pathname = '/' }: NavbarProps) {
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
       }}>
         {/* Brand */}
-        <a href="/" style={{ display: 'flex', flexDirection: 'column', lineHeight: 1, textDecoration: 'none' }}>
+        <a href="/" aria-label="yudopr - Home" style={{ display: 'flex', flexDirection: 'column', lineHeight: 1, textDecoration: 'none' }}>
           <span className="brand-text" style={{ fontSize: 18, fontWeight: 900 }}>yudopr</span>
         </a>
 

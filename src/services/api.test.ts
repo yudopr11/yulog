@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { fetchBlogPosts, fetchBlogPostBySlug, type PaginatedPostsResponse } from './api';
+import { fetchBlogPosts, fetchBlogPostBySlug } from './api';
+import type { PaginatedPostsResponse } from '../types/blog';
 
 const mockFetch = vi.fn();
 vi.stubGlobal('fetch', mockFetch);

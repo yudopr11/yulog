@@ -16,9 +16,10 @@ import TableOfContents from './TableOfContents';
 interface PostDetailProps {
   slug: string;
   initialPost?: PostDetailType;
+  renderedContent?: string | null;
 }
 
-export default function PostDetail({ slug, initialPost }: PostDetailProps) {
+export default function PostDetail({ slug, initialPost, renderedContent }: PostDetailProps) {
   const [post, setPost] = useState<PostDetailType | null>(initialPost ?? null);
   const [loading, setLoading] = useState(!initialPost);
   const [error, setError] = useState<string | null>(null);
@@ -102,7 +103,7 @@ export default function PostDetail({ slug, initialPost }: PostDetailProps) {
             {/* Main article column */}
             <article style={{ minWidth: 0 }}>
               <PostHeader post={post} />
-              <PostContent content={post.content} />
+              <PostContent content={post.content} renderedHtml={renderedContent} />
               <PostFooter />
             </article>
 

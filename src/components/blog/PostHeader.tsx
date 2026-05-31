@@ -62,7 +62,7 @@ export default function PostHeader({ post }: PostHeaderProps) {
                   </span>
                 )}
                 <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
-                  <ClockIcon /> {post.reading_time} min read
+                  <ClockIcon /> {post.reading_time ?? '—'} min read
                 </span>
               </div>
             </div>
@@ -74,7 +74,7 @@ export default function PostHeader({ post }: PostHeaderProps) {
               <CalendarIcon /> {formatDate(post.created_at)}
             </span>
             <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
-              <ClockIcon /> {post.reading_time} min read
+              <ClockIcon /> {post.reading_time ?? '—'} min read
             </span>
           </div>
         )}

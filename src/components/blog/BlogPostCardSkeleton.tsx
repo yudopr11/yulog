@@ -1,6 +1,6 @@
 export default function BlogPostCardSkeleton() {
   return (
-    <div className="cuan-card animate-pulse" style={{ padding: 20, display: 'flex', flexDirection: 'column', gap: 12, height: '100%' }}>
+    <div aria-hidden="true" className="cuan-card animate-pulse" style={{ padding: 20, display: 'flex', flexDirection: 'column', gap: 12, height: '100%' }}>
       {/* Date + time chips */}
       <div style={{ display: 'flex', gap: 6 }}>
         <div style={{ height: 22, width: 80, borderRadius: 9999, background: 'rgba(255,255,255,0.07)' }} />

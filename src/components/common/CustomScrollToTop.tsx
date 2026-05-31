@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { ChevronUpIcon } from '@heroicons/react/24/outline';
 
 interface CustomScrollToTopProps {
@@ -6,20 +6,15 @@ interface CustomScrollToTopProps {
   smooth?: boolean;
 }
 
-export default function CustomScrollToTop({ 
-  scrollThreshold = 300, 
-  smooth = true 
+export default function CustomScrollToTop({
+  scrollThreshold = 300,
+  smooth = true
 }: CustomScrollToTopProps) {
   const [isVisible, setIsVisible] = useState(false);
 
-  // Fungsi untuk memeriksa posisi scroll
-  const toggleVisibility = () => {
-    if (window.scrollY > scrollThreshold) {
-      setIsVisible(true);
-    } else {
-      setIsVisible(false);
-    }
-  };
+  const toggleVisibility = useCallback(() => {
+    setIsVisible(window.scrollY > scrollThreshold);
+  }, [scrollThreshold]);
 
   const scrollToTop = () => {
     document.documentElement.scrollTo({ top: 0, behavior: smooth ? 'smooth' : 'auto' });
@@ -27,9 +22,9 @@ export default function CustomScrollToTop({
   };
 
   useEffect(() => {
-    window.addEventListener('scroll', toggleVisibility);
+    window.addEventListener('scroll', toggleVisibility, { passive: true });
     return () => window.removeEventListener('scroll', toggleVisibility);
-  }, []);
+  }, [toggleVisibility]);
 
   return (
     <button
@@ -47,4 +42,4 @@ export default function CustomScrollToTop({
       />
     </button>
   );
-} 
+}

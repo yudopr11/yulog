@@ -7,7 +7,6 @@ export const shareOnSocialMedia = (
   url: string
 ): void => {
   let shareUrl = '';
-  console.log(url)
 
   switch (platform) {
     case 'x':

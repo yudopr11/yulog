@@ -47,8 +47,8 @@
     --fg-1: #f8fafc;
     --fg-2: #cbd5e1;
     --fg-3: #d1d5db;
-    --fg-4: #9ca3af;
-    --fg-5: #6b7280;
+    --fg-4: #a8b2c1;
+    --fg-5: #8892a4;
     --fg-6: #4b5563;
 
     /* Semantic */
@@ -125,7 +125,7 @@
 pre.shiki {
   padding: 1rem 1.25rem !important;
   overflow-x: visible !important;
-  line-height: 0.9;
+  line-height: 1.4;
   font-size: 0.8rem;
   background: transparent !important;
   background-color: transparent !important;
@@ -137,13 +137,13 @@ pre.shiki {
 
 pre.shiki code {
   display: block;
-  line-height: 0.9;
+  line-height: 1.4;
   font-size: 0.8rem;
   background: transparent !important;
 }
 
 pre.shiki code .line {
-  min-height: 0.9em;
+  min-height: 1.2em;
   padding-top: 0;
   padding-bottom: 0;
   margin-top: 0;
@@ -156,8 +156,8 @@ pre.shiki code .line {
   padding-left: 1rem;
   display: flex;
   align-items: center;
-  min-height: 0.9em;
-  line-height: 0.9;
+  min-height: 1.2em;
+  line-height: 1.4;
   letter-spacing: -0.01em;
 }
 
@@ -889,6 +889,10 @@ pre.shiki code .line {
   font-size: 14px; font-weight: 600; cursor: pointer;
   border: none; transition: all var(--dur-base) ease-out; font-family: inherit;
 }
+.cuan-btn:focus-visible {
+  outline: 2px solid var(--primary-400);
+  outline-offset: 2px;
+}
 .cuan-btn-primary {
   background: var(--gradient-brand); color: #fff;
   box-shadow: var(--shadow-brand);
@@ -964,6 +968,10 @@ pre.shiki code .line {
   color: var(--fg-4); font-weight: 500; font-family: inherit;
   transition: all var(--dur-fast);
 }
+.period-toggle button:focus-visible {
+  outline: 2px solid var(--primary-400);
+  outline-offset: 2px;
+}
 .period-toggle button.active {
   background: var(--gradient-brand); color: #fff;
   box-shadow: 0 2px 8px rgba(48,189,242,0.30);
@@ -986,6 +994,7 @@ pre.shiki code .line {
   text-decoration: none;
 }
 .cuan-nav-link:hover { color: var(--primary-400); background: rgba(48,189,242,0.06); }
+.cuan-nav-link:focus-visible { outline: 2px solid var(--primary-400); outline-offset: 2px; border-radius: 10px; }
 .cuan-nav-link.active { color: var(--primary-500); background: rgba(48,189,242,0.08); }
 .cuan-nav-link .dot {
   position: absolute; right: 8px; top: 50%; transform: translateY(-50%);

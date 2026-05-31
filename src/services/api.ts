@@ -1,7 +1,7 @@
 import type { PostDetail, PaginatedPostsResponse } from '../types/blog';
 
-// Default RAG setting
-export const USE_RAG_DEFAULT = false;
+// Default RAG setting — reads from env var, falls back to false
+export const USE_RAG_DEFAULT = import.meta.env.VITE_USE_RAG_DEFAULT === 'true';
 
 // Blog Post Functions
 export async function fetchBlogPosts(
@@ -27,7 +27,7 @@ export async function fetchBlogPosts(
 
   const url = typeof window !== 'undefined'
     ? `/api/blog?${params}`
-    : `${import.meta.env.VITE_API_BASE_URL ?? 'https://yupi-dev.up.railway.app'}/blog?${params}`;
+    : `${import.meta.env.VITE_API_BASE_URL}/blog?${params}`;
 
   try {
     const response = await fetch(url);
@@ -42,7 +42,7 @@ export async function fetchBlogPosts(
 export async function fetchBlogPostBySlug(slug: string): Promise<PostDetail> {
   const url = typeof window !== 'undefined'
     ? `/api/blog/${slug}`
-    : `${import.meta.env.VITE_API_BASE_URL ?? 'https://yupi-dev.up.railway.app'}/blog/${slug}`;
+    : `${import.meta.env.VITE_API_BASE_URL}/blog/${slug}`;
 
   try {
     const response = await fetch(url);

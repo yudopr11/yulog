@@ -67,12 +67,21 @@ export function usePageTitle(title?: string, description?: string, options?: Pag
       setOrUpdateMetaTag('twitter:description', description, false);
     }
 
-    // Return cleanup function
+    // Return cleanup function — reset all tags to prevent stale values across navigations
     return () => {
-      // Reset title only if unmounting from a page without a title
+      document.title = 'yudopr';
+      // Clear OG/Twitter tags that were conditionally set
       if (!title) {
-        document.title = 'yudopr';
+        setOrUpdateMetaTag('og:title', 'yudopr');
+        setOrUpdateMetaTag('twitter:title', 'yudopr', false);
+      }
+      if (!description) {
+        setOrUpdateMetaTag('og:description', '');
+        setOrUpdateMetaTag('twitter:description', '', false);
+      }
+      if (!options?.image) {
+        setOrUpdateMetaTag('og:image', '');
       }
     };
   }, [title, description, options?.type, options?.image]);
-} 
+}

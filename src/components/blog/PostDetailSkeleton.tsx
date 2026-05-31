@@ -1,6 +1,6 @@
 export default function PostDetailSkeleton() {
   return (
-    <div className="space-y-12 sm:space-y-16 animate-pulse">
+    <div aria-hidden="true" className="space-y-12 sm:space-y-16 animate-pulse">
       {/* Header Skeleton */}
       <header className="relative mb-12">
         <div className="relative overflow-hidden rounded-2xl p-8 sm:p-10 bg-gradient-to-br from-gray-900/40 to-gray-900/80 backdrop-blur-xl border border-gray-700/30">

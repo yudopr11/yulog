@@ -54,10 +54,76 @@ const canonicalURL = new URL(pathname, Astro.site ?? Astro.url.origin);
     <title>{pageTitle}</title>
   </head>
   <body class="min-h-screen text-white" style="background: var(--bg-base); color: var(--fg-1);">
+    <a
+      href="#main-content"
+      class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-[100] focus:px-4 focus:py-2 focus:bg-primary-500 focus:text-white focus:rounded-lg"
+    >
+      Skip to main content
+    </a>
     <div class="page-bg"></div>
-    <Navbar pathname={pathname} client:load />
-    <main>
+    <Navbar pathname={pathname} client:idle />
+    <main id="main-content">
       <slot />
     </main>
+
+    {/* Copy-to-clipboard for server-rendered code blocks */}
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('div[data-language]').forEach((block) => {
+          const header = block.querySelector('div');
+          if (!header) return;
+
+          // Skip if a copy button already exists (e.g. from client-side rendering)
+          if (header.querySelector('.copy-btn')) return;
+
+          const btn = document.createElement('button');
+          btn.className = 'copy-btn';
+          btn.setAttribute('aria-label', 'Copy code');
+          btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><span>Copy</span>`;
+          btn.style.cssText = 'display:flex;align-items:center;gap:4px;font-size:12px;font-weight:500;padding:4px 8px;border-radius:6px;border:none;cursor:pointer;transition:all 200ms;background:var(--bg-elevated-2,#1e293b);color:var(--fg-3,#94a3b8);';
+          btn.addEventListener('mouseenter', () => { btn.style.background = 'var(--bg-elevated-3,#334155)'; btn.style.color = 'var(--fg-1,#fff)'; });
+          btn.addEventListener('mouseleave', () => { btn.style.background = 'var(--bg-elevated-2,#1e293b)'; btn.style.color = 'var(--fg-3,#94a3b8)'; });
+
+          btn.addEventListener('click', async () => {
+            const codeBlock = block.querySelector('pre, code');
+            if (!codeBlock) return;
+            try {
+              await navigator.clipboard.writeText(codeBlock.textContent || '');
+              btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg><span>Copied!</span>`;
+              btn.style.background = '#166534';
+              btn.style.color = '#bbf7d0';
+              setTimeout(() => {
+                btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><span>Copy</span>`;
+                btn.style.background = 'var(--bg-elevated-2,#1e293b)';
+                btn.style.color = 'var(--fg-3,#94a3b8)';
+              }, 2000);
+            } catch {
+              // Fallback for older browsers or insecure contexts
+              try {
+                const textarea = document.createElement('textarea');
+                textarea.value = codeBlock.textContent || '';
+                textarea.style.cssText = 'position:fixed;opacity:0;';
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg><span>Copied!</span>`;
+                btn.style.background = '#166534';
+                btn.style.color = '#bbf7d0';
+                setTimeout(() => {
+                  btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><span>Copy</span>`;
+                  btn.style.background = 'var(--bg-elevated-2,#1e293b)';
+                  btn.style.color = 'var(--fg-3,#94a3b8)';
+                }, 2000);
+              } catch (fallbackErr) {
+                console.error('Failed to copy:', fallbackErr);
+              }
+            }
+          });
+
+          header.appendChild(btn);
+        });
+      });
+    </script>
   </body>
 </html>

@@ -5,14 +5,109 @@ import type { PostDetail as PostDetailType } from '../../types/blog';
 
 const { slug } = Astro.params;
 
+if (!slug || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) {
+  return Astro.redirect('/404');
+}
+
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'https://yupi-dev.up.railway.app';
 
 let post: PostDetailType | null = null;
+let renderedContent: string | null = null;
 
 try {
   const res = await fetch(`${API_BASE_URL}/blog/${slug}`);
   if (res.ok) {
     post = await res.json() as PostDetailType;
+
+    // Server-side markdown rendering
+    if (post.content) {
+      const { unified } = await import('unified');
+      const remarkParse = (await import('remark-parse')).default;
+      const remarkGfm = (await import('remark-gfm')).default;
+      const remarkMath = (await import('remark-math')).default;
+      const remarkRehype = (await import('remark-rehype')).default;
+      const rehypeKatex = (await import('rehype-katex')).default;
+      const rehypeRaw = (await import('rehype-raw')).default;
+      const rehypeSanitize = (await import('rehype-sanitize')).default;
+      const rehypeStringify = (await import('rehype-stringify')).default;
+      const { createHighlighter } = await import('shiki');
+
+      const highlighter = await createHighlighter({
+        themes: ['github-dark'],
+        langs: ['javascript', 'typescript', 'tsx', 'jsx', 'python', 'bash', 'json', 'yaml', 'html', 'css', 'sql', 'go', 'rust', 'java', 'c', 'cpp', 'ruby', 'php', 'swift', 'kotlin', 'markdown', 'xml', 'toml', 'latex', 'shell', 'powershell', 'csharp', 'scss'],
+      });
+
+      // Step 1: Render markdown to HTML (without code highlighting)
+      const file = await unified()
+        .use(remarkParse)
+        .use(remarkGfm)
+        .use(remarkMath)
+        .use(remarkRehype, { allowDangerousHtml: true })
+        .use(rehypeRaw)
+        .use(rehypeSanitize)
+        .use(rehypeKatex)
+        .use(rehypeStringify)
+        .process(post.content);
+
+      let html = String(file);
+
+      // Step 2: Post-process code blocks with Shiki highlighting
+      const codeBlockRegex = /<pre[^>]*><code(?:\s+class="language-(\w+)")?[^>]*>([\s\S]*?)<\/code><\/pre>/g;
+      let match;
+      const replacements: { original: string; replacement: string }[] = [];
+
+      while ((match = codeBlockRegex.exec(html)) !== null) {
+        const [fullMatch, lang, codeHtml] = match;
+        const code = codeHtml
+          .replace(/&amp;/g, '&')
+          .replace(/&lt;/g, '<')
+          .replace(/&gt;/g, '>')
+          .replace(/&quot;/g, '"')
+          .replace(/&#39;/g, "'");
+
+        if (lang && highlighter.getLoadedLanguages().includes(lang)) {
+          try {
+            const highlighted = highlighter.codeToHtml(code, {
+              lang,
+              theme: 'github-dark',
+              transformers: [{
+                pre(node: any) {
+                  node.properties.style = 'counter-reset: line; padding: 0.6rem 1.25rem; font-size: 0.8rem; background: transparent;';
+                },
+                line(node: any, lineNum: number) {
+                  node.properties.className = ['line'];
+                  node.properties.style = 'counter-increment: line; padding-right: 1rem; display: flex; align-items: center; min-height: 1.2em; margin: 0; letter-spacing: -0.01em;';
+                  node.properties['data-line'] = String(lineNum);
+                }
+              }],
+            });
+            replacements.push({
+              original: fullMatch,
+              replacement: `<div data-language="${lang}" style="margin:1.5em 0;border-radius:12px;border:1px solid var(--border-medium);background:var(--bg-elevated-1);overflow:clip"><div style="display:flex;align-items:center;justify-content:space-between;padding:8px 16px;border-bottom:1px solid var(--border-soft)"><span class="chip chip-brand" style="font-size:10px">${lang.toUpperCase()}</span></div><div style="overflow-x:auto">${highlighted}</div></div>`
+            });
+          } catch {
+            // Shiki failed for this language, leave as-is
+          }
+        }
+      }
+
+      for (const { original, replacement } of replacements) {
+        html = html.replace(original, replacement);
+      }
+
+      // Step 3: Inject heading IDs to match TableOfContents.tsx and MarkdownRenderers.tsx
+      html = html.replace(/<h([1-6])(\s[^>]*)?>([\s\S]*?)<\/h\1>/g, (_match, level, attrs, inner) => {
+        // Skip headings that already have an id
+        if (attrs && /\sid="/.test(attrs)) return _match;
+        // Extract plain text, strip nested HTML tags
+        const text = inner.replace(/<[^>]+>/g, '').trim();
+        const slugified = text.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
+        const id = `heading-${level}-${slugified}`;
+        return `<h${level} id="${id}"${attrs || ''}>${inner}</h${level}>`;
+      });
+
+      renderedContent = html;
+    }
   }
 } catch {
   // fall through — PostDetail island handles client-side fetch and errors
@@ -25,5 +120,5 @@ try {
   type="article"
   pathname={`/blog/${slug}`}
 >
-  <PostDetail slug={slug!} initialPost={post ?? undefined} client:load />
+  <PostDetail slug={slug!} initialPost={post ?? undefined} renderedContent={renderedContent} client:load />
 </BaseLayout>

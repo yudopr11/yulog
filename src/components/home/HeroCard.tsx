@@ -1,5 +1,5 @@
 const ArrowRightIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+  <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
     <path d="M5 12h14M13 6l6 6-6 6"/>
   </svg>
 );
@@ -44,20 +44,22 @@ export default function HeroCard({ bio, onProjectsClick, onBlogClick }: HeroCard
       </p>
 
       <div style={{ display: 'flex', gap: 12, marginTop: 36, flexWrap: 'wrap' }}>
-        <button
-          onClick={onBlogClick}
+        <a
+          href="/blog"
+          onClick={onBlogClick ? (e) => { e.preventDefault(); onBlogClick(); } : undefined}
           className="cuan-btn cuan-btn-primary"
-          style={{ padding: '13px 22px', fontSize: 15 }}
+          style={{ padding: '13px 22px', fontSize: 15, textDecoration: 'none' }}
         >
           Read latest writing <ArrowRightIcon />
-        </button>
-        <button
-          onClick={onProjectsClick}
+        </a>
+        <a
+          href="#projects"
+          onClick={onProjectsClick ? (e) => { e.preventDefault(); onProjectsClick(); } : undefined}
           className="cuan-btn cuan-btn-secondary"
-          style={{ padding: '13px 22px', fontSize: 15 }}
+          style={{ padding: '13px 22px', fontSize: 15, textDecoration: 'none' }}
         >
           Browse projects
-        </button>
+        </a>
       </div>
     </div>
   );

@@ -1,8 +1,10 @@
 ---
+export const prerender = true;
+
 import BaseLayout from '../layouts/BaseLayout.astro';
 import NotFound from '../components/NotFound';
 ---
 
-<BaseLayout title="404 - Page Not Found" pathname="/">
+<BaseLayout title="404 - Page Not Found" pathname="/404">
   <NotFound client:load />
 </BaseLayout>

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import PageTitle from './common/PageTitle';
 import BlogPostCard from './blog/BlogPostCard';
 import BlogPostCardSkeleton from './blog/BlogPostCardSkeleton';
@@ -52,9 +52,7 @@ export default function Blog() {
   // Track when to scroll to newly loaded posts
   const [shouldScrollDefault, setShouldScrollDefault] = useState(false);
   const [shouldScrollSearch, setShouldScrollSearch] = useState(false);
-  const newPostsRefDefault = useRef<HTMLDivElement>(null);
-  const newPostsRefSearch = useRef<HTMLDivElement>(null);
-  
+
   // Effect for loading default posts (when search is empty)
   useEffect(() => {
     let isMounted = true;
@@ -101,19 +99,19 @@ export default function Blog() {
     return () => {
       isMounted = false;
     };
-  }, [defaultCursor, POSTS_PER_PAGE, searchTerm]);
+  }, [defaultCursor, searchTerm]);
 
   // Effect to scroll to bottom when new default posts are loaded
   useEffect(() => {
-    if (shouldScrollDefault) {
-      setTimeout(() => {
-        window.scrollTo({
-          top: document.documentElement.scrollHeight,
-          behavior: 'smooth'
-        });
-      }, 200);
+    if (!shouldScrollDefault) return;
+    const timeoutId = setTimeout(() => {
+      window.scrollTo({
+        top: document.documentElement.scrollHeight,
+        behavior: 'smooth'
+      });
       setShouldScrollDefault(false);
-    }
+    }, 200);
+    return () => clearTimeout(timeoutId);
   }, [shouldScrollDefault]);
 
   // Effect for loading search results (when search has a term)
@@ -166,19 +164,19 @@ export default function Blog() {
       isMounted = false;
       clearTimeout(timeoutId);
     };
-  }, [searchCursor, POSTS_PER_PAGE, searchTerm, useRag]);
+  }, [searchCursor, searchTerm, useRag]);
 
   // Effect to scroll to bottom when new search results are loaded
   useEffect(() => {
-    if (shouldScrollSearch) {
-      setTimeout(() => {
-        window.scrollTo({
-          top: document.documentElement.scrollHeight,
-          behavior: 'smooth'
-        });
-      }, 200);
+    if (!shouldScrollSearch) return;
+    const timeoutId = setTimeout(() => {
+      window.scrollTo({
+        top: document.documentElement.scrollHeight,
+        behavior: 'smooth'
+      });
       setShouldScrollSearch(false);
-    }
+    }, 200);
+    return () => clearTimeout(timeoutId);
   }, [shouldScrollSearch]);
 
   const handleSearch = useCallback((e: React.FormEvent) => {
@@ -261,9 +259,10 @@ export default function Blog() {
                   value={searchTerm}
                   onChange={handleSearchChange}
                   placeholder="Search by title, tag, or content…"
+                  aria-label="Search blog posts"
                   style={{
                     flex: 1, background: 'transparent', border: 'none',
-                    color: 'var(--fg-1)', outline: 'none', fontSize: 15,
+                    color: 'var(--fg-1)', fontSize: 15,
                     fontFamily: 'inherit', minWidth: 0,
                   }}
                 />
@@ -273,6 +272,7 @@ export default function Blog() {
                     onClick={() => { setSearchTerm(''); setSearchPosts([]); setSearchCursor(null); setDefaultCursor(null); }}
                     className="cuan-btn cuan-btn-ghost"
                     style={{ padding: 6 }}
+                    aria-label="Clear search"
                   >
                     <XIcon />
                   </button>
@@ -282,6 +282,7 @@ export default function Blog() {
                 <button
                   type="button"
                   className={!useRag ? 'active' : ''}
+                  aria-pressed={!useRag}
                   onClick={() => { setUseRag(false); if (searchTerm) setSearchCursor(null); }}
                 >
                   <SearchIcon /> Keyword
@@ -289,6 +290,7 @@ export default function Blog() {
                 <button
                   type="button"
                   className={useRag ? 'active' : ''}
+                  aria-pressed={useRag}
                   onClick={() => { setUseRag(true); if (searchTerm) setSearchCursor(null); }}
                 >
                   <SparkleIcon /> Semantic
@@ -299,7 +301,7 @@ export default function Blog() {
         </div>
           
           {error && (
-            <div style={{
+            <div role="alert" style={{
               background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.20)',
               borderRadius: 12, padding: '14px 18px', marginBottom: 24,
               color: 'var(--expense)', fontSize: 14,
@@ -307,6 +309,12 @@ export default function Blog() {
               {error}
             </div>
           )}
+
+          {/* Live region for search results announcement */}
+          <div aria-live="polite" className="sr-only">
+            {searchTerm && !searchLoading && searchPosts.length > 0 && `Found ${searchPosts.length} results for ${searchTerm}`}
+            {searchTerm && !searchLoading && searchPosts.length === 0 && `No results found for ${searchTerm}`}
+          </div>
           
           {/* Default Posts Container - Visible when search is empty */}
           {!searchTerm && (
@@ -333,7 +341,7 @@ export default function Blog() {
                     </div>
                   ) : (
                     <>
-                      <div ref={newPostsRefDefault}>
+                      <div>
                         {renderPostList(defaultPosts)}
                       </div>
 
@@ -398,7 +406,7 @@ export default function Blog() {
                     </div>
                   ) : (
                     <>
-                      <div ref={newPostsRefSearch}>
+                      <div>
                         {renderPostList(searchPosts)}
                       </div>
 

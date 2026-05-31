@@ -25,7 +25,7 @@
   ],
   "scripts": {
     "dev": "astro dev --port 3000",
-    "build": "astro check && astro build",
+    "build": "npm run lint && astro check && astro build",
     "lint": "eslint .",
     "test": "vitest run",
     "test:watch": "vitest",
@@ -45,10 +45,15 @@
     "react-markdown": "^10.1.0",
     "rehype-katex": "^7.0.1",
     "rehype-raw": "^7.0.0",
+    "rehype-sanitize": "^6.0.0",
+    "rehype-stringify": "^10.0.1",
     "remark-gfm": "^4.0.1",
     "remark-math": "^6.0.0",
+    "remark-parse": "^11.0.0",
+    "remark-rehype": "^11.1.2",
     "remark-toc": "^9.0.0",
-    "shiki": "^4.1.0"
+    "shiki": "^4.1.0",
+    "unified": "^11.0.5"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.9",
@@ -71,6 +76,6 @@
     "vitest": "^4.1.7"
   },
   "engines": {
-    "node": ">=22.15.0"
+    "node": ">=20.0.0"
   }
 }

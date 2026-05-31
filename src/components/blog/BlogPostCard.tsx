@@ -6,17 +6,17 @@ interface BlogPostCardProps {
 }
 
 const CalendarIcon = () => (
-  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+  <svg aria-hidden="true" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
     <rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>
   </svg>
 );
 const ClockIcon = () => (
-  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+  <svg aria-hidden="true" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
     <circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>
   </svg>
 );
 const ArrowUpRight = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+  <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
     <path d="M7 17L17 7M8 7h9v9"/>
   </svg>
 );
@@ -81,12 +81,14 @@ export default function BlogPostCard({ post }: BlogPostCardProps) {
         </h3>
 
         {/* Excerpt */}
-        <p style={{
-          margin: 0, fontSize: 13, color: 'var(--fg-4)', lineHeight: 1.55,
-          display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden',
-        }}>
-          {post.excerpt}
-        </p>
+        {post.excerpt && (
+          <p style={{
+            margin: 0, fontSize: 13, color: 'var(--fg-4)', lineHeight: 1.55,
+            display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden',
+          }}>
+            {post.excerpt}
+          </p>
+        )}
 
         {/* Tags */}
         {post.tags && post.tags.length > 0 && (
